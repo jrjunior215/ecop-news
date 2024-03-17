@@ -1,0 +1,132 @@
+/* LAYOUT SETTING */
+
+.container_sidebar {
+    width: auto;
+}
+
+.container_main_warpper {
+    margin-left: 260px;
+    transition: ease-out 0.3s;
+    width: 100%;
+}
+
+/* HEADER NAVBAR */
+
+.navbar_header {
+    width: 100%;
+    padding: 20px 50px;
+    background-color: #f4f4f4;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 10px;
+}
+
+.admin_account {
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.fa-user {
+    padding-right: 20px;
+}
+
+.fa-bars {
+    color: black;
+}
+
+.admin_account span {
+    margin-top: 2px;
+}
+
+/* SIDEBAR NAV */
+
+.sidebar_warpper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100%;
+    background-color: #212529;
+    z-index: 12;
+    transition: ease-out 0.3s;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.044), 0 2px 6px 0 rgba(0, 0, 0, 0.049);
+}
+
+.sidebar_warpper img {
+    width: auto;
+    height: 80px;
+    cursor: pointer;
+}
+
+.sidebar_logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar_menu {
+    padding: 10px;
+    margin: 0;
+    list-style: none;
+    color: #f4f4f4;
+}
+
+.sidebar_menu a {
+    text-decoration: none;
+    color: #f4f4f4;
+}
+
+.sidebar_menu a:hover {
+    color: #f4f4f4;
+}
+
+.menu_label {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.menu_label:hover {
+    background-color: #3b3b3b;
+    opacity: 0.5;
+}
+
+.menu_title {
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.mm_collapse {
+    padding: 0 10px 10px 10px;
+    margin: 0;
+    list-style: none;
+    color: #f4f4f4;
+}
+
+.mm_label {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.mm_label:hover {
+    background-color: #3b3b3b;
+    opacity: 0.5;
+}
+
+.mm_title {
+    margin-top: 2px;
+    margin-left: 10px;
+    font-size: 15px;
+}

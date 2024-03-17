@@ -1,0 +1,78 @@
+.container_admin_login {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+.container_login {
+    width: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.ecop_logo {
+    width: 30%;
+    background-color: #4393F0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ecop_logo img {
+    width: auto;
+    height: 90px;
+    cursor: default;
+}
+
+.box_login {
+    border: 1px solid #c3c4c7;
+    padding: 50px 20px;
+    margin: 20px 0;
+    width: 70%;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    background-color: #f4f4f4;
+}
+
+.forum_login {
+    margin-top: 20px;
+}
+
+.forum_login input {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #b3b4b8;
+}
+
+.forum_btn {
+    margin-top: 20px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container_rememberme input, .container_rememberme label {
+    cursor: pointer;
+}
+
+.forum_btn button {
+    background-color: #4393F0;
+    border: 1px;
+    color: #f4f4f4;
+    font-size: 18px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: background-color 0.5s ease-in-out; 
+}
+
+.forum_btn button:hover {
+    background-color: #2f69ac;
+}

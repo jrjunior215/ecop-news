@@ -1,0 +1,23 @@
+.container_news {
+    width: 100%;
+    height: auto;
+}
+
+.container_news img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+}
+
+.header_news {
+    padding: 30px;
+}
+
+.desc_news {
+    padding: 0 30px;
+}
+
+.desc_news p {
+    font-size: 28px;
+}
