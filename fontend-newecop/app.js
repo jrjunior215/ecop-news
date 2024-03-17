@@ -36,7 +36,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // SET VIEWS AND VIEW ENGINE
-
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
@@ -45,13 +44,15 @@ app.set("view engine", "ejs");
 const indexController = require("./controllers/views/index/indexController");
 app.get("/", indexController);
 
+// สมมติข้อมูลข่าว
+
 // Blog
 const blogController = require("./controllers/views/blog/blogController.js");
 app.get("/blog", blogController);
 
 // Blog
 const newsController = require("./controllers/views/news/newsController.js");
-app.get("/news", newsController);
+app.get("/news/:id", newsController);
 
 // ADMIN
 const adminController = require("./controllers/views/admin/adminController");

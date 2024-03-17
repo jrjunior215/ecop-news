@@ -140,126 +140,91 @@
 </div>
 
 <script>
- window.onload = async function () {
+window.onload = async function () {
     try {
-        // Fetch news data from 'http://localhost:8000/api/news'
-        const response = await fetch('http://localhost:8000/api/news');
-        const data = await response.json();
-        const news = data.news; // Select only news data
         const maxTextLength = 100;
 
-        // Select the container for marketing articles
-        const marketingArticlesContainer = document.querySelector('.main_maketing_articles');
+        // Function to fetch data from the provided URL
+        const fetchData = async (url) => {
+            const response = await fetch(url);
+            return await response.json();
+        };
 
-        // Loop through each news item
-        news.forEach(newsItem => {
-            // Create elements for each news item
-            const marketingArticleItem = document.createElement('div');
-            marketingArticleItem.classList.add('maketing_articles');
+        // Function to create a news item element
+        const createNewsItem = (newsItem) => {
+            const item = document.createElement('div');
+            item.classList.add('maketing_articles');
 
-            const articlesImg = document.createElement('div');
-            articlesImg.classList.add('articles_img');
-            articlesImg.innerHTML = `<img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">`;
-
-            const headerArticles = document.createElement('div');
-            headerArticles.classList.add('header_articles');
-            headerArticles.innerHTML = `<h1>${newsItem.titleTh}</h1>`;
-
-            const descArticles = document.createElement('div');
-            descArticles.classList.add('desc_articles');
-            // Limit the content length to maxTextLength characters
-            const truncatedContent = newsItem.contentTh.length > maxTextLength ?
-                `${newsItem.contentTh.substring(0, maxTextLength)}...` :
-                newsItem.contentTh;
-            descArticles.innerHTML = `<p>${truncatedContent}</p>`;
-
-            const articleOption = document.createElement('div');
-            articleOption.classList.add('article_option');
-            articleOption.innerHTML = `
-                <div class="profile_article_writing">
-                    <img src="img/rectangle-21.png" alt="">
-                    <span>${newsItem.author}</span>
+            // HTML template for the news item
+            item.innerHTML = `
+                <div class="articles_img">
+                    <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
                 </div>
-                <div class="related_article_view">
-                    <i class="fa-solid fa-eye"></i>
-                    <span>${newsItem.viewCount}</span>
+                <div class="header_articles">
+                    <h1>${newsItem.titleTh}</h1>
+                </div>
+                <div class="desc_articles">
+                    <p>${newsItem.contentTh.substring(0, maxTextLength)}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
+                </div>
+                <div class="article_option">
+                    <a href="#" class="read-more-button" 
+                       data-news-id="${newsItem.id}"
+                       data-img-url="${newsItem.imgLinks}"
+                       data-title-th="${newsItem.titleTh}"
+                       data-content-th="${newsItem.contentTh}"
+                       type="button">Read More</a>
+                    <div class="profile_article_writing">
+                        <img src="img/rectangle-21.png" alt="">
+                        <span>${newsItem.author}</span>
+                    </div>
+                    <div class="related_article_view">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>${newsItem.viewCount}</span>
+                    </div>
                 </div>
             `;
+            return item;
+        };
 
-            // Append elements to the marketing article container
-            marketingArticleItem.appendChild(articlesImg);
-            marketingArticleItem.appendChild(headerArticles);
-            marketingArticleItem.appendChild(descArticles);
-            marketingArticleItem.appendChild(articleOption);
-
-            marketingArticlesContainer.appendChild(marketingArticleItem);
-        });
-
-        // Fetch trending news data from 'http://localhost:8000/api/news/search?trendNew=Trending%20News'
-        const trendingResponse = await fetch('http://localhost:8000/api/news/search?trendNew=Trending%20News');
-        const trendingData = await trendingResponse.json();
-        const trendingNews = trendingData.data;
-        console.log("🚀 ~ trendingNews:", trendingNews)
-
-        // Select the container for related blog
+        // Select the containers for marketing articles and related blogs
+        const marketingArticlesContainer = document.querySelector('.main_maketing_articles');
         const relatedBlogContainer = document.querySelector('.main_related_blog');
 
-        // Loop through each trending news item
-      // Loop through each trending news item
-trendingNews.forEach(newsItem => {
-    // Create elements for each trending news item
-    const relatedBlogItem = document.createElement('div');
-    relatedBlogItem.classList.add('related_blog');
+        // Fetch news data and trending data concurrently
+        const [newsData, trendingData] = await Promise.all([
+            fetchData('http://localhost:8000/api/news'),
+            fetchData('http://localhost:8000/api/news/search?trendNew=Trending%20News')
+        ]);
 
-    const relatedBlogImg = document.createElement('div');
-    relatedBlogImg.classList.add('related_blog_img');
-    relatedBlogImg.innerHTML = `<img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">`;
+        // Render news items in the marketing articles container
+        newsData.news.forEach(newsItem => {
+            marketingArticlesContainer.appendChild(createNewsItem(newsItem));
+        });
 
-    const relatedBlogTopic = document.createElement('div');
-    relatedBlogTopic.classList.add('related_blog_topic');
-    relatedBlogTopic.innerHTML = `<h1>${newsItem.titleTh}</h1>`;
+        // Render trending news items in the related blog container
+        trendingData.data.forEach(newsItem => {
+            relatedBlogContainer.appendChild(createNewsItem(newsItem));
+        });
 
-    const relatedBlogDesc = document.createElement('div');
-    relatedBlogDesc.classList.add('related_blog_desc');
-    // Limit the content length to maxTextLength characters
-    const truncatedContent = newsItem.contentTh.length > maxTextLength ?
-        `${newsItem.contentTh.substring(0, maxTextLength)}...` :
-        newsItem.contentTh;
-    relatedBlogDesc.innerHTML = `<p>${truncatedContent}</p>`;
+        // Event delegation for "Read More" buttons
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('read-more-button')) {
+                event.preventDefault();
+                const button = event.target;
+                const { newsId, imgUrl, titleTh, contentTh } = button.dataset;
 
-    const relatedBlogReadMore = document.createElement('div');
-    relatedBlogReadMore.classList.add('related_blog_read_more');
-    relatedBlogReadMore.innerHTML = `<a href="${newsItem.url}">Read More</a>`;
+                // Store selected news data in localStorage
+                localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh }));
 
-    const relatedBlogOption = document.createElement('div');
-    relatedBlogOption.classList.add('related_blog_option');
-    relatedBlogOption.innerHTML = `
-        <div class="profile_blog_writing">
-            <img src="img/rectangle-21.png" alt="">
-            <span>${newsItem.author}</span>
-        </div>
-        <div class="related_blog_view">
-            <i class="fa-solid fa-eye"></i>
-            <span>${newsItem.viewCount}</span>
-        </div>
-    `;
-
-    // Append elements to the related blog container
-    relatedBlogItem.appendChild(relatedBlogImg);
-    relatedBlogItem.appendChild(relatedBlogTopic);
-    relatedBlogItem.appendChild(relatedBlogDesc);
-    relatedBlogItem.appendChild(relatedBlogReadMore);
-    relatedBlogItem.appendChild(relatedBlogOption);
-
-    relatedBlogContainer.appendChild(relatedBlogItem);
-});
+                const url = `/news/${newsId}`;
+                window.location.href = url;
+            }
+        });
 
     } catch (error) {
         console.error('Error loading data:', error);
     }
-}
-
-
+};
 
 
 
