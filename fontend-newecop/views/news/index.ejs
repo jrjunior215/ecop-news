@@ -1,7 +1,6 @@
 <div class="container_news">
     <h1>News</h1>
     <img id="news-image" src="" alt="">
-
     <div class="header_news">
         <h1 id="news-title"></h1>
         <span id="news-date"></span>
@@ -12,20 +11,23 @@
 </div>
 
 <script>
- window.onload = function () {
-    const selectedNews = JSON.parse(localStorage.getItem('selectedNews'));
-    if (selectedNews) {
-        // สร้าง URL สมบูรณ์โดยเชื่อมต่อ path รูปภาพกับ URL ของรูปภาพใน object ข่าว
-        const imageUrl = `/images/${selectedNews.imgUrl}.webp`;
-        
-        // ตั้งค่า src attribute ของรูปภาพในแท็ก <img>
-        document.getElementById('news-image').setAttribute('src', imageUrl);
-        // นำข้อมูลมาแสดงใน HTML
-        document.getElementById('news-title').textContent = selectedNews.titleTh;
-        document.getElementById('news-date').textContent = selectedNews.date;
-        document.getElementById('news-content').textContent = selectedNews.contentTh;
-    }
-};
-
-
-</script>
+    window.onload = function () {
+        const selectedNews = JSON.parse(localStorage.getItem('selectedNews'));
+        if (!selectedNews || selectedNews.newsId !== window.location.pathname.split('/').pop()) {
+            // ถ้าไม่มีข้อมูลใน localStorage หรือ ID ที่เก็บไม่ตรงกับ ID ใน URL
+            localStorage.removeItem('selectedNews'); // ล้างข้อมูลใน localStorage
+            window.location.href = '/blog';
+        } else {
+            // สร้าง URL สมบูรณ์โดยเชื่อมต่อ path รูปภาพกับ URL ของรูปภาพใน object ข่าว
+            const imageUrl = `/images/${selectedNews.imgUrl}.webp`;
+            
+            // ตั้งค่า src attribute ของรูปภาพในแท็ก <img>
+            document.getElementById('news-image').setAttribute('src', imageUrl);
+            // นำข้อมูลมาแสดงใน HTML
+            document.getElementById('news-title').textContent = selectedNews.titleTh;
+            document.getElementById('news-date').textContent = selectedNews.date;
+            document.getElementById('news-content').textContent = selectedNews.contentTh;
+        }
+    };
+    </script>
+    
