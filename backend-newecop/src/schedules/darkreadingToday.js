@@ -1,8 +1,8 @@
-import axios from 'axios';
-import cheerio from 'cheerio';
-import cron from 'node-cron';
-import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
+import axios from "axios";
+import cheerio from "cheerio";
+import cron from "node-cron";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
 import { PrismaClient } from "@prisma/client";
 // ฟังก์ชันสำหรับลบ element ที่มี class ที่ระบุ
 function removeElementsByClass($, className) {
@@ -18,6 +18,7 @@ async function translateText(text, targetLanguage = "th") {
 
   const translations = await Promise.all(
     textChunks.map(async (chunk) => {
+      console.log("🚀 ~ textChunks.map ~ chunk:", chunk);
       const params = {
         key: apiKey,
         q: chunk,
@@ -44,7 +45,6 @@ function splitTextIntoChunks(text, chunkSize) {
   return text.match(regex) || [];
 }
 
-
 async function translateData(data, targetLanguage = "th") {
   const translatedTitle = await translateText(data.title, targetLanguage);
   const translatedParagraphs = await Promise.all(
@@ -67,24 +67,24 @@ async function translateData(data, targetLanguage = "th") {
 }
 
 function extractLinks($) {
-  const linkElements = $('.ListPreview-ImageWrapper a');
+  const linkElements = $(".ListPreview-ImageWrapper a");
   // console.log("🚀 ~ extractLinks ~ linkElements:", linkElements)
   const links = [];
 
   linkElements.each((index, element) => {
-    const contentItem = $(element).closest('.LatestFeatured-ContentItem_left');
-    const dateElement = contentItem.find('.ListPreview-Date');
+    const contentItem = $(element).closest(".LatestFeatured-ContentItem_left");
+    const dateElement = contentItem.find(".ListPreview-Date");
     // console.log("🚀 ~ linkElements.each ~ dateElement:", dateElement)
 
     if (dateElement.length) {
-      // const currentDate = new Date(2024, 1, 1);
-      const currentDate = new Date();
+      const currentDate = new Date(2024, 2, 14);
+      // const currentDate = new Date();
       const newsDate = new Date(dateElement.text());
       // console.log("🚀 ~ linkElements.each ~ newsDate:", newsDate)
 
       // ตรวจสอบว่ามีวันที่และวันที่เป็นปัจจุบันหรือไม่
       if (!isNaN(newsDate) && newsDate >= currentDate) {
-        const href = 'https://www.darkreading.com' + $(element).attr('href');
+        const href = "https://www.darkreading.com" + $(element).attr("href");
         links.push({ href });
       }
     }
@@ -101,66 +101,79 @@ async function fetchDataFromLink(link) {
     if (response.status === 200) {
       const html = response.data;
       const $ = cheerio.load(html);
-      removeElementsByClass($, '.FullScreenBackground.NavBase-SecondaryMenuBackground');
-      removeElementsByClass($, '.FullScreenBackground.MainMenu-BackgroundMenuItem');
-      removeElementsByClass($, '.FullScreenBackground.NavBase-SecondaryMenuBackground');
-      removeElementsByClass($, '.celtra-screen.celtra-screen-object-container.celtra-view');
-      removeElementsByClass($, '.ContributorSummary.ContributorSummary_variant_author');
-      removeElementsByClass($, '.TwoColumnLayout-Sidebar');
+      removeElementsByClass(
+        $,
+        ".FullScreenBackground.NavBase-SecondaryMenuBackground"
+      );
+      removeElementsByClass(
+        $,
+        ".FullScreenBackground.MainMenu-BackgroundMenuItem"
+      );
+      removeElementsByClass(
+        $,
+        ".FullScreenBackground.NavBase-SecondaryMenuBackground"
+      );
+      removeElementsByClass(
+        $,
+        ".celtra-screen.celtra-screen-object-container.celtra-view"
+      );
+      removeElementsByClass(
+        $,
+        ".ContributorSummary.ContributorSummary_variant_author"
+      );
+      removeElementsByClass($, ".TwoColumnLayout-Sidebar");
 
-      const title = $('.ArticleBase-LargeTitle').text();
-      
-      // Check if the title already exists in the database
+      const title = $(".ArticleBase-LargeTitle").text();
+
       const existingNewsRecord = await prisma.news.findFirst({
         where: { title: title },
       });
-      
 
-      // If the title already exists, return without further processing
       if (existingNewsRecord) {
-        console.log('News with title already exists. Skipping translation and database insertion.');
+        console.log(
+          "News with title already exists. Skipping translation and database insertion."
+        );
         return;
       }
 
-      const imageUrlElement = $('.ArticleBase-FeaturedImage');
-      const author = $('.Contributors-ContributorName').text();
-      const pTags = $('.ArticleBase-Topics').text();
-      const date = $('.Contributors-Date').text();
-      const imageUrl = imageUrlElement.attr('src');
+      const imageUrlElement = $(".ArticleBase-FeaturedImage");
+      const author = $(".Contributors-ContributorName").text();
+      const pTags = $(".ArticleBase-Topics").text();
+      const date = $(".Contributors-Date").text();
+      const imageUrl = imageUrlElement.attr("src");
       const parsedUrl = new URL(imageUrl);
-      parsedUrl.searchParams.delete('quality');
-      parsedUrl.searchParams.delete('format');
-      parsedUrl.searchParams.delete('disable');
-      parsedUrl.searchParams.delete('blur');
-
+      const searchParams = new URLSearchParams(parsedUrl.search);
+      searchParams.delete("quality");
+      searchParams.delete("format");
+      searchParams.delete("disable");
+      searchParams.delete("blur");
+      parsedUrl.search = searchParams.toString();
       const modifiedImageUrl = parsedUrl.toString();
 
-      // Generate UUID for the image file name
       const imageFileName = uuidv4();
 
-      // Download and save the image asynchronously
-      const imagePath = 'images/' + imageFileName + '.jpg';
-      const imageResponse = await axios.get(modifiedImageUrl, { responseType: 'arraybuffer' });
+      const imagePath = "images/" + imageFileName + ".webp";
+      const imageResponse = await axios.get(modifiedImageUrl, {
+        responseType: "arraybuffer",
+      });
       await fs.promises.writeFile(imagePath, imageResponse.data);
 
       const paragraphs = [];
       $('div[data-module="content"] p').each((index, element) => {
-          const $paragraph = $(element);
-          const text = $paragraph.text();
-          paragraphs.push(`<p>${text}</p>`);
+        const $paragraph = $(element);
+        const text = $paragraph.text();
+        paragraphs.push(`<p>${text}</p>`);
       });
-      
 
       const jsonData = {
         title,
         imageUrl: imageFileName,
         paragraphs,
-        ref: link
+        ref: link,
       };
 
-      // Translate data
       const translatedData = await translateData(jsonData);
-      console.log("🚀 ~ fetchDataFromLink ~ translatedData:", translatedData)
+      console.log("🚀 ~ fetchDataFromLink ~ translatedData:", translatedData);
 
       try {
         const newsRecord = await prisma.news.create({
@@ -168,80 +181,84 @@ async function fetchDataFromLink(link) {
             title: translatedData.title,
             date,
             imgLinks: translatedData.imageUrl,
-            contentEn: translatedData.paragraphs ? translatedData.paragraphs.join('\n') : '',
+            contentEn: translatedData.paragraphs
+              ? translatedData.paragraphs.join("\n")
+              : "",
             titleTh: translatedData.titleTh,
-            contentTh: translatedData.paragraphsTh ? translatedData.paragraphsTh.join('\n') : '',
+            contentTh: translatedData.paragraphsTh
+              ? translatedData.paragraphsTh.join("\n")
+              : "",
             ref: translatedData.ref,
             author: author,
-            pTags: pTags
+            pTags: pTags,
           },
         });
-        
-        console.log('Saved news record to MySQL:', newsRecord);
+
+        console.log("Saved news record to MySQL:", newsRecord);
       } catch (prismaError) {
-        console.error('Error creating news record with Prisma:', prismaError);
-        throw prismaError;  // Re-throw the error to maintain the stack trace
+        console.error("Error creating news record with Prisma:", prismaError);
+        throw prismaError;
       }
 
       return translatedData;
     } else {
-      throw new Error('Failed to fetch data from the link:', link);
+      throw new Error("Failed to fetch data from the link:", link);
     }
   } catch (error) {
-    throw new Error(`Error fetching data from the link: ${link}. ${error.message}`);
+    throw new Error(
+      `Error fetching data from the link: ${link}. ${error.message}`
+    );
   }
 }
-
-// ตั้งค่า cron job ให้ทำงานทุก 1 ชั่วโมง
-cron.schedule('0 */2 * * *', async () => {
-  try {
-    const links = await scrapeDarkReading();
-    console.log('Fetched links:', links);
-  } catch (error) {
-    console.error('Error in cron job:', error.message);
-  }
-});
-
-
 // ฟังก์ชันสำหรับ scraping ข้อมูลจาก Dark Reading
 export async function scrapeDarkReading() {
-  try {
-    const url = 'https://www.darkreading.com/';
-    const response = await axios.get(url);
+  cron.schedule("0 */2 * * *", async () => {
+    try {
+      const url = "https://www.darkreading.com/";
+      const response = await axios.get(url);
 
-    if (response.status === 200) {
-      const html = response.data;
-      const $ = cheerio.load(html);
+      if (response.status === 200) {
+        const html = response.data;
+        const $ = cheerio.load(html);
 
-      // ... (โค้ด removeElementsByClass ยังคงเดิม)
-            // removeElementsByClass($, '.LatestFeatured-ColumnList');
-            removeElementsByClass($, '.TopFeatured.TopFeatured_variant_recent');
-            removeElementsByClass($, '.FullScreenBackground.MainMenu-BackgroundMenuItem');
-            removeElementsByClass($, '.Ad.Ad_pos_300_1v_article');
-            removeElementsByClass($, '.SocialShare');
-            removeElementsByClass($, '.n_native_wrapper');
-            removeElementsByClass($, '.FullScreenBackground.NavBase-SecondaryMenuBackground');
-            // removeElementsByClass($, '.LatestFeatured-Content');
-            removeElementsByClass($, '.SubscribeBanner-Wrapper');
-      // ดึงข้อมูลลิงก์
-      const links = extractLinks($);
+        removeElementsByClass($, ".TopFeatured.TopFeatured_variant_recent");
+        removeElementsByClass(
+          $,
+          ".FullScreenBackground.MainMenu-BackgroundMenuItem"
+        );
+        removeElementsByClass($, ".Ad.Ad_pos_300_1v_article");
+        removeElementsByClass($, ".SocialShare");
+        removeElementsByClass($, ".n_native_wrapper");
+        removeElementsByClass(
+          $,
+          ".FullScreenBackground.NavBase-SecondaryMenuBackground"
+        );
+        removeElementsByClass($, ".SubscribeBanner-Wrapper");
 
-      // นำลิงก์มาดึงข้อมูล
-      const dataFromLinks = await Promise.all(links.map(async (linkObject) => {
-        try {
-          const data = await fetchDataFromLink(linkObject.href);
-          return { link: linkObject.href, data };
-        } catch (fetchError) {
-          console.error('Error fetching data from link:', linkObject.href, fetchError);
-          throw fetchError;  // Re-throw the error to maintain the stack trace
-        }
-      }));
-  
-      return dataFromLinks;
-    } else {
-      throw new Error('Failed to fetch data from Dark Reading');
+        const links = extractLinks($);
+
+        const dataFromLinks = await Promise.all(
+          links.map(async (linkObject) => {
+            try {
+              const data = await fetchDataFromLink(linkObject.href);
+              return { link: linkObject.href, data };
+            } catch (fetchError) {
+              console.error(
+                "Error fetching data from link:",
+                linkObject.href,
+                fetchError
+              );
+              throw fetchError;
+            }
+          })
+        );
+
+        return dataFromLinks;
+      } else {
+        throw new Error("Failed to fetch data from Dark Reading");
+      }
+    } catch (error) {
+      throw new Error("Error scraping Dark Reading:", error);
     }
-  } catch (error) {
-    throw new Error('Error scraping Dark Reading:', error);
-  }
+  });
 }

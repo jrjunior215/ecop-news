@@ -1,7 +1,14 @@
 // controllers/newsController.js
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
-import { SearchNewsQuerySchema,GetNewsQuerySchema,updateNewsSchema,logViewSchema,idSchema,createNewsSchema } from "./news.schema.js"
+import {
+  SearchNewsQuerySchema,
+  GetNewsQuerySchema,
+  updateNewsSchema,
+  logViewSchema,
+  idSchema,
+  createNewsSchema,
+} from "./news.schema.js";
 const prisma = new PrismaClient();
 
 const ITEMS_PER_PAGE = 10;
@@ -12,8 +19,8 @@ export const getNews = async (req, res, next) => {
     const parsedPage = parseInt(page) || 1;
     const pageSize = ITEMS_PER_PAGE;
     const skip = (parsedPage - 1) * pageSize;
-    const sortField = req.query.sort || 'created_at';
-    const sortOrder = req.query.order || 'desc'; // Default sorting order
+    const sortField = req.query.sort || "created_at";
+    const sortOrder = req.query.order || "desc"; // Default sorting order
 
     let whereCondition = {}; // Initial empty condition
 
@@ -55,13 +62,13 @@ export const getNews = async (req, res, next) => {
   }
 };
 
-
 export const searchNews = async (req, res, next) => {
-  let { title, titleTh, category, page, pageSize, trendNew } = SearchNewsQuerySchema.parse(req.query);
+  let { title, titleTh, category, page, pageSize, trendNew } =
+    SearchNewsQuerySchema.parse(req.query);
 
   // Decode URL parameters
-  title = decodeURIComponent(title || '');
-  titleTh = decodeURIComponent(titleTh || '');
+  title = decodeURIComponent(title || "");
+  titleTh = decodeURIComponent(titleTh || "");
   page = parseInt(page) || 1;
   pageSize = parseInt(pageSize) || ITEMS_PER_PAGE;
 
@@ -105,133 +112,142 @@ export const searchNews = async (req, res, next) => {
         },
       });
     } else {
-      return res.status(404).json({ success: false, message: "News not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "News not found" });
     }
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   } finally {
     await prisma.$disconnect();
   }
 };
 
-  
-  
-  
-  // CREATE
+// CREATE
 export const createNews = async (req, res, next) => {
-    const {
-      category,
-      title,
-      date,
-      author,
-      pTags,
-      imgLinks,
-      contentEn,
-      ref,
-      titleTh,
-      contentTh,
-      editorUsername,
-    } = createNewsSchema.parse(req.body);
-  
-    try {
-      const news = await prisma.news.create({
-        data: {
-          category,
-          title,
-          date,
-          author,
-          pTags,
-          imgLinks,
-          contentEn,
-          ref,
-          titleTh,
-          contentTh,
-          editor: {
-            connect: { username: editorUsername },
-          },
+  const {
+    category,
+    title,
+    date,
+    author,
+    pTags,
+    imgLinks,
+    contentEn,
+    ref,
+    titleTh,
+    contentTh,
+    editorUsername,
+  } = createNewsSchema.parse(req.body);
+
+  try {
+    const news = await prisma.news.create({
+      data: {
+        category,
+        title,
+        date,
+        author,
+        pTags,
+        imgLinks,
+        contentEn,
+        ref,
+        titleTh,
+        contentTh,
+        editor: {
+          connect: { username: editorUsername },
         },
-      });
-  
-      return res.status(201).json({ success: true, data: news });
-    } catch (error) {
-      console.error("Error in createNews:", error);
-      return res.status(500).json({ success: false, message: "Internal Server Error" });
-    } finally {
-      await prisma.$disconnect();
-    }
-  };
+      },
+    });
+
+    return res.status(201).json({ success: true, data: news });
+  } catch (error) {
+    console.error("Error in createNews:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
 
 // UPDATE
 export const updateNews = async (req, res, next) => {
-    const { id } = idSchema.parse(req.params);
-    const {
-      category,
-      title,
-      date,
-      author,
-      pTags,
-      imgLinks,
-      contentEn,
-      ref,
-      titleTh,
-      contentTh,
-      editorUsername,
-    } = updateNewsSchema.parse(req.body);
-  
-    try {
-      const updatedNews = await prisma.news.update({
-        where: { id: parseInt(id) },
-        data: {
-          category,
-          title,
-          date,
-          author,
-          pTags,
-          imgLinks,
-          contentEn,
-          ref,
-          titleTh,
-          contentTh,
-          editor: editorUsername
-            ? { connect: { username: editorUsername } } // Connect by username if provided
-            : undefined,
-        },
-      });
-  
-      return res.status(200).json({ success: true, data: updatedNews });
-    } catch (error) {
-      console.error("Error in updateNews:", error);
-      return res.status(500).json({ success: false, message: "Internal Server Error" });
-    } finally {
-      await prisma.$disconnect();
-    }
-  };
-  
+  const { id } = idSchema.parse(req.params);
+  const {
+    category,
+    title,
+    date,
+    author,
+    pTags,
+    imgLinks,
+    contentEn,
+    ref,
+    titleTh,
+    contentTh,
+    editorUsername,
+  } = updateNewsSchema.parse(req.body);
+
+  try {
+    const updatedNews = await prisma.news.update({
+      where: { id: parseInt(id) },
+      data: {
+        category,
+        title,
+        date,
+        author,
+        pTags,
+        imgLinks,
+        contentEn,
+        ref,
+        titleTh,
+        contentTh,
+        editor: editorUsername
+          ? { connect: { username: editorUsername } } // Connect by username if provided
+          : undefined,
+      },
+    });
+
+    return res.status(200).json({ success: true, data: updatedNews });
+  } catch (error) {
+    console.error("Error in updateNews:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
 // DELETE
 export const deleteNews = async (req, res, next) => {
-    const { id } = idSchema.parse(req.params);
-  
-    try {
-      await prisma.news.delete({
-        where: { id: parseInt(id) },
-      });
-  
-      return res.status(200).json({ success: true, message: "News deleted successfully." });
-    } catch (error) {
-      console.error("Error in deleteNews:", error);
-      return res.status(500).json({ success: false, message: "Internal Server Error" });
-    } finally {
-      await prisma.$disconnect();
-    }
-  };
-  
+  const { id } = idSchema.parse(req.params);
+
+  try {
+    await prisma.news.delete({
+      where: { id: parseInt(id) },
+    });
+
+    return res
+      .status(200)
+      .json({ success: true, message: "News deleted successfully." });
+  } catch (error) {
+    console.error("Error in deleteNews:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
 //http://ip-api.com/json/?fields=query
 export const logView = async (req, res, next) => {
   try {
     const { newsId, userIp } = logViewSchema.parse(req.body);
 
     // Check User-Agent
-    const userAgent = req.get('User-Agent');
+    const userAgent = req.get("User-Agent");
 
     // Fetch user location data from the IP API
     const userLocation = await getUserLocation(userIp);
@@ -243,11 +259,15 @@ export const logView = async (req, res, next) => {
     });
 
     if (!news) {
-      return res.status(404).json({ success: false, message: 'News not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "News not found" });
     }
 
     // Ensure that viewedBy array is defined
-    const isViewed = news.viewedBy?.some((view) => view.ip === userIp && view.userAgent === userAgent);
+    const isViewed = news.viewedBy?.some(
+      (view) => view.ip === userIp && view.userAgent === userAgent
+    );
 
     if (!isViewed) {
       // Log views and User-Agent and IP Address data
@@ -270,15 +290,18 @@ export const logView = async (req, res, next) => {
       });
     }
 
-    return res.status(200).json({ success: true, message: 'View logged successfully' });
+    return res
+      .status(200)
+      .json({ success: true, message: "View logged successfully" });
   } catch (error) {
-    console.error('Error logging view:', error);
-    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error("Error logging view:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   } finally {
     await prisma.$disconnect();
   }
 };
-
 
 // Function to get user geographical information using ip-api.com
 export const getUserLocation = async (ip) => {
@@ -286,7 +309,7 @@ export const getUserLocation = async (ip) => {
     const response = await axios.get(`http://ip-api.com/json/${ip}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching user location:', error);
+    console.error("Error fetching user location:", error);
     return null;
   }
 };
@@ -298,23 +321,23 @@ export const getViewCount = async (req, res) => {
     const { views, newsTitles } = await getViewsAndTitlesByPeriod(startDate);
     const newsCounts = countNews(views);
 
-    const newsData = Object.keys(newsTitles).map(id => ({
+    const newsData = Object.keys(newsTitles).map((id) => ({
       id,
       title: newsTitles[id],
-      count: newsCounts[id] || 0
+      count: newsCounts[id] || 0,
     }));
 
     res.status(200).json({ success: true, newsData });
   } catch (error) {
-    console.error('Error retrieving view count:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error("Error retrieving view count:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
 const getStartDate = (period) => {
   const startDate = new Date();
-  if (period === '7') startDate.setDate(startDate.getDate() - 7);
-  else if (period === '30') startDate.setDate(startDate.getDate() - 30);
+  if (period === "7") startDate.setDate(startDate.getDate() - 7);
+  else if (period === "30") startDate.setDate(startDate.getDate() - 30);
   startDate.setHours(0, 0, 0, 0);
   return startDate;
 };
@@ -323,25 +346,25 @@ export const getViewsAndTitlesByPeriod = async (startDate) => {
   try {
     const views = await prisma.view.findMany({
       where: { created_at: { gte: startDate } },
-      include: { news: { select: { id: true, title: true } } }
+      include: { news: { select: { id: true, title: true } } },
     });
 
     const newsTitles = {};
-    views.forEach(view => {
+    views.forEach((view) => {
       const { id, title } = view.news;
       if (!newsTitles[id]) newsTitles[id] = title;
     });
 
     return { views, newsTitles };
   } catch (error) {
-    console.error('Error counting views by period:', error);
+    console.error("Error counting views by period:", error);
     throw error;
   }
 };
 
 const countNews = (views) => {
   const newsCounts = {};
-  views.forEach(view => {
+  views.forEach((view) => {
     const { id } = view.news;
     newsCounts[id] = (newsCounts[id] || 0) + 1;
   });

@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<!-- <div class="content_blog_list">
+<div class="content_blog_list">
     <div class="header_blog_list">
         <h1>Reading blog list</h1>
     </div>
@@ -50,23 +50,22 @@
             <span>Vulnerability</span>
         </div>
     </div>
-</div> -->
+</div>
 
 <div class="content_related_blog">
     <div class="header_blog_list">
         <h1>Trending News</h1>
     </div>
     <div class="main_related_blog">
-        <div class="related_blog">
+        <!-- <div class="related_blog">
             <div class="related_blog_img">
                 <img src="img/rectangle-87.webp" alt="">
             </div>
             <div class="related_blog_topic">
-                <h1>New Rugmo Malware Loader Surger</h1>
+                <h1></h1>
             </div>
             <div class="related_blog_desc">
-                A new malware loader is being used by threat actors to deliver a wide range of information stealers such
-                as Lumma Stealer...
+
             </div>
             <div class="related_blog_read_more">
                 <a href="">Read More</a>
@@ -74,11 +73,11 @@
             <div class="related_blog_option">
                 <div class="profile_blog_writing">
                     <img src="img/rectangle-21.png" alt="">
-                    <span>Announcer</span>
+                    <span></span>
                 </div>
                 <div class="related_blog_view">
                     <i class="fa-solid fa-eye"></i>
-                    <span>255455</span>
+                    <span></span>
                 </div>
             </div>
         </div>
@@ -87,11 +86,9 @@
                 <img src="img/rectangle-86.webp" alt="">
             </div>
             <div class="related_blog_topic">
-                <h1>New Rugmo Malware Loader Surger</h1>
+                <h1></h1>
             </div>
             <div class="related_blog_desc">
-                A new malware loader is being used by threat actors to deliver a wide range of information stealers such
-                as Lumma Stealer...
             </div>
             <div class="related_blog_read_more">
                 <a href="">Read More</a>
@@ -99,14 +96,14 @@
             <div class="related_blog_option">
                 <div class="profile_blog_writing">
                     <img src="img/rectangle-21.png" alt="">
-                    <span>Announcer</span>
+                    <span></span>
                 </div>
                 <div class="related_blog_view">
                     <i class="fa-solid fa-eye"></i>
-                    <span>255455</span>
+                    <span></span>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div class="arrow">
@@ -119,7 +116,7 @@
         <h1>News Articles</h1>
     </div>
     <div class="main_maketing_articles">
-        <div class="maketing_articles">
+        <!-- <div class="maketing_articles">
             <div class="articles_img">
                 <img src="" alt="">
             </div>
@@ -139,59 +136,129 @@
                     <span></span>
                 </div>
             </div>
-        </div>
+        </div> -->
 </div>
 
 <script>
-  window.onload = async function () {
-    const response = await fetch('http://localhost:8000/api/news');
-    const data = await response.json();
-    const news = data.news; // Select only news data
-    const maxTextLength = 200;
+ window.onload = async function () {
+    try {
+        // Fetch news data from 'http://localhost:8000/api/news'
+        const response = await fetch('http://localhost:8000/api/news');
+        const data = await response.json();
+        const news = data.news; // Select only news data
+        const maxTextLength = 100;
 
-    const marketingArticlesContainer = document.querySelector('.main_maketing_articles');
+        // Select the container for marketing articles
+        const marketingArticlesContainer = document.querySelector('.main_maketing_articles');
 
-    news.forEach(newsItem => {
-        const marketingArticleItem = document.createElement('div');
-        marketingArticleItem.classList.add('maketing_articles');
+        // Loop through each news item
+        news.forEach(newsItem => {
+            // Create elements for each news item
+            const marketingArticleItem = document.createElement('div');
+            marketingArticleItem.classList.add('maketing_articles');
 
-        const articlesImg = document.createElement('div');
-        articlesImg.classList.add('articles_img');
-        articlesImg.innerHTML = `<img src="http://localhost:8000/images/${newsItem.imgLinks}" alt="${newsItem.imgLinks}">`;
+            const articlesImg = document.createElement('div');
+            articlesImg.classList.add('articles_img');
+            articlesImg.innerHTML = `<img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">`;
 
-        const headerArticles = document.createElement('div');
-        headerArticles.classList.add('header_articles');
-        headerArticles.innerHTML = `<h1>${newsItem.titleTh}</h1>`;
+            const headerArticles = document.createElement('div');
+            headerArticles.classList.add('header_articles');
+            headerArticles.innerHTML = `<h1>${newsItem.titleTh}</h1>`;
 
-        const descArticles = document.createElement('div');
-        descArticles.classList.add('desc_articles');
-        // Limit the content length to maxTextLength characters
-        const truncatedContent = newsItem.contentTh.length > maxTextLength ?
-            `${newsItem.contentTh.substring(0, maxTextLength)}...` :
-            newsItem.contentTh;
-        descArticles.innerHTML = `<p>${truncatedContent}</p>`;
+            const descArticles = document.createElement('div');
+            descArticles.classList.add('desc_articles');
+            // Limit the content length to maxTextLength characters
+            const truncatedContent = newsItem.contentTh.length > maxTextLength ?
+                `${newsItem.contentTh.substring(0, maxTextLength)}...` :
+                newsItem.contentTh;
+            descArticles.innerHTML = `<p>${truncatedContent}</p>`;
 
-        const articleOption = document.createElement('div');
-        articleOption.classList.add('article_option');
-        articleOption.innerHTML = `
-            <div class="profile_article_writing">
-                <img src="img/rectangle-21.png" alt="">
-                <span>${newsItem.author}</span>
-            </div>
-            <div class="related_article_view">
-                <i class="fa-solid fa-eye"></i>
-                <span>${newsItem.viewCount}</span>
-            </div>
-        `;
+            const articleOption = document.createElement('div');
+            articleOption.classList.add('article_option');
+            articleOption.innerHTML = `
+                <div class="profile_article_writing">
+                    <img src="img/rectangle-21.png" alt="">
+                    <span>${newsItem.author}</span>
+                </div>
+                <div class="related_article_view">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>${newsItem.viewCount}</span>
+                </div>
+            `;
 
-        marketingArticleItem.appendChild(articlesImg);
-        marketingArticleItem.appendChild(headerArticles);
-        marketingArticleItem.appendChild(descArticles);
-        marketingArticleItem.appendChild(articleOption);
+            // Append elements to the marketing article container
+            marketingArticleItem.appendChild(articlesImg);
+            marketingArticleItem.appendChild(headerArticles);
+            marketingArticleItem.appendChild(descArticles);
+            marketingArticleItem.appendChild(articleOption);
 
-        marketingArticlesContainer.appendChild(marketingArticleItem);
-    });
+            marketingArticlesContainer.appendChild(marketingArticleItem);
+        });
+
+        // Fetch trending news data from 'http://localhost:8000/api/news/search?trendNew=Trending%20News'
+        const trendingResponse = await fetch('http://localhost:8000/api/news/search?trendNew=Trending%20News');
+        const trendingData = await trendingResponse.json();
+        const trendingNews = trendingData.data;
+        console.log("🚀 ~ trendingNews:", trendingNews)
+
+        // Select the container for related blog
+        const relatedBlogContainer = document.querySelector('.main_related_blog');
+
+        // Loop through each trending news item
+      // Loop through each trending news item
+trendingNews.forEach(newsItem => {
+    // Create elements for each trending news item
+    const relatedBlogItem = document.createElement('div');
+    relatedBlogItem.classList.add('related_blog');
+
+    const relatedBlogImg = document.createElement('div');
+    relatedBlogImg.classList.add('related_blog_img');
+    relatedBlogImg.innerHTML = `<img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">`;
+
+    const relatedBlogTopic = document.createElement('div');
+    relatedBlogTopic.classList.add('related_blog_topic');
+    relatedBlogTopic.innerHTML = `<h1>${newsItem.titleTh}</h1>`;
+
+    const relatedBlogDesc = document.createElement('div');
+    relatedBlogDesc.classList.add('related_blog_desc');
+    // Limit the content length to maxTextLength characters
+    const truncatedContent = newsItem.contentTh.length > maxTextLength ?
+        `${newsItem.contentTh.substring(0, maxTextLength)}...` :
+        newsItem.contentTh;
+    relatedBlogDesc.innerHTML = `<p>${truncatedContent}</p>`;
+
+    const relatedBlogReadMore = document.createElement('div');
+    relatedBlogReadMore.classList.add('related_blog_read_more');
+    relatedBlogReadMore.innerHTML = `<a href="${newsItem.url}">Read More</a>`;
+
+    const relatedBlogOption = document.createElement('div');
+    relatedBlogOption.classList.add('related_blog_option');
+    relatedBlogOption.innerHTML = `
+        <div class="profile_blog_writing">
+            <img src="img/rectangle-21.png" alt="">
+            <span>${newsItem.author}</span>
+        </div>
+        <div class="related_blog_view">
+            <i class="fa-solid fa-eye"></i>
+            <span>${newsItem.viewCount}</span>
+        </div>
+    `;
+
+    // Append elements to the related blog container
+    relatedBlogItem.appendChild(relatedBlogImg);
+    relatedBlogItem.appendChild(relatedBlogTopic);
+    relatedBlogItem.appendChild(relatedBlogDesc);
+    relatedBlogItem.appendChild(relatedBlogReadMore);
+    relatedBlogItem.appendChild(relatedBlogOption);
+
+    relatedBlogContainer.appendChild(relatedBlogItem);
+});
+
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
 }
+
 
 
 
