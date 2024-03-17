@@ -35,7 +35,7 @@ app.use(
   })
 );
 
-const whitelist = ["http://test.com"];
+const whitelist = ["http://localhost:3000"];
 
 app.use(
   cors({
