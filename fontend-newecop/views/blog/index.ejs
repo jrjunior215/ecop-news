@@ -142,30 +142,10 @@
         <h1>News Articles</h1>
     </div>
     <div class="search_blog_list">
-        <input type="text">
+        <button id="searchButton">Search</button>
+    <input type="text" id="searchInput" placeholder="Search News">
     </div>
     <div class="main_maketing_articles">
-        <!-- <div class="maketing_articles">
-            <div class="articles_img">
-                <img src="" alt="">
-            </div>
-            <div class="header_articles">
-                <h1></h1>
-            </div>
-            <div class="desc_articles">
-                <p> </p>
-            </div>
-            <div class="article_option">
-                <div class="profile_article_writing">
-                    <img src="" alt="">
-                    <span></span>
-                </div>
-                <div class="related_article_view">
-                    <i class="fa-solid fa-eye"></i>
-                    <span></span>
-                </div>
-            </div>
-        </div> -->
 </div>
 
 <div class="container_pagination">
@@ -180,6 +160,36 @@
 				</span>
 				<a class="pagination-older" href="#">NEXT</a>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        try {
+            document.getElementById('searchButton').addEventListener('click', async function() {
+                const searchInputValue = document.getElementById('searchInput').value;
+                const page = 1; // Assuming you start from page 1
+                const url = `http://localhost:8000/api/news/searchNews?pageSize=12&page=${page}&title=${searchInputValue}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log("🚀 ~ document.getElementById ~ data:", data)
+
+                // Check if data is not empty
+                if (data && data.data.length > 0) {
+                    // Store data in localStorage
+                    sessionStorage.setItem('searchResults', JSON.stringify(data.data));
+                    // Redirect to /searchnews
+                    window.location.href = '/searchnews';
+                } else {
+                    console.log('No results found.');
+                }
+            });
+
+        } catch (error) {
+            console.error('Error loading data:', error);
+        }
+    });
+</script>
+
 
 <script>
     window.onload = async function () {
@@ -206,7 +216,17 @@
 
                 // HTML template for the news item
                 item.innerHTML = `
-                    <div class="container_box_articles">
+                <div class="container_box_articles">
+                        <div class="read-more-button" 
+                            data-news-id="${newsItem.id}"
+                            data-img-url="${newsItem.imgLinks}"
+                            data-title-th="${newsItem.titleTh}"
+                            data-content-th="${newsItem.contentTh}"
+                            data-title-en="${newsItem.title}"
+                            data-content-en="${sanitizeHTML(newsItem.contentEn)}"
+                            data-date="${newsItem.date}"
+                            data-author="${newsItem.author}"
+                            type="button">
                         <div class="articles_img">
                             <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
                         </div>
@@ -216,7 +236,7 @@
                         <div class="desc_articles">
                             <p>${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
                         </div>
-                        <a href="#" class="read-more-button" 
+                        <a  class="read-more-button" 
                             data-news-id="${newsItem.id}"
                             data-img-url="${newsItem.imgLinks}"
                             data-title-th="${newsItem.titleTh}"
@@ -226,6 +246,7 @@
                             data-date="${newsItem.date}"
                             data-author="${newsItem.author}"
                             type="button">Read More</a>
+                        </div>
                     </div>
                     <div class="article_option">
                         <div class="profile_article_writing">
@@ -357,19 +378,33 @@ const createPagination = (currentPage, totalPages) => {
             initializePagination();
 
             // Event delegation for "Read More" buttons
-            document.addEventListener('click', function(event) {
-                if (event.target.classList.contains('read-more-button')) {
-                    event.preventDefault();
-                    const button = event.target;
-                    const { newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author } = button.dataset;
+          // Event delegation for "Read More" buttons in related blogs and marketing articles
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('read-more-button')) {
+        event.preventDefault();
+        const button = event.target;
+        const newsId = button.getAttribute('data-news-id');
+        const imgUrl = button.getAttribute('data-img-url');
+        const titleTh = button.getAttribute('data-title-th');
+        const contentTh = button.getAttribute('data-content-th');
+        const titleEn = button.getAttribute('data-title-en');
+        const contentEn = button.getAttribute('data-content-en');
+        const date = button.getAttribute('data-date');
+        const author = button.getAttribute('data-author');
 
-                    // Store selected news data in localStorage
-                    localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author }));
+        // Store selected news data in localStorage
+        // localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author }));
 
-                    const url = `/news/${newsId}`;
-                    window.location.href = url;
-                }
-            });
+        let url;
+        if (button.classList.contains('related_blog')) {
+            url = `/news/${newsId}`; // Assuming the URL pattern for blogs is '/blogs/{id}'
+        } else {
+            url = `/news/${newsId}`; // Assuming the URL pattern for news is '/news/{id}'
+        }
+        window.location.href = url;
+    }
+});
+
 
         } catch (error) {
             console.error('Error loading data:', error);
@@ -412,6 +447,7 @@ const fetchTrendingNews = async () => {
                 <div class="related_blog_topic">
                     <h1>${newsItem.titleTh}</h1>
                 </div>
+
                 <div class="related_blog_desc">
                     <p>${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
                 </div>

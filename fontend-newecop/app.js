@@ -2,7 +2,7 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 const { SERVER_PORT, SERVER_IP } = require("./js/server_setting");
-
+require("dotenv").config();
 // SET EXPRESS
 
 const app = express();
@@ -57,6 +57,9 @@ app.get("/category/:name", categoryController);
 // Blog
 const newsController = require("./controllers/views/news/newsController.js");
 app.get("/news/:id", newsController);
+
+const SearchNewsController = require("./controllers/views/news/SearchNewsController.js");
+app.get("/searchnews", SearchNewsController);
 
 // ADMIN
 const adminController = require("./controllers/views/admin/adminController");

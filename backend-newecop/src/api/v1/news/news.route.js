@@ -7,6 +7,8 @@ import {
   searchNews,
   logView,
   getViewCount,
+  searchNewsTitle,
+  searchNewsById,
 } from "./news.controller.js";
 import { validateRequestMiddleware } from "../../../middlewares/validate-request.middleware.js";
 // import {
@@ -20,6 +22,8 @@ const router = express.Router();
 // Route to get all news
 router.get("/", getNews);
 router.get("/search", searchNews);
+router.get("/searchNewsById", searchNewsById);
+router.get("/searchNews", searchNewsTitle);
 router.post("/logView", logView);
 router.get("/views", getViewCount);
 
