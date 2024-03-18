@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search News</title>
+</head>
+<body>
+    <!-- Container to display search results -->
+    <div id="searchResultsContainer"></div>
+
+    <script>
+        // Function to sanitize HTML content
+        function sanitizeHTML(str) {
+            return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Wait for the DOM content to be fully loaded
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get data from localStorage
+            const searchData = JSON.parse(sessionStorage.getItem('searchResults'));
+
+            // Check if there is data in localStorage
+            if (searchData && searchData.length > 0) {
+                // Loop through the data and create HTML elements to display each news item
+                searchData.forEach(function(news) {
+                    // Create a div element to contain the news item
+                    const newsDiv = document.createElement('div');
+                    newsDiv.classList.add('news-item');
+
+                    // Create HTML elements for the news item details
+                    const title = document.createElement('h2');
+                    title.textContent = news.titleTh;
+
+                    const date = document.createElement('p');
+                    date.textContent = new Date(news.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                    const content = document.createElement('p');
+                    content.textContent = news.contentTh; // Display Thai content
+
+                    const image = document.createElement('img');
+                    image.src = `/images/${news.imgLinks}.webp`; // Assuming image links are like "_12i4z0tdf.jpg"
+
+                    const readMoreLink = document.createElement('a');
+                    readMoreLink.textContent = 'Read More';
+                    readMoreLink.href = `/news/${news.id}`;
+
+                    // Append news item details to the news div
+                    newsDiv.appendChild(title);
+                    newsDiv.appendChild(image);
+                    newsDiv.appendChild(date);
+                    newsDiv.appendChild(content);
+                    newsDiv.appendChild(readMoreLink);
+
+                    // Append the news div to the container on the page
+                    document.getElementById('searchResultsContainer').appendChild(newsDiv);
+                });
+            } else {
+                // If no data found in localStorage, display a message
+                const noResultsMessage = document.createElement('p');
+                noResultsMessage.textContent = 'No search results found.';
+                document.getElementById('searchResultsContainer').appendChild(noResultsMessage);
+            }
+        });
+    </script>
+</body>
+</html>

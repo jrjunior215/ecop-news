@@ -1,3 +1,4 @@
+<!-- หน้าเว็บที่แสดงข่าว news.ejs -->
 <div class="container_news">
     <h1>News</h1>
     <img id="news-image" src="" alt="">
@@ -10,23 +11,38 @@
 </div>
 
 <script>
-    window.onload = function () {
-        const selectedNews = JSON.parse(localStorage.getItem('selectedNews'));
-        if (!selectedNews || selectedNews.newsId !== window.location.pathname.split('/').pop()) {
-            // ถ้าไม่มีข้อมูลใน localStorage หรือ ID ที่เก็บไม่ตรงกับ ID ใน URL
-            localStorage.removeItem('selectedNews'); // ล้างข้อมูลใน localStorage
-            window.location.href = '/blog';
-        } else {
-            // สร้าง URL สมบูรณ์โดยเชื่อมต่อ path รูปภาพกับ URL ของรูปภาพใน object ข่าว
-            const imageUrl = `/images/${selectedNews.imgUrl}.webp`;
-            
-            // ตั้งค่า src attribute ของรูปภาพในแท็ก <img>
-            document.getElementById('news-image').setAttribute('src', imageUrl);
-            // นำข้อมูลมาแสดงใน HTML
-            document.getElementById('news-title').textContent = selectedNews.titleTh;
-            document.getElementById('news-date').textContent = selectedNews.date;
-            document.getElementById('news-content').textContent = selectedNews.contentTh;
+    window.onload = async function () {
+        try {
+            // ดึง ID ข่าวจาก URL
+            const newsId = window.location.pathname.split('/').pop();
+
+            // ส่งข้อมูล ID ไปยัง backend เพื่อค้นหาข้อมูลข่าว
+            const response = await fetch(`http://localhost:8000/api/news/searchNewsById?id=${newsId}`);
+            const data = await response.json();
+            console.log("🚀 ~ data:", data)
+
+            // ตรวจสอบว่าข้อมูลข่าวถูกค้นพบหรือไม่
+            if (data && data.success && data.data) {
+                const selectedNews = data.data; // ข้อมูลข่าวที่ค้นพบ
+
+                // สร้าง URL สมบูรณ์โดยเชื่อมต่อ path รูปภาพกับ URL ของรูปภาพใน object ข่าว
+                const imageUrl = `/images/${selectedNews.imgLinks}.webp`;
+
+                // ตั้งค่า src attribute ของรูปภาพในแท็ก <img>
+                document.getElementById('news-image').setAttribute('src', imageUrl);
+                // นำข้อมูลมาแสดงใน HTML
+                document.getElementById('news-title').textContent = selectedNews.titleTh;
+                
+                // แปลงรูปแบบของวันที่ให้เป็น "เดือน วัน, ปี"
+                const formattedDate = new Date(selectedNews.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                document.getElementById('news-date').textContent = formattedDate;
+                
+                document.getElementById('news-content').textContent = selectedNews.contentTh;
+            } else {
+                console.log('News not found.');
+            }
+        } catch (error) {
+            console.error('Error loading news:', error);
         }
     };
-    </script>
-    
+</script>

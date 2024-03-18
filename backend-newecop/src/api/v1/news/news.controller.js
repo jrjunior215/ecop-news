@@ -62,8 +62,95 @@ export const getNews = async (req, res, next) => {
   }
 };
 
+export const searchNewsById = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+
+    // ตรวจสอบว่า id ถูกส่งมาใน query parameter หรือไม่
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing id parameter" });
+    }
+
+    // ใช้ Prisma query ในการค้นหาข่าวด้วย id
+    const news = await prisma.news.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    if (news) {
+      return res.status(200).json({
+        success: true,
+        data: news,
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ success: false, message: "News not found" });
+    }
+  } catch (error) {
+    console.error("Error searching news by id:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const searchNewsTitle = async (req, res, next) => {
+  let { title, page, pageSize } = SearchNewsQuerySchema.parse(req.query);
+
+  // Decode URL parameters
+  title = decodeURIComponent(title || "");
+  page = parseInt(page) || 1;
+  pageSize = parseInt(pageSize) || ITEMS_PER_PAGE;
+
+  try {
+    // Use Prisma to create parameterized queries
+    const news = await prisma.news.findMany({
+      where: {
+        OR: [{ title: { contains: title } }],
+      },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    });
+
+    const totalCount = await prisma.news.count({
+      where: {
+        OR: [{ title: { contains: title } }],
+      },
+    });
+
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    if (news && news.length > 0) {
+      return res.status(200).json({
+        success: true,
+        data: news,
+        pagination: {
+          currentPage: page,
+          totalPages: totalPages,
+          totalItems: totalCount,
+          itemsPerPage: pageSize,
+        },
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ success: false, message: "News not found" });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
 export const searchNews = async (req, res, next) => {
-  let { title, titleTh, category, page, pageSize, trendNew } =
+  let { id, title, titleTh, category, page, pageSize, trendNew } =
     SearchNewsQuerySchema.parse(req.query);
 
   // Decode URL parameters
@@ -76,7 +163,8 @@ export const searchNews = async (req, res, next) => {
     // Use Prisma to create parameterized queries
     const news = await prisma.news.findMany({
       where: {
-        AND: [
+        OR: [
+          { id: parseInt(id) || undefined }, // Add this line to search by id
           { title: { contains: title } },
           { titleTh: { contains: titleTh } },
         ],
@@ -89,7 +177,8 @@ export const searchNews = async (req, res, next) => {
 
     const totalCount = await prisma.news.count({
       where: {
-        AND: [
+        OR: [
+          { id: parseInt(id) || undefined }, // Add this line to search by id
           { title: { contains: title } },
           { titleTh: { contains: titleTh } },
         ],

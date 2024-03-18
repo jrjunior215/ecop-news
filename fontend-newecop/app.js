@@ -58,6 +58,9 @@ app.get("/category/:name", categoryController);
 const newsController = require("./controllers/views/news/newsController.js");
 app.get("/news/:id", newsController);
 
+const SearchNewsController = require("./controllers/views/news/SearchNewsController.js");
+app.get("/searchnews", SearchNewsController);
+
 // ADMIN
 const adminController = require("./controllers/views/admin/adminController");
 app.get("/admin-ecop", adminController);
