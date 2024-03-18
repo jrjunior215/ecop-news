@@ -385,12 +385,14 @@ const sanitizeHTML = (html) => {
     return temp.textContent || temp.innerText || '';
 };
 
-// Function to fetch trending news
+// Function to fetch trending news with pagination
 const fetchTrendingNews = async () => {
     try {
         const response = await fetch('http://localhost:8000/api/news/search?trendNew=Trending%20News');
         const data = await response.json();
         const trendingNews = data.data;
+        const currentPage = data.pagination.currentPage;
+        const totalPages = data.pagination.totalPages;
 
         // Clear existing trending news items
         const trendingNewsContainer = document.querySelector('.main_related_blog');
@@ -398,6 +400,7 @@ const fetchTrendingNews = async () => {
 
         // Append trending news items
         trendingNews.forEach(newsItem => {
+            // Create trending news item element
             const trendingNewsItem = document.createElement('div');
             trendingNewsItem.classList.add('related_blog');
 
@@ -413,7 +416,16 @@ const fetchTrendingNews = async () => {
                     <p>${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
                 </div>
                 <div class="related_blog_read_more">
-                    <a href="#">Read More</a>
+                    <a href="#" class="read-more-button" 
+                            data-news-id="${newsItem.id}"
+                            data-img-url="${newsItem.imgLinks}"
+                            data-title-th="${newsItem.titleTh}"
+                            data-content-th="${newsItem.contentTh}"
+                            data-title-en="${newsItem.title}"
+                            data-content-en="${sanitizeHTML(newsItem.contentEn)}"
+                            data-date="${newsItem.date}"
+                            data-author="${newsItem.author}"
+                            type="button">Read More</a>
                 </div>
                 <div class="related_blog_option">
                     <div class="profile_blog_writing">
@@ -426,8 +438,12 @@ const fetchTrendingNews = async () => {
                     </div>
                 </div>
             `;
+
             trendingNewsContainer.appendChild(trendingNewsItem);
         });
+
+        // Create pagination for trending news
+        createPagination(currentPage, totalPages);
     } catch (error) {
         console.error('Error fetching trending news:', error);
     }
