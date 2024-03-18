@@ -11,7 +11,7 @@ import {
 } from "./news.schema.js";
 const prisma = new PrismaClient();
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 12;
 
 export const getNews = async (req, res, next) => {
   try {
