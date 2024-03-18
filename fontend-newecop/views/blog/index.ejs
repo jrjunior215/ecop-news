@@ -166,6 +166,13 @@ window.onload = async function () {
             return await response.json();
         };
 
+        // Function to sanitize HTML content to text
+        const sanitizeHTML = (html) => {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            return temp.textContent || temp.innerText || '';
+        };
+
         // Function to create a news item element
         const createNewsItem = (newsItem) => {
             const item = document.createElement('div');
@@ -173,25 +180,29 @@ window.onload = async function () {
 
             // HTML template for the news item
             item.innerHTML = `
-            <div class="container_box_articles">
-                <div class="articles_img">
-                    <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
-                </div>
-                <div class="header_articles">
-                    <h1>${newsItem.titleTh}</h1>
-                </div>
-                <div class="desc_articles">
-                    <p>${newsItem.contentTh.substring(0, maxTextLength)}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
-                </div>
-                <a href="#" class="read-more-button" 
-                       data-news-id="${newsItem.id}"
-                       data-img-url="${newsItem.imgLinks}"
-                       data-title-th="${newsItem.titleTh}"
-                       data-content-th="${newsItem.contentTh}"
-                       type="button">Read More</a>
+                <div class="container_box_articles">
+                    <div class="articles_img">
+                        <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
                     </div>
+                    <div class="header_articles">
+                        <h1>${newsItem.titleTh}</h1>
+                    </div>
+                    <div class="desc_articles">
+                        <p>${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
+                    </div>
+                    <a href="#" class="read-more-button" 
+                        data-news-id="${newsItem.id}"
+                        data-img-url="${newsItem.imgLinks}"
+                        data-title-th="${newsItem.titleTh}"
+                        data-content-th="${newsItem.contentTh}"
+                        data-title-en="${newsItem.title}"
+                        data-content-en="${sanitizeHTML(newsItem.contentEn)}"
+                        data-date="${newsItem.date}"
+                        data-author="${newsItem.author}"
+                        type="button">Read More</a>
+                </div>
                 <div class="article_option">
-                       <div class="profile_article_writing">
+                    <div class="profile_article_writing">
                         <img src="img/rectangle-21.png" alt="">
                         <span>${newsItem.author}</span>
                     </div>
@@ -201,6 +212,7 @@ window.onload = async function () {
                     </div>
                 </div>
             `;
+
             return item;
         };
 
@@ -214,25 +226,30 @@ window.onload = async function () {
             fetchData('http://localhost:8000/api/news/search?trendNew=Trending%20News')
         ]);
 
+        // Function to append news items to a container
+        const appendNewsItems = (container, newsItems) => {
+            const fragment = document.createDocumentFragment();
+            newsItems.forEach(newsItem => {
+                fragment.appendChild(createNewsItem(newsItem));
+            });
+            container.appendChild(fragment);
+        };
+
         // Render news items in the marketing articles container
-        newsData.news.forEach(newsItem => {
-            marketingArticlesContainer.appendChild(createNewsItem(newsItem));
-        });
+        appendNewsItems(marketingArticlesContainer, newsData.news);
 
         // Render trending news items in the related blog container
-        trendingData.data.forEach(newsItem => {
-            relatedBlogContainer.appendChild(createNewsItem(newsItem));
-        });
+        appendNewsItems(relatedBlogContainer, trendingData.data);
 
         // Event delegation for "Read More" buttons
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('read-more-button')) {
                 event.preventDefault();
                 const button = event.target;
-                const { newsId, imgUrl, titleTh, contentTh } = button.dataset;
+                const { newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author } = button.dataset;
 
                 // Store selected news data in localStorage
-                localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh }));
+                localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author }));
 
                 const url = `/news/${newsId}`;
                 window.location.href = url;
@@ -243,6 +260,7 @@ window.onload = async function () {
         console.error('Error loading data:', error);
     }
 };
+
 
 
 
