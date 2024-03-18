@@ -123,7 +123,8 @@ async function fetchDataFromLink(link) {
       );
       removeElementsByClass($, ".TwoColumnLayout-Sidebar");
 
-      const title = $(".ArticleBase-LargeTitle").text();
+      const title = $('title').text();
+
 
       const existingNewsRecord = await prisma.news.findFirst({
         where: { title: title },
@@ -152,11 +153,18 @@ async function fetchDataFromLink(link) {
 
       const imageFileName = uuidv4();
 
-      const imagePath = "images/" + imageFileName + ".webp";
-      const imageResponse = await axios.get(modifiedImageUrl, {
-        responseType: "arraybuffer",
-      });
-      await fs.promises.writeFile(imagePath, imageResponse.data);
+      const imagePath1 = "images/" + imageFileName + ".webp";
+      const imagePath2 = "../fontend-newecop/images/" + imageFileName + ".webp";
+
+        const imageResponse = await axios.get(modifiedImageUrl, {
+          responseType: "arraybuffer",
+        });
+
+        await Promise.all([
+          fs.promises.writeFile(imagePath1, imageResponse.data),
+          fs.promises.writeFile(imagePath2, imageResponse.data)
+        ]);
+
 
       const paragraphs = [];
       $('div[data-module="content"] p').each((index, element) => {
