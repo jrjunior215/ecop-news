@@ -51,6 +51,10 @@ const blogController = require("./controllers/views/blog/blogController.js");
 app.get("/blog", blogController);
 
 // Blog
+const categoryController = require("./controllers/views/category/categoryController.js");
+app.get("/category/:name", categoryController);
+
+// Blog
 const newsController = require("./controllers/views/news/newsController.js");
 app.get("/news/:id", newsController);
 
