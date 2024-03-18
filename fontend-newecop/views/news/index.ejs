@@ -37,7 +37,8 @@
                 const formattedDate = new Date(selectedNews.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 document.getElementById('news-date').textContent = formattedDate;
                 
-                document.getElementById('news-content').textContent = selectedNews.contentTh;
+                // ใช้ innerHTML เพื่อแสดง tag HTML ที่ติดมาด้วย
+                document.getElementById('news-content').innerHTML = selectedNews.contentTh;
             } else {
                 console.log('News not found.');
             }
