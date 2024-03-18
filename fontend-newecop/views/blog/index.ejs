@@ -314,7 +314,7 @@ const createPagination = (currentPage, totalPages) => {
     const nextButton = document.createElement('a');
     nextButton.classList.add('pagination-older');
     nextButton.textContent = 'NEXT';
-    nextButton.href = '#';
+    // nextButton.href = '#';
     nextButton.addEventListener('click', () => {
         if (currentPage < totalPages) {
             fetchDataForPage(currentPage + 1);

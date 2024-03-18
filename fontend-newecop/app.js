@@ -61,6 +61,9 @@ app.get("/news/:id", newsController);
 // ADMIN
 const adminController = require("./controllers/views/admin/adminController");
 app.get("/admin-ecop", adminController);
+
+const adminNewsController = require("./controllers/views/admin/adminNewsController");
+app.get("/admin-ecop/news", adminNewsController);
 const adminLoginController = require("./controllers/views/admin/adminLoginController");
 app.get("/admin-ecop/login", adminLoginController);
 
