@@ -25,30 +25,30 @@
         <h1>Reading blog list</h1>
     </div>
     <div class="main_blog_list">
-        <div class="content_blog">
+        <a href="#" class="content_blog">
             <div class="blog_image">
                 <img src="/img/blog1.jpg" alt="">
             </div>
             <span>Cyber Attack</span>
-        </div>
-        <div class="content_blog">
+        </a>
+        <a href="#" class="content_blog">
             <div class="blog_image">
                 <img src="/img/blog2.jpg" alt="">
             </div>
             <span>Malware</span>
-        </div>
-        <div class="content_blog">
+        </a>
+        <a href="#" class="content_blog">
             <div class="blog_image">
                 <img src="/img/blog3.jpg" alt="">
             </div>
             <span>Cyber Threat</span>
-        </div>
-        <div class="content_blog">
+        </a>
+        <a href="#" class="content_blog">
             <div class="blog_image">
                 <img src="/img/blog4.jpg" alt="">
             </div>
             <span>Vulnerability</span>
-        </div>
+        </a>
     </div>
 </div>
 
@@ -115,6 +115,9 @@
     <div class="header_blog_list">
         <h1>News Articles</h1>
     </div>
+    <div class="search_blog_list">
+        <input type="text">
+    </div>
     <div class="main_maketing_articles">
         <!-- <div class="maketing_articles">
             <div class="articles_img">
@@ -139,6 +142,19 @@
         </div> -->
 </div>
 
+<div class="container_pagination">
+    <a class="pagination-newer" href="#">PREV</a>
+				<span class="pagination-inner">
+					<a href="#">1</a>
+					<a class="pagination-active" href="#">2</a>
+					<a href="#">3</a>
+					<a href="#">4</a>
+					<a href="#">5</a>
+					<a href="#">6</a>
+				</span>
+				<a class="pagination-older" href="#">NEXT</a>
+</div>
+
 <script>
 window.onload = async function () {
     try {
@@ -157,6 +173,7 @@ window.onload = async function () {
 
             // HTML template for the news item
             item.innerHTML = `
+            <div class="container_box_articles">
                 <div class="articles_img">
                     <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
                 </div>
@@ -166,14 +183,15 @@ window.onload = async function () {
                 <div class="desc_articles">
                     <p>${newsItem.contentTh.substring(0, maxTextLength)}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
                 </div>
-                <div class="article_option">
-                    <a href="#" class="read-more-button" 
+                <a href="#" class="read-more-button" 
                        data-news-id="${newsItem.id}"
                        data-img-url="${newsItem.imgLinks}"
                        data-title-th="${newsItem.titleTh}"
                        data-content-th="${newsItem.contentTh}"
                        type="button">Read More</a>
-                    <div class="profile_article_writing">
+                    </div>
+                <div class="article_option">
+                       <div class="profile_article_writing">
                         <img src="img/rectangle-21.png" alt="">
                         <span>${newsItem.author}</span>
                     </div>

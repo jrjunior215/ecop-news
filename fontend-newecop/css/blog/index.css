@@ -15,7 +15,7 @@
     padding: 50px;
 }
 
-.content_text_blog{
+.content_text_blog {
     display: flex;
     justify-content: start;
     width: 50%;
@@ -58,7 +58,7 @@
     border: 1px solid transparent;
     padding: .375rem .75rem;
     border-radius: .25rem;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 .content_img_blog {
@@ -70,8 +70,8 @@
 
 .content_img_blog img {
     border-radius: 2rem;
-    width: 80%;
-    height: 100%;
+    max-width: 80%;
+    max-height: 100%;
 }
 
 .content_blog_list {
@@ -103,13 +103,14 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    max-width: 100%;
 }
 
 .content_blog span {
     position: absolute;
     bottom: 20px;
-    left: 50%; 
-    transform: translateX(-50%); 
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1;
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 15px;
@@ -201,7 +202,7 @@
 
 .blog_page_underline br {
     width: 100%;
-    border-bottom:1px dashed black;
+    border-bottom: 1px dashed black;
     display: block;
 }
 
@@ -216,29 +217,47 @@
 
 .main_maketing_articles {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: stretch;
+    /* Ensure flex items stretch to equal height */
     margin-bottom: 50px;
 }
 
 .maketing_articles {
+    flex: 0 0 calc(25% - 40px);
     background-color: #fafafa;
-    box-shadow: rgba(165, 165, 165, 0.35) 0px 5px 15px;
-    border-radius: 20px;
-    padding: 20px 20px;
-    margin: 0 20px;
-    max-height: 500px;
-    max-width: 500px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    /* Set display to flex */
+    flex-direction: column;
+    /* Ensure content stacks vertically */
 }
 
-.articles_img {
-    margin: auto;
+/* Remove margin-right:auto; */
+
+/* For larger screens, adjust margin to maintain 4 items per row */
+@media (min-width: 992px) {
+    .main_maketing_articles {
+        justify-content: flex-start;
+    }
+
+    .maketing_articles {
+        margin-right: calc((100% - 4 * (25% - 40px)) / 3);
+        /* Calculate the margin */
+    }
+
+    .maketing_articles:nth-child(4n) {
+        margin-right: 0;
+        /* Remove margin from the last item in each row */
+    }
 }
 
 .articles_img img {
     height: 240px;
-    width: auto;
-    max-width: 350px;
+    width: 100%;
+    /* Adjusted to cover entire space */
     object-fit: cover;
     border-radius: 10px;
 }
@@ -249,22 +268,129 @@
     align-items: center;
     flex-direction: row;
     width: 100%;
-    margin: 60px 0 10px 0;
+    flex-grow: 1;
+    /* Allow content to expand */
+    padding: 20px;
+}
+
+.read-more-button {
+    padding: 0 10px;
+    font-size: 0.8rem;
 }
 
 .profile_article_writing img {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     margin-right: 5px;
     border-radius: 50%;
     object-fit: cover;
 }
 
+.profile_article_writing span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
 .header_articles h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin-top: 15px;
+    padding: 0 10px;
+    font-weight: 600;
 }
 
 .desc_articles p {
-    font-size: 0.8rem;
+    font-size: 1rem;
+    padding: 0 10px;
+}
+
+.related_article_view i {
+    margin-left: 10px;
+}
+
+.container_box_articles {
+    width: 100%;
+    height: auto;
+    padding-bottom: 20px;
+    max-height: 600px;
+    /* Limiting the max height */
+    height: 450px;
+    overflow: hidden
+}
+
+.search_blog_list {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.search_blog_list input {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: 1px solid #c4c4c4;
+    /* Set border to solid by default */
+    background-color: #f0f0f0;
+}
+
+.search_blog_list input:focus {
+    border: 1px solid #c4c4c4;
+    /* Maintain the same border style on focus */
+}
+
+.container_pagination {
+    margin: 100px auto;
+    text-align: center;
+    width: 100%;
+}
+
+.pagination {
+    position: relative;
+}
+
+.pagination a {
+    position: relative;
+    display: inline-block;
+    color: #2c3e50;
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 8px 16px 10px;
+}
+
+.pagination a:before {
+    z-index: -1;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    content: "";
+    top: 0;
+    left: 0;
+    background-color: #2c3e50;
+    border-radius: 24px;
+    transform: scale(0);
+    transition: all 0.2s;
+}
+
+.pagination a:hover,
+.pagination a .pagination-active {
+    color: #fff;
+}
+
+.pagination a:hover:before,
+.pagination a .pagination-active:before {
+    transform: scale(1);
+}
+
+.pagination .pagination-active {
+    color: #fff;
+}
+
+.pagination .pagination-active:before {
+    transform: scale(1);
+}
+
+.pagination-newer {
+    margin-right: 50px;
+}
+
+.pagination-older {
+    margin-left: 50px;
 }

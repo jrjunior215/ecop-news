@@ -24,12 +24,19 @@ nav ul {
 
 nav ul li {
     display: inline-block;
-    padding: 0 20px;
 }
 
 nav ul li a {
     color: #fff;
     text-decoration: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    transition: background-color 0.3s
+}
+
+nav ul li a:hover {
+    background-color: #4393F0;
+    color: #000000;
 }
 
 .btn_nav_log {
