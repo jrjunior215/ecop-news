@@ -1,3 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pagination Example</title>
+<style>
+    /* CSS styles for pagination */
+    .container_pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .container_pagination a {
+        padding: 5px 10px;
+        margin: 0 5px;
+        border: 1px solid #ccc;
+        text-decoration: none;
+    }
+    .container_pagination a.pagination-active {
+        background-color: #007bff;
+        color: #fff;
+    }
+</style>
+</head>
+<body>
 <div class="container_blog">
     <div class="content_banner">
         <div class="content_text_blog">
@@ -156,112 +182,263 @@
 </div>
 
 <script>
-window.onload = async function () {
-    try {
+    window.onload = async function () {
+        try {
+            const maxTextLength = 100;
+
+            // Function to fetch data from the provided URL
+            const fetchData = async (url) => {
+                const response = await fetch(url);
+                return await response.json();
+            };
+
+            // Function to sanitize HTML content to text
+            const sanitizeHTML = (html) => {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                return temp.textContent || temp.innerText || '';
+            };
+
+            // Function to create a news item element
+            const createNewsItem = (newsItem) => {
+                const item = document.createElement('div');
+                item.classList.add('maketing_articles');
+
+                // HTML template for the news item
+                item.innerHTML = `
+                    <div class="container_box_articles">
+                        <div class="articles_img">
+                            <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
+                        </div>
+                        <div class="header_articles">
+                            <h1>${newsItem.titleTh}</h1>
+                        </div>
+                        <div class="desc_articles">
+                            <p>${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
+                        </div>
+                        <a href="#" class="read-more-button" 
+                            data-news-id="${newsItem.id}"
+                            data-img-url="${newsItem.imgLinks}"
+                            data-title-th="${newsItem.titleTh}"
+                            data-content-th="${newsItem.contentTh}"
+                            data-title-en="${newsItem.title}"
+                            data-content-en="${sanitizeHTML(newsItem.contentEn)}"
+                            data-date="${newsItem.date}"
+                            data-author="${newsItem.author}"
+                            type="button">Read More</a>
+                    </div>
+                    <div class="article_option">
+                        <div class="profile_article_writing">
+                            <img src="img/rectangle-21.png" alt="">
+                            <span>${newsItem.author}</span>
+                        </div>
+                        <div class="related_article_view">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>${newsItem.viewCount}</span>
+                        </div>
+                    </div>
+                `;
+
+                return item;
+            };
+
+            // Select the containers for marketing articles and related blogs
+            const marketingArticlesContainer = document.querySelector('.main_maketing_articles');
+
+            // Function to append news items to a container
+            const appendNewsItems = (container, newsItems) => {
+                const fragment = document.createDocumentFragment();
+                newsItems.forEach(newsItem => {
+                    fragment.appendChild(createNewsItem(newsItem));
+                });
+                container.appendChild(fragment);
+            };
+
+            // Function to create pagination
+           // Function to create pagination
+const createPagination = (currentPage, totalPages) => {
+    const paginationContainer = document.querySelector('.container_pagination');
+    paginationContainer.innerHTML = ''; // Clear existing pagination
+
+    const prevButton = document.createElement('a');
+    prevButton.classList.add('pagination-newer');
+    prevButton.textContent = 'PREV';
+    // prevButton.href = '#';
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            fetchDataForPage(currentPage - 1);
+        }
+    });
+    paginationContainer.appendChild(prevButton);
+
+    const paginationInner = document.createElement('span');
+    paginationInner.classList.add('pagination-inner');
+
+    // Add page links
+    const maxVisiblePages = 5; // Maximum number of visible page links
+    const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+    let startPage = Math.max(currentPage - halfVisiblePages, 1);
+    let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(endPage - maxVisiblePages + 1, 1);
+    }
+
+    if (startPage > 1) {
+        const ellipsisStart = document.createElement('span');
+        ellipsisStart.textContent = '...';
+        paginationInner.appendChild(ellipsisStart);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        const pageLink = document.createElement('a');
+        // pageLink.href = '#';
+        pageLink.textContent = i;
+        if (i === currentPage) {
+            pageLink.classList.add('pagination-active');
+        }
+        pageLink.addEventListener('click', () => {
+            fetchDataForPage(i);
+        });
+        paginationInner.appendChild(pageLink);
+    }
+
+    if (endPage < totalPages) {
+        const ellipsisEnd = document.createElement('span');
+        ellipsisEnd.textContent = '...';
+        paginationInner.appendChild(ellipsisEnd);
+    }
+
+    paginationContainer.appendChild(paginationInner);
+
+    const nextButton = document.createElement('a');
+    nextButton.classList.add('pagination-older');
+    nextButton.textContent = 'NEXT';
+    nextButton.href = '#';
+    nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            fetchDataForPage(currentPage + 1);
+        }
+    });
+    paginationContainer.appendChild(nextButton);
+};
+            
+            // Function to fetch data for a specific page
+            const fetchDataForPage = async (page) => {
+                try {
+                    const response = await fetch(`http://localhost:8000/api/news?page=${page}`);
+                    const data = await response.json();
+                    const newsItems = data.news;
+                    // Clear existing news items
+                    marketingArticlesContainer.innerHTML = '';
+                    appendNewsItems(marketingArticlesContainer, newsItems);
+                    createPagination(page, data.pagination.totalPages);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            };
+
+            // Fetch initial data for the first page
+            const initializePagination = async () => {
+                try {
+                    const response = await fetch('http://localhost:8000/api/news');
+                    const data = await response.json();
+                    const newsItems = data.news;
+                    const currentPage = data.pagination.currentPage;
+                    const totalPages = data.pagination.totalPages;
+                    appendNewsItems(marketingArticlesContainer, newsItems);
+                    createPagination(currentPage, totalPages);
+                } catch (error) {
+                    console.error('Error initializing pagination:', error);
+                }
+            };
+
+            // Initialize pagination
+            initializePagination();
+
+            // Event delegation for "Read More" buttons
+            document.addEventListener('click', function(event) {
+                if (event.target.classList.contains('read-more-button')) {
+                    event.preventDefault();
+                    const button = event.target;
+                    const { newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author } = button.dataset;
+
+                    // Store selected news data in localStorage
+                    localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author }));
+
+                    const url = `/news/${newsId}`;
+                    window.location.href = url;
+                }
+            });
+
+        } catch (error) {
+            console.error('Error loading data:', error);
+        }
+        // Function to fetch trending news
+
         const maxTextLength = 100;
 
-        // Function to fetch data from the provided URL
-        const fetchData = async (url) => {
-            const response = await fetch(url);
-            return await response.json();
-        };
+// Function to sanitize HTML content to text
+const sanitizeHTML = (html) => {
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    return temp.textContent || temp.innerText || '';
+};
 
-        // Function to sanitize HTML content to text
-        const sanitizeHTML = (html) => {
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            return temp.textContent || temp.innerText || '';
-        };
+// Function to fetch trending news
+const fetchTrendingNews = async () => {
+    try {
+        const response = await fetch('http://localhost:8000/api/news/search?trendNew=Trending%20News');
+        const data = await response.json();
+        const trendingNews = data.data;
 
-        // Function to create a news item element
-        const createNewsItem = (newsItem) => {
-            const item = document.createElement('div');
-            item.classList.add('maketing_articles');
+        // Clear existing trending news items
+        const trendingNewsContainer = document.querySelector('.main_related_blog');
+        trendingNewsContainer.innerHTML = '';
 
-            // HTML template for the news item
-            item.innerHTML = `
-                <div class="container_box_articles">
-                    <div class="articles_img">
-                        <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
-                    </div>
-                    <div class="header_articles">
-                        <h1>${newsItem.titleTh}</h1>
-                    </div>
-                    <div class="desc_articles">
-                        <p>${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
-                    </div>
-                    <a href="#" class="read-more-button" 
-                        data-news-id="${newsItem.id}"
-                        data-img-url="${newsItem.imgLinks}"
-                        data-title-th="${newsItem.titleTh}"
-                        data-content-th="${newsItem.contentTh}"
-                        data-title-en="${newsItem.title}"
-                        data-content-en="${sanitizeHTML(newsItem.contentEn)}"
-                        data-date="${newsItem.date}"
-                        data-author="${newsItem.author}"
-                        type="button">Read More</a>
+        // Append trending news items
+        trendingNews.forEach(newsItem => {
+            const trendingNewsItem = document.createElement('div');
+            trendingNewsItem.classList.add('related_blog');
+
+            // HTML template for each trending news item
+            trendingNewsItem.innerHTML = `
+                <div class="related_blog_img">
+                    <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
                 </div>
-                <div class="article_option">
-                    <div class="profile_article_writing">
+                <div class="related_blog_topic">
+                    <h1>${newsItem.titleTh}</h1>
+                </div>
+                <div class="related_blog_desc">
+                    <p>${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
+                </div>
+                <div class="related_blog_read_more">
+                    <a href="#">Read More</a>
+                </div>
+                <div class="related_blog_option">
+                    <div class="profile_blog_writing">
                         <img src="img/rectangle-21.png" alt="">
                         <span>${newsItem.author}</span>
                     </div>
-                    <div class="related_article_view">
+                    <div class="related_blog_view">
                         <i class="fa-solid fa-eye"></i>
                         <span>${newsItem.viewCount}</span>
                     </div>
                 </div>
             `;
-
-            return item;
-        };
-
-        // Select the containers for marketing articles and related blogs
-        const marketingArticlesContainer = document.querySelector('.main_maketing_articles');
-        const relatedBlogContainer = document.querySelector('.main_related_blog');
-
-        // Fetch news data and trending data concurrently
-        const [newsData, trendingData] = await Promise.all([
-            fetchData('http://localhost:8000/api/news'),
-            fetchData('http://localhost:8000/api/news/search?trendNew=Trending%20News')
-        ]);
-
-        // Function to append news items to a container
-        const appendNewsItems = (container, newsItems) => {
-            const fragment = document.createDocumentFragment();
-            newsItems.forEach(newsItem => {
-                fragment.appendChild(createNewsItem(newsItem));
-            });
-            container.appendChild(fragment);
-        };
-
-        // Render news items in the marketing articles container
-        appendNewsItems(marketingArticlesContainer, newsData.news);
-
-        // Render trending news items in the related blog container
-        appendNewsItems(relatedBlogContainer, trendingData.data);
-
-        // Event delegation for "Read More" buttons
-        document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('read-more-button')) {
-                event.preventDefault();
-                const button = event.target;
-                const { newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author } = button.dataset;
-
-                // Store selected news data in localStorage
-                localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author }));
-
-                const url = `/news/${newsId}`;
-                window.location.href = url;
-            }
+            trendingNewsContainer.appendChild(trendingNewsItem);
         });
-
     } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('Error fetching trending news:', error);
     }
 };
 
+// Call the function to fetch and display trending news
+fetchTrendingNews();
 
 
-
+    };
+    
 </script>
+</body>
+</html>

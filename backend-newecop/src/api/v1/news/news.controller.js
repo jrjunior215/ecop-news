@@ -15,7 +15,7 @@ const ITEMS_PER_PAGE = 10;
 
 export const getNews = async (req, res, next) => {
   try {
-    const { page, category } = GetNewsQuerySchema.parse(req.query);
+    const { page, category } = req.query;
     const parsedPage = parseInt(page) || 1;
     const pageSize = ITEMS_PER_PAGE;
     const skip = (parsedPage - 1) * pageSize;
