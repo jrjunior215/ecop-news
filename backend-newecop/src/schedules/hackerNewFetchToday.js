@@ -5,7 +5,10 @@ import axios from "axios";
 import fs from "fs/promises"; // Assuming you are using Node.js version 14.0.0 or later
 import { PrismaClient } from "@prisma/client";
 import sharp from "sharp";
-import cheerio from 'cheerio';
+import cheerio from "cheerio";
+
+const SCRAPER_API_KEY = "c60f6edc3bd87093b9099fbc146ef612"; // เปลี่ยนเป็น API Key จริงของคุณ
+const SCRAPER_API_URL = `https://api.scraperapi.com/?api_key=${SCRAPER_API_KEY}&url=`;
 
 const prisma = new PrismaClient();
 const SCROLL_CHUNK_SIZE = 5000;
@@ -53,7 +56,6 @@ const compareDates = (dateTimeText) => {
   }
 };
 
-
 // Add this utility function to generate a unique ID
 const generateUniqueId = () => {
   return "_" + Math.random().toString(36).substr(2, 9);
@@ -61,20 +63,21 @@ const generateUniqueId = () => {
 
 const scrapeArticleData = async (link) => {
   try {
-    const response = await axios.get(link);
+    const response = await axios.get(`${SCRAPER_API_URL}${link}`);
     const $ = cheerio.load(response.data);
 
     const simulateScrolling = async ($) => {
       for (let i = 0; i < SCROLL_ITERATIONS; i++) {
-        $('body').append(`<div style="height:${SCROLL_CHUNK_SIZE}px;"></div>`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        $("body").append(`<div style="height:${SCROLL_CHUNK_SIZE}px;"></div>`);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     };
     await simulateScrolling($);
 
     removeUnwantedElements($);
 
-    const { title, author, pTags, date, imgLinksInSeparator } = extractArticleInfo($);
+    const { title, author, pTags, date, imgLinksInSeparator } =
+      extractArticleInfo($);
 
     const isTitleExist = await prisma.news.findFirst({ where: { title } });
     const isDateExist = await prisma.news.findFirst({ where: { date } });
@@ -83,12 +86,23 @@ const scrapeArticleData = async (link) => {
       console.log("Data already exists. Translation not needed.");
     } else {
       const imageFolder = path.join("images");
-      const successfulDownloads = await downloadImages(imgLinksInSeparator, imageFolder);
+      const successfulDownloads = await downloadImages(
+        imgLinksInSeparator,
+        imageFolder
+      );
 
       console.log("Downloaded Images:", successfulDownloads);
 
       const mainBoxContent = extractMainBoxContent($);
-      const articleData = createArticleData(title, date, author, pTags, successfulDownloads, mainBoxContent, link);
+      const articleData = createArticleData(
+        title,
+        date,
+        author,
+        pTags,
+        successfulDownloads,
+        mainBoxContent,
+        link
+      );
 
       console.log("Scraped Article Data:", articleData);
 
@@ -103,7 +117,7 @@ const scrapeArticleData = async (link) => {
             date: translatedArticleData.date,
             author: translatedArticleData.author,
             pTags: translatedArticleData.pTags,
-            imgLinks: translatedArticleData.imgLinks.join(', '),
+            imgLinks: translatedArticleData.imgLinks.join(", "),
             contentEn: translatedArticleData.contentEn,
             ref: translatedArticleData.ref,
             titleTh: translatedArticleData.titleTh,
@@ -112,7 +126,9 @@ const scrapeArticleData = async (link) => {
           },
         });
 
-        console.log(`Scraped and translated data has been saved to the database`);
+        console.log(
+          `Scraped and translated data has been saved to the database`
+        );
       }
     }
   } catch (error) {
@@ -120,9 +136,10 @@ const scrapeArticleData = async (link) => {
   }
 };
 
-
 const removeUnwantedElements = ($) => {
-  $(".icon-font.icon-calendar, .right-box, .below-post-box.cf, .footer-stuff.clear.cf, .email-box, .header.clear").remove();
+  $(
+    ".icon-font.icon-calendar, .right-box, .below-post-box.cf, .footer-stuff.clear.cf, .email-box, .header.clear"
+  ).remove();
 };
 
 const extractArticleInfo = ($) => {
@@ -140,21 +157,28 @@ const extractArticleInfo = ($) => {
   return { title, author, pTags, date, imgLinksInSeparator };
 };
 
-
 const downloadImages = async (imgLinks, imageFolder) => {
   const downloadedImages = await Promise.all(
     imgLinks.map(async (imageUrl) => {
       try {
-        const downloadedImageFilename = await downloadImage(imageUrl, imageFolder);
+        const downloadedImageFilename = await downloadImage(
+          imageUrl,
+          imageFolder
+        );
         if (downloadedImageFilename) {
           console.log(`Downloaded image: ${downloadedImageFilename}`);
-          return path.basename(downloadedImageFilename, path.extname(downloadedImageFilename));
+          return path.basename(
+            downloadedImageFilename,
+            path.extname(downloadedImageFilename)
+          );
         } else {
           console.error(`Failed to download image from ${imageUrl}`);
           return null;
         }
       } catch (error) {
-        console.error(`Failed to download image from ${imageUrl}: ${error.message}`);
+        console.error(
+          `Failed to download image from ${imageUrl}: ${error.message}`
+        );
         return null;
       }
     })
@@ -168,17 +192,32 @@ const extractMainBoxContent = ($) => {
 
   if (!mainBoxElement.length) return "";
 
-  mainBoxElement.find('.check_two.clear.babsi, .cf.note-b, .editor-rtfLink').remove();
+  mainBoxElement
+    .find(".check_two.clear.babsi, .cf.note-b, .editor-rtfLink")
+    .remove();
 
-  const paragraphTexts = mainBoxElement.find('p').map((index, p) => {
-    const withoutATags = $(p).html().replace(/<a\b[^>]*>.*?<\/a>/g, '');
-    return `<p>${withoutATags.trim()}</p>`;
-  }).get();
+  const paragraphTexts = mainBoxElement
+    .find("p")
+    .map((index, p) => {
+      const withoutATags = $(p)
+        .html()
+        .replace(/<a\b[^>]*>.*?<\/a>/g, "");
+      return `<p>${withoutATags.trim()}</p>`;
+    })
+    .get();
 
-  return paragraphTexts.join('');
+  return paragraphTexts.join("");
 };
 
-const createArticleData = (title, date, author, pTags, imgLinks, contentEn, ref) => {
+const createArticleData = (
+  title,
+  date,
+  author,
+  pTags,
+  imgLinks,
+  contentEn,
+  ref
+) => {
   return {
     id: generateUniqueId(),
     category: "Home",
@@ -208,17 +247,20 @@ const downloadImage = async (imageUrl, folderPath) => {
     const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
     const webpBuffer = await sharp(response.data).webp().toBuffer();
     const fileNameWithoutExtension = generateUniqueId();
-    const webpFilePath = path.join(folderPath, `${fileNameWithoutExtension}.webp`);
+    const webpFilePath = path.join(
+      folderPath,
+      `${fileNameWithoutExtension}.webp`
+    );
     await fs.writeFile(webpFilePath, webpBuffer);
     console.log(`Downloaded image: ${fileNameWithoutExtension}.webp`);
     return `${fileNameWithoutExtension}.webp`;
   } catch (error) {
-    console.error(`Failed to download image from ${imageUrl}: ${error.message}`);
+    console.error(
+      `Failed to download image from ${imageUrl}: ${error.message}`
+    );
     return null;
   }
 };
-
-
 
 async function translateText(text, targetLanguage = "th") {
   const apiKey = process.env.GOOGLE_TRANSLATE_API_KEY;
@@ -255,8 +297,6 @@ function splitTextIntoChunks(text, chunkSize) {
   return text.match(regex) || [];
 }
 
-
-
 const updateCategoryByTitle = async (title, newCategory) => {
   try {
     const existingArticle = await prisma.news.findFirst({
@@ -272,7 +312,9 @@ const updateCategoryByTitle = async (title, newCategory) => {
 
         // console.log(`Category updated for article "${title}"`);
       } else {
-        console.log(`Category is already "${newCategory}" for article "${title}"`);
+        console.log(
+          `Category is already "${newCategory}" for article "${title}"`
+        );
       }
     } else {
       console.log(`Article "${title}" not found`);
@@ -282,14 +324,14 @@ const updateCategoryByTitle = async (title, newCategory) => {
   }
 };
 
-
-
 const checkAndUpdateCategory = async (url, expectedCategory) => {
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(`${SCRAPER_API_URL}${url}`);
     const $ = cheerio.load(response.data);
 
-    const titles = $('.home-title').map((index, element) => $(element).text()).get();
+    const titles = $(".home-title")
+      .map((index, element) => $(element).text())
+      .get();
 
     for (const title of titles) {
       const existingArticle = await prisma.news.findFirst({
@@ -308,21 +350,32 @@ const checkAndUpdateCategory = async (url, expectedCategory) => {
 const scrapedData = [];
 
 export const hackerNewFetchToday = async () => {
-    cron.schedule('0 */2 * * *', async () => {
+  cron.schedule("0 */2 * * *", async () => {
     try {
-      const response = await axios.get("https://thehackernews.com/");
+      const response = await axios.get(
+        `${SCRAPER_API_URL}https://thehackernews.com/`
+      );
       const $ = cheerio.load(response.data);
 
-      checkAndUpdateCategory('https://thehackernews.com/search/label/Cyber%20Attack', 'CyberAttack');
-      checkAndUpdateCategory('https://thehackernews.com/search/label/Vulnerability', 'Vulnerability');
+      checkAndUpdateCategory(
+        "https://thehackernews.com/search/label/Cyber%20Attack",
+        "CyberAttack"
+      );
+      checkAndUpdateCategory(
+        "https://thehackernews.com/search/label/Vulnerability",
+        "Vulnerability"
+      );
 
-      $(".icon-font.icon-calendar, .right-box, .below-post-box.cf, .footer-stuff.clear.cf, .email-box, .header.clear").remove();
-
+      $(
+        ".icon-font.icon-calendar, .right-box, .below-post-box.cf, .footer-stuff.clear.cf, .email-box, .header.clear"
+      ).remove();
 
       const simulateScrolling = async ($) => {
         for (let i = 0; i < SCROLL_ITERATIONS; i++) {
-          $('body').append(`<div style="height:${SCROLL_CHUNK_SIZE}px;"></div>`);
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          $("body").append(
+            `<div style="height:${SCROLL_CHUNK_SIZE}px;"></div>`
+          );
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       };
 
@@ -336,7 +389,10 @@ export const hackerNewFetchToday = async () => {
 
         $(".story-link").each((index, storyLinkElement) => {
           const linkHref = $(storyLinkElement).attr("href");
-          const linkDateTimeText = $(storyLinkElement).find(".h-datetime").text().trim();
+          const linkDateTimeText = $(storyLinkElement)
+            .find(".h-datetime")
+            .text()
+            .trim();
           const linkDatesMatch = compareDates(linkDateTimeText);
 
           if (linkDatesMatch) {
@@ -345,26 +401,44 @@ export const hackerNewFetchToday = async () => {
         });
 
         if (matchedLinks.length > 0) {
-          const scrapedData = await Promise.all(matchedLinks.map(scrapeArticleData));
+          const scrapedData = await Promise.all(
+            matchedLinks.map(async (link) => {
+              try {
+                const articleResponse = await axios.get(
+                  `${SCRAPER_API_URL}${link}`
+                );
+                return scrapeArticleData(articleResponse.data);
+              } catch (error) {
+                console.error(
+                  `Error scraping article data from ${link}:`,
+                  error
+                );
+                return null;
+              }
+            })
+          );
           const allData = scrapedData.filter(Boolean);
 
           if (allData.length > 0) {
             const existingData = await prisma.news.findMany();
-            const uniqueData = allData.filter(newItem =>
-              !existingData.some(existingItem =>
-                newItem.title === existingItem.title && newItem.date === existingItem.date
-              )
+            const uniqueData = allData.filter(
+              (newItem) =>
+                !existingData.some(
+                  (existingItem) =>
+                    newItem.title === existingItem.title &&
+                    newItem.date === existingItem.date
+                )
             );
 
             if (uniqueData.length > 0) {
               await prisma.news.createMany({
-                data: uniqueData.map(articleData => ({
+                data: uniqueData.map((articleData) => ({
                   category: articleData.category,
                   title: articleData.title,
                   date: articleData.date,
                   author: articleData.author,
                   pTags: articleData.pTags,
-                  imgLinks: articleData.imgLinks.join(', '),
+                  imgLinks: articleData.imgLinks.join(", "),
                   contentEn: articleData.contentEn,
                   ref: articleData.ref,
                   titleTh: articleData.titleTh,

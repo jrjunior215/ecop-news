@@ -2,7 +2,7 @@ const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
 const { SERVER_PORT, SERVER_IP } = require("./js/server_setting");
-
+require("dotenv").config();
 // SET EXPRESS
 
 const app = express();
