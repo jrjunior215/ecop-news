@@ -65,23 +65,6 @@ const isAuthenticated = async (req, res, next) => {
   }
 };
 
-app.get("/logout", async (req, res) => {
-  try {
-    // Call the signout API
-    await axios.post("http://localhost:8000/api/auth/signout", null, {
-      withCredentials: true,
-    });
-
-    // Clear the cookie
-    res.clearCookie("session");
-    // Redirect to login page after successful logout
-    res.redirect("/admin-ecop/login");
-  } catch (error) {
-    console.error("Error during logout: ", error);
-    res.redirect("/"); // Redirect to homepage in case of error
-  }
-});
-
 // Apply authentication middleware to Admin routes
 // app.use("/admin-ecop", isAuthenticated);
 

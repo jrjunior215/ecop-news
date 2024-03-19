@@ -45,10 +45,33 @@
             </a>
         </li>
         <li class="menu_label">
-            <a href="/logout">
+            <a onclick="logout()">
                 <span class="menu_icon"><i class="fa fa-clipboard fa-1x" aria-hidden="true"></i></span>
-                <span class="menu_title">logut</span>
+                <span class="menu_title">Logout</span>
             </a>
         </li>
+        
     </ul>
 </div>
+
+
+<script>
+    async function logout() {
+        console.log("Calling logout function");
+        try {
+            const response = await fetch("http://localhost:8000/api/auth/signout", {
+                method: "POST",
+                credentials: "include"
+            });
+            if (response.ok) {
+                // Redirect to the login page or perform any other action after logout
+                window.location.href = "/admin-ecop/login"; 
+            } else {
+                console.error("Error logging out:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    }
+</script>
+
