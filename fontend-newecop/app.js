@@ -14,10 +14,9 @@ app.use(expressLayouts);
 app.set("layout", "./layouts/layout");
 
 //SET PAGE LAYOUT
-
+// Middleware for handling 404 errors
 app.use((req, res, next) => {
-  res.locals.layout = "404/components/layout";
-  next();
+  res.status(404).send("Page Not Found"); // Send "Page Not Found" message for 404 errors
 });
 
 // SET EXPRESS
