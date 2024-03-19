@@ -283,7 +283,7 @@
 
         const prevButton = document.createElement("a");
         prevButton.classList.add("pagination-newer");
-        prevButton.textContent = "< กลับ";
+        prevButton.textContent = "PREV";
         // prevButton.href = '#';
         prevButton.addEventListener("click", () => {
           if (currentPage > 1) {
@@ -334,7 +334,7 @@
 
         const nextButton = document.createElement("a");
         nextButton.classList.add("pagination-older");
-        nextButton.textContent = "ถัดไป >";
+        nextButton.textContent = "NEXT";
         // nextButton.href = '#';
         nextButton.addEventListener("click", () => {
           if (currentPage < totalPages) {
