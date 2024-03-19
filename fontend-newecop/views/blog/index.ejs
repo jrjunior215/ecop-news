@@ -396,7 +396,7 @@
           event.preventDefault();
           const button = event.target;
           const newsId = button.getAttribute("data-news-id");
-          const imgUrl = button.getAttribute("data-img-url");
+          const imgLinks = button.getAttribute("data-img-url");
           const titleTh = button.getAttribute("data-title-th");
           const contentTh = button.getAttribute("data-content-th");
           const titleEn = button.getAttribute("data-title-en");
@@ -435,6 +435,10 @@
           } else {
             console.error("Unable to fetch user IP.");
           }
+
+          
+            // Store selected news data in localStorage
+            sessionStorage.setItem('selectedNews', JSON.stringify({ newsId, imgLinks, titleTh, contentTh, titleEn, contentEn, date, author }));
 
           // Redirect to the news page
           let url;

@@ -11,40 +11,57 @@
 </div>
 
 <script>
-    window.onload = async function () {
-        const baseURL = "<%= process.env.BACKEND_API %>";
-        try {
-            // ดึง ID ข่าวจาก URL
-            const newsId = window.location.pathname.split('/').pop();
+   window.onload = async function () {
+    const baseURL = "<%= process.env.BACKEND_API %>";
+    try {
+        // Extract news ID from URL
+        const newsId = window.location.pathname.split('/').pop();
 
-            // ส่งข้อมูล ID ไปยัง backend เพื่อค้นหาข้อมูลข่าว
-            const response = await fetch(`${baseURL}/api/news/searchNewsById?id=${newsId}`);
-            const data = await response.json();
-            console.log("🚀 ~ data:", data)
-
-            // ตรวจสอบว่าข้อมูลข่าวถูกค้นพบหรือไม่
-            if (data && data.success && data.data) {
-                const selectedNews = data.data; // ข้อมูลข่าวที่ค้นพบ
-
-                // สร้าง URL สมบูรณ์โดยเชื่อมต่อ path รูปภาพกับ URL ของรูปภาพใน object ข่าว
-                const imageUrl = `/images/${selectedNews.imgLinks}.webp`;
-
-                // ตั้งค่า src attribute ของรูปภาพในแท็ก <img>
-                document.getElementById('news-image').setAttribute('src', imageUrl);
-                // นำข้อมูลมาแสดงใน HTML
-                document.getElementById('news-title').textContent = selectedNews.titleTh;
-                
-                // แปลงรูปแบบของวันที่ให้เป็น "เดือน วัน, ปี"
-                const formattedDate = new Date(selectedNews.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-                document.getElementById('news-date').textContent = formattedDate;
-                
-                // ใช้ innerHTML เพื่อแสดง tag HTML ที่ติดมาด้วย
-                document.getElementById('news-content').innerHTML = selectedNews.contentTh;
-            } else {
-                console.log('News not found.');
+        // Check if selectedNews exists in localStorage
+        const selectedNewsString = sessionStorage.getItem('selectedNews');
+        if (selectedNewsString) {
+            const selectedNews = JSON.parse(selectedNewsString);
+            // Check if the newsId from URL matches the stored newsId
+            if (selectedNews.newsId === newsId) {
+                // Use data from localStorage
+                updateNewsUI(selectedNews);
+                return; // Exit function
             }
-        } catch (error) {
-            console.error('Error loading news:', error);
         }
-    };
+
+        // Fetch news data from the backend
+        const response = await fetch(`${baseURL}/api/news/searchNewsById?id=${newsId}`);
+        const data = await response.json();
+        console.log("🚀 ~ data:", data)
+
+        // Check if news data is found
+        if (data && data.success && data.data) {
+            const selectedNews = data.data; // Found news data
+            updateNewsUI(selectedNews);
+        } else {
+            console.log('News not found.');
+        }
+    } catch (error) {
+        console.error('Error loading news:', error);
+    }
+};
+
+function updateNewsUI(selectedNews) {
+    // Construct complete URL for the image
+    const imageUrl = `/images/${selectedNews.imgLinks}.webp`;
+
+    // Set src attribute of the image tag
+    document.getElementById('news-image').setAttribute('src', imageUrl);
+
+    // Set text content of news title
+    document.getElementById('news-title').textContent = selectedNews.titleTh;
+
+    // Format date as "Month Day, Year"
+    const formattedDate = new Date(selectedNews.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('news-date').textContent = formattedDate;
+
+    // Set innerHTML to display HTML content
+    document.getElementById('news-content').innerHTML = selectedNews.contentTh;
+}
+
 </script>
