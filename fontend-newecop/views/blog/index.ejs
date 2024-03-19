@@ -457,38 +457,34 @@
         };
 
         // Function to fetch trending news with pagination
-        const fetchTrendingNews = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/news/search?trendNew=Trending%20News');
-                const data = await response.json();
-                const trendingNews = data.data;
-                const currentPage = data.pagination.currentPage;
-                const totalPages = data.pagination.totalPages;
+       // Function to fetch trending news with pagination
+const fetchTrendingNews = async () => {
+    try {
+        const response = await fetch('http://localhost:8000/api/news/search?trendNew=Trending%20News');
+        const data = await response.json();
+        const trendingNews = data.data;
+        const currentPage = data.pagination.currentPage;
+        const totalPages = data.pagination.totalPages;
 
-                // Clear existing trending news items
-                const trendingNewsContainer = document.querySelector('.main_related_blog');
-                trendingNewsContainer.innerHTML = '';
+        // Clear existing trending news items
+        const trendingNewsContainer = document.querySelector('.slide-container .card-wrapper');
+        trendingNewsContainer.innerHTML = '';
 
-                // Append trending news items
-                trendingNews.forEach(newsItem => {
-                    // Create trending news item element
-                    const trendingNewsItem = document.createElement('div');
-                    trendingNewsItem.classList.add('related_blog');
+        // Append trending news items
+        trendingNews.forEach(newsItem => {
+            // Create trending news card element
+            const trendingNewsCard = document.createElement('div');
+            trendingNewsCard.classList.add('card', 'swiper-slide');
 
-                    // HTML template for each trending news item
-                    trendingNewsItem.innerHTML = `
-                <div class="related_blog_img">
+            // HTML template for each trending news card
+            trendingNewsCard.innerHTML = `
+                <div class="image-content">
                     <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
                 </div>
-                <div class="related_blog_topic">
-                    <h1>${newsItem.titleTh}</h1>
-                </div>
-
-                <div class="related_blog_desc">
-                    <p>${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
-                </div>
-                <div class="related_blog_read_more">
-                    <a href="#" class="read-more-button" 
+                <div class="card-content">
+                    <h2 class="name">${newsItem.titleTh}</h2>
+                    <p class="description">${sanitizeHTML(newsItem.contentTh.substring(0, maxTextLength))}${newsItem.contentTh.length > maxTextLength ? '...' : ''}</p>
+                    <button class="button read-more-button" 
                             data-news-id="${newsItem.id}"
                             data-img-url="${newsItem.imgLinks}"
                             data-title-th="${newsItem.titleTh}"
@@ -496,30 +492,23 @@
                             data-title-en="${newsItem.title}"
                             data-content-en="${sanitizeHTML(newsItem.contentEn)}"
                             data-date="${newsItem.date}"
-                            data-author="${newsItem.author}"
-                            type="button">Read More</a>
-                </div>
-                <div class="related_blog_option">
-                    <div class="profile_blog_writing">
-                        <img src="img/rectangle-21.png" alt="">
-                        <span>${newsItem.author}</span>
-                    </div>
-                    <div class="related_blog_view">
-                        <i class="fa-solid fa-eye"></i>
-                        <span>${newsItem.viewCount}</span>
-                    </div>
+                            data-author="${newsItem.author}">Read More</button>
                 </div>
             `;
 
-                    trendingNewsContainer.appendChild(trendingNewsItem);
-                });
+            trendingNewsContainer.appendChild(trendingNewsCard);
+        });
 
-                // Create pagination for trending news
-                createPagination(currentPage, totalPages);
-            } catch (error) {
-                console.error('Error fetching trending news:', error);
-            }
-        };
+        // Initialize Swiper slider after appending trending news cards
+        initSwiper();
+
+        // Create pagination for trending news
+        createPagination(currentPage, totalPages);
+    } catch (error) {
+        console.error('Error fetching trending news:', error);
+    }
+};
+
 
         // Call the function to fetch and display trending news
         fetchTrendingNews();
