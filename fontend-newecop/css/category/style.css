@@ -4,9 +4,8 @@ nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
-    position: absolute;
     padding: 20px 50px;
+    background-color: rgb(180, 209, 253);
 }
 
 .logo {

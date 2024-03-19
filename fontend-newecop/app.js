@@ -41,14 +41,14 @@ app.set("view engine", "ejs");
 
 // VIEWS INDEX
 // INDEX
-const indexController = require("./controllers/views/index/indexController");
-app.get("/", indexController);
+// const indexController = require("./controllers/views/index/indexController");
+// app.get("/", indexController);
 
 // สมมติข้อมูลข่าว
 
 // Blog
 const blogController = require("./controllers/views/blog/blogController.js");
-app.get("/blog", blogController);
+app.get("/", blogController);
 
 // Blog
 const categoryController = require("./controllers/views/category/categoryController.js");
@@ -76,9 +76,6 @@ const adminViewController = require("./controllers/views/admin/adminViewControll
 app.get("/admin-ecop/viewnews", adminViewController);
 const adminEditController = require("./controllers/views/admin/adminEditController");
 app.get("/admin-ecop/editnews", adminEditController);
-
-
-
 
 app.listen(SERVER_PORT, () =>
   console.log(

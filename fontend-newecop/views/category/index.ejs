@@ -1,68 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pagination Example</title>
-<style>
-    /* CSS styles for pagination */
-    .container_pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
-    .container_pagination a {
-        padding: 5px 10px;
-        margin: 0 5px;
-        border: 1px solid #ccc;
-        text-decoration: none;
-    }
-    .container_pagination a.pagination-active {
-        background-color: #007bff;
-        color: #fff;
-    }
-</style>
-</head>
-<body>
-
-<div class="content_blog_list">
-    <div class="header_blog_list">
-        <h1>Reading blog list</h1>
-    </div>
-    <div class="main_blog_list">
-        <a href="#" class="content_blog">
-            <div class="blog_image">
-                <img src="/img/blog1.jpg" alt="">
-            </div>
-            <span>Cyber Attack</span>
-        </a>
-        <a href="#" class="content_blog">
-            <div class="blog_image">
-                <img src="/img/blog2.jpg" alt="">
-            </div>
-            <span>Malware</span>
-        </a>
-        <a href="#" class="content_blog">
-            <div class="blog_image">
-                <img src="/img/blog3.jpg" alt="">
-            </div>
-            <span>Cyber Threat</span>
-        </a>
-        <a href="#" class="content_blog">
-            <div class="blog_image">
-                <img src="/img/blog4.jpg" alt="">
-            </div>
-            <span>Vulnerability</span>
-        </a>
-    </div>
-</div>
-
-<div class="content_related_blog">
+<!-- <div class="content_related_blog">
     <div class="header_blog_list">
         <h1>Trending News</h1>
     </div>
     <div class="main_related_blog">
-        <!-- <div class="related_blog">
+        <div class="related_blog">
             <div class="related_blog_img">
                 <img src="img/rectangle-87.webp" alt="">
             </div>
@@ -108,20 +49,17 @@
                     <span></span>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 
     <div class="arrow">
 
     </div>
-</div>
+</div> -->
 
 <div class="content_maketing_articles">
     <div class="header_blog_list">
         <h1>News Articles</h1>
-    </div>
-    <div class="search_blog_list">
-        <input type="text">
     </div>
     <div class="main_maketing_articles">
         <!-- <div class="maketing_articles">
@@ -158,6 +96,35 @@
 					<a href="#">6</a>
 				</span>
 				<a class="pagination-older" href="#">NEXT</a>
+</div>
+
+<div class="content_blog_list">
+    <div class="main_blog_list">
+        <a href="#" class="content_blog">
+            <div class="blog_image">
+                <img src="/img/blog1.jpg" alt="">
+            </div>
+            <span>Cyber Attack</span>
+        </a>
+        <a href="#" class="content_blog">
+            <div class="blog_image">
+                <img src="/img/blog2.jpg" alt="">
+            </div>
+            <span>Malware</span>
+        </a>
+        <a href="#" class="content_blog">
+            <div class="blog_image">
+                <img src="/img/blog3.jpg" alt="">
+            </div>
+            <span>Cyber Threat</span>
+        </a>
+        <a href="#" class="content_blog">
+            <div class="blog_image">
+                <img src="/img/blog4.jpg" alt="">
+            </div>
+            <span>Vulnerability</span>
+        </a>
+    </div>
 </div>
 
 <script>
@@ -391,5 +358,3 @@ const initializePagination = async () => {
     };
     
 </script>
-</body>
-</html>

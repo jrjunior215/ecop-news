@@ -1,29 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pagination Example</title>
-<style>
-    /* CSS styles for pagination */
-    .container_pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
-    .container_pagination a {
-        padding: 5px 10px;
-        margin: 0 5px;
-        border: 1px solid #ccc;
-        text-decoration: none;
-    }
-    .container_pagination a.pagination-active {
-        background-color: #007bff;
-        color: #fff;
-    }
-</style>
-</head>
-<body>
 <div class="container_blog">
     <div class="content_banner">
         <div class="content_text_blog">
@@ -43,38 +17,6 @@
         <div class="content_img_blog">
             <img src="/img/darkweb.png" alt="">
         </div>
-    </div>
-</div>
-
-<div class="content_blog_list">
-    <div class="header_blog_list">
-        <h1>Reading blog list</h1>
-    </div>
-    <div class="main_blog_list">
-        <a href="#" class="content_blog">
-            <div class="blog_image">
-                <img src="/img/blog1.jpg" alt="">
-            </div>
-            <span>Cyber Attack</span>
-        </a>
-        <a href="#" class="content_blog">
-            <div class="blog_image">
-                <img src="/img/blog2.jpg" alt="">
-            </div>
-            <span>Malware</span>
-        </a>
-        <a href="#" class="content_blog">
-            <div class="blog_image">
-                <img src="/img/blog3.jpg" alt="">
-            </div>
-            <span>Cyber Threat</span>
-        </a>
-        <a href="#" class="content_blog">
-            <div class="blog_image">
-                <img src="/img/blog4.jpg" alt="">
-            </div>
-            <span>Vulnerability</span>
-        </a>
     </div>
 </div>
 
@@ -139,11 +81,11 @@
 
 <div class="content_maketing_articles">
     <div class="header_blog_list">
-        <h1>News Articles</h1>
+        <h1>ข่าวสารทั้งหมด</h1>
     </div>
     <div class="search_blog_list">
-        <button id="searchButton">Search</button>
-    <input type="text" id="searchInput" placeholder="Search News">
+        <input type="text" id="searchInput" placeholder="Search News">
+        <button id="searchButton"><i class="fa fa-search" aria-hidden="true"></i></button>
     </div>
     <div class="main_maketing_articles">
 </div>
@@ -152,13 +94,42 @@
     <a class="pagination-newer" href="#">PREV</a>
 				<span class="pagination-inner">
 					<a href="#">1</a>
-					<a class="pagination-active" href="#">2</a>
+					<a href="#">2</a>
 					<a href="#">3</a>
 					<a href="#">4</a>
 					<a href="#">5</a>
 					<a href="#">6</a>
 				</span>
-				<a class="pagination-older" href="#">NEXT</a>
+	<a class="pagination-older" href="#">NEXT</a>
+</div>
+
+<div class="content_blog_list">
+    <div class="main_blog_list">
+        <a href="#" class="content_blog">
+            <div class="blog_image">
+                <img src="/img/blog1.jpg" alt="">
+            </div>
+            <span>Cyber Attack</span>
+        </a>
+        <a href="#" class="content_blog">
+            <div class="blog_image">
+                <img src="/img/blog2.jpg" alt="">
+            </div>
+            <span>Malware</span>
+        </a>
+        <a href="#" class="content_blog">
+            <div class="blog_image">
+                <img src="/img/blog3.jpg" alt="">
+            </div>
+            <span>Cyber Threat</span>
+        </a>
+        <a href="#" class="content_blog">
+            <div class="blog_image">
+                <img src="/img/blog4.jpg" alt="">
+            </div>
+            <span>Vulnerability</span>
+        </a>
+    </div>
 </div>
 
 <script>
@@ -230,6 +201,16 @@
                         <div class="articles_img">
                             <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
                         </div>
+                        <div class="articles_list">
+                        <div class="articles_category">
+                            <i class="fa fa-th-large"></i>
+                            <span>${newsItem.pTags}</span>
+                        </div>
+                        <div class="articles_date">
+                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                            <span>${newsItem.date}</span>
+                        </div>
+                    </div>
                         <div class="header_articles">
                             <h1>${newsItem.titleTh}</h1>
                         </div>
@@ -283,7 +264,7 @@ const createPagination = (currentPage, totalPages) => {
 
     const prevButton = document.createElement('a');
     prevButton.classList.add('pagination-newer');
-    prevButton.textContent = 'PREV';
+    prevButton.textContent = '< PREV';
     // prevButton.href = '#';
     prevButton.addEventListener('click', () => {
         if (currentPage > 1) {
@@ -334,7 +315,7 @@ const createPagination = (currentPage, totalPages) => {
 
     const nextButton = document.createElement('a');
     nextButton.classList.add('pagination-older');
-    nextButton.textContent = 'NEXT';
+    nextButton.textContent = 'NEXT >';
     // nextButton.href = '#';
     nextButton.addEventListener('click', () => {
         if (currentPage < totalPages) {
@@ -492,5 +473,3 @@ fetchTrendingNews();
     };
     
 </script>
-</body>
-</html>
