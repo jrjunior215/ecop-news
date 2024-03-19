@@ -199,7 +199,7 @@
             const createNewsItem = (newsItem) => {
                 const item = document.createElement('div');
                 item.classList.add('maketing_articles');
-
+                const formattedDate = new Date(newsItem.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });     
                 // HTML template for the news item
                 item.innerHTML = `
                 <div class="container_box_articles">
@@ -223,7 +223,7 @@
                             </div>
                             <div class="articles_date">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                <span>${newsItem.date}</span>
+                                <span>${formattedDate}</span>
                             </div>
                         </div>
                         <div class="header_articles">
@@ -475,7 +475,7 @@ const fetchTrendingNews = async () => {
             // Create trending news card element
             const trendingNewsCard = document.createElement('div');
             trendingNewsCard.classList.add('card', 'swiper-slide');
-
+            const formattedDate = new Date(newsItem.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
             // HTML template for each trending news card
             trendingNewsCard.innerHTML = `
                 <div class="image-content">
@@ -491,7 +491,7 @@ const fetchTrendingNews = async () => {
                             data-content-th="${newsItem.contentTh}"
                             data-title-en="${newsItem.title}"
                             data-content-en="${sanitizeHTML(newsItem.contentEn)}"
-                            data-date="${newsItem.date}"
+                            data-date="${formattedDate}"
                             data-author="${newsItem.author}">Read More</button>
                 </div>
             `;
