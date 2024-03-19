@@ -70,12 +70,22 @@ app.get("/admin-ecop/news", adminNewsController);
 const adminLoginController = require("./controllers/views/admin/adminLoginController");
 app.get("/admin-ecop/login", adminLoginController);
 
+const adminCreateController = require("./controllers/views/admin/adminCreateController");
+app.get("/admin-ecop/createnews", adminCreateController);
+const adminViewController = require("./controllers/views/admin/adminViewController");
+app.get("/admin-ecop/viewnews", adminViewController);
+const adminEditController = require("./controllers/views/admin/adminEditController");
+app.get("/admin-ecop/editnews", adminEditController);
+
+
+
+
 app.listen(SERVER_PORT, () =>
   console.log(
     "Server is Running on Port " +
       SERVER_PORT +
       " and Server ip : " +
       SERVER_IP +
-      "."
+      ":" + SERVER_PORT
   )
 );

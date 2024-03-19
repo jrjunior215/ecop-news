@@ -1,0 +1,55 @@
+<div class="container_crud_create px-3 pt-3">
+    <div class="col border-bottom">
+        <h1>Add News</h1>
+    </div>
+    <div class="col py-3 px-3">
+        <form action="/addnews" method="POST">
+            <div class="row mb-4">
+                <div class="col">
+                    <label for="title">Title EN</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="TitleEN" required>
+                </div>
+                <div class="col">
+                    <label for="titleTh">Title TH</label>
+                    <input type="text" class="form-control" id="titleTh" name="titleTh" placeholder="TitleTH" required>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col">
+                    <label for="contentEn">Content En</label>
+                    <textarea class="form-control" name="contentEn" id="contentEn" cols="30" rows="10" placeholder="contentEn"></textarea>
+                </div>
+                <div class="col">
+                    <label for="contentTh">Content En</label>
+                    <textarea class="form-control" name="contentTh" id="contentTh" cols="30" rows="10" placeholder="contentTh"></textarea>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col">
+                    <label for="category">category</label>
+                    <input type="text" class="form-control" id="category" name="category" placeholder="category" required>
+                </div>
+                <div class="col">
+                    <label for="pTags">pTags</label>
+                    <input type="text" class="form-control" id="pTags" name="pTags" placeholder="pTags" required>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col">
+                    <label for="trend_new">trend_new</label>
+                    <input type="text" class="form-control" id="category" name="category" placeholder="category" required>
+                </div>
+                <div class="col">
+                    <label for="imgLinks">imgLinks</label>
+                    <input type="text" class="form-control" id="imgLinks" name="imgLinks" placeholder="imgLinks" required>
+                </div>
+            </div>
+            <div class="row mb-4 border-top">
+                <div class="col py-2 d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                    <a type="button" class="btn btn-danger" href="/admin-ecop/news">Back</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
