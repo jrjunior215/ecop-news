@@ -376,6 +376,7 @@
     width: auto;
     height: auto;
     padding: 20px 30px;
+    background-color: #274b70;
 }
 
 .pagination-newer, .pagination-older {
@@ -384,7 +385,7 @@
     margin: 0 10px;
     cursor: pointer;
     text-decoration: none;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #2c2c2c;
 }
 
