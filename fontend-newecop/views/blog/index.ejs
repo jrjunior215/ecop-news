@@ -88,19 +88,22 @@
         <button id="searchButton"><i class="fa fa-search" aria-hidden="true"></i></button>
     </div>
     <div class="main_maketing_articles">
+    </div>
 </div>
 
 <div class="container_pagination">
-    <a class="pagination-newer" href="#">PREV</a>
-				<span class="pagination-inner">
-					<a href="#">1</a>
-					<a href="#">2</a>
-					<a href="#">3</a>
-					<a href="#">4</a>
-					<a href="#">5</a>
-					<a href="#">6</a>
-				</span>
-	<a class="pagination-older" href="#">NEXT</a>
+    <div class="pagination">
+        <a class="pagination-newer" href="#">PREV</a>
+        <span class="pagination-inner">
+            <a href="#">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <a href="#">5</a>
+            <a href="#">6</a>
+        </span>
+        <a class="pagination-older" href="#">NEXT</a>
+    </div>
 </div>
 
 <div class="content_blog_list">
@@ -135,7 +138,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", async function () {
         try {
-            document.getElementById('searchButton').addEventListener('click', async function() {
+            document.getElementById('searchButton').addEventListener('click', async function () {
                 const searchInputValue = document.getElementById('searchInput').value;
                 const page = 1; // Assuming you start from page 1
                 const url = `http://localhost:8000/api/news/searchNews?pageSize=12&page=${page}&title=${searchInputValue}`;
@@ -257,74 +260,74 @@
             };
 
             // Function to create pagination
-           // Function to create pagination
-const createPagination = (currentPage, totalPages) => {
-    const paginationContainer = document.querySelector('.container_pagination');
-    paginationContainer.innerHTML = ''; // Clear existing pagination
+            // Function to create pagination
+            const createPagination = (currentPage, totalPages) => {
+                const paginationContainer = document.querySelector('.container_pagination');
+                paginationContainer.innerHTML = ''; // Clear existing pagination
 
-    const prevButton = document.createElement('a');
-    prevButton.classList.add('pagination-newer');
-    prevButton.textContent = '< PREV';
-    // prevButton.href = '#';
-    prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            fetchDataForPage(currentPage - 1);
-        }
-    });
-    paginationContainer.appendChild(prevButton);
+                const prevButton = document.createElement('a');
+                prevButton.classList.add('pagination-newer');
+                prevButton.textContent = '< กลับ';
+                // prevButton.href = '#';
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        fetchDataForPage(currentPage - 1);
+                    }
+                });
+                paginationContainer.appendChild(prevButton);
 
-    const paginationInner = document.createElement('span');
-    paginationInner.classList.add('pagination-inner');
+                const paginationInner = document.createElement('span');
+                paginationInner.classList.add('pagination-inner');
 
-    // Add page links
-    const maxVisiblePages = 5; // Maximum number of visible page links
-    const halfVisiblePages = Math.floor(maxVisiblePages / 2);
-    let startPage = Math.max(currentPage - halfVisiblePages, 1);
-    let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+                // Add page links
+                const maxVisiblePages = 5; // Maximum number of visible page links
+                const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+                let startPage = Math.max(currentPage - halfVisiblePages, 1);
+                let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
 
-    if (endPage - startPage < maxVisiblePages - 1) {
-        startPage = Math.max(endPage - maxVisiblePages + 1, 1);
-    }
+                if (endPage - startPage < maxVisiblePages - 1) {
+                    startPage = Math.max(endPage - maxVisiblePages + 1, 1);
+                }
 
-    if (startPage > 1) {
-        const ellipsisStart = document.createElement('span');
-        ellipsisStart.textContent = '...';
-        paginationInner.appendChild(ellipsisStart);
-    }
+                if (startPage > 1) {
+                    const ellipsisStart = document.createElement('span');
+                    ellipsisStart.textContent = '...';
+                    paginationInner.appendChild(ellipsisStart);
+                }
 
-    for (let i = startPage; i <= endPage; i++) {
-        const pageLink = document.createElement('a');
-        // pageLink.href = '#';
-        pageLink.textContent = i;
-        if (i === currentPage) {
-            pageLink.classList.add('pagination-active');
-        }
-        pageLink.addEventListener('click', () => {
-            fetchDataForPage(i);
-        });
-        paginationInner.appendChild(pageLink);
-    }
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageLink = document.createElement('a');
+                    // pageLink.href = '#';
+                    pageLink.textContent = i;
+                    if (i === currentPage) {
+                        pageLink.classList.add('pagination-active');
+                    }
+                    pageLink.addEventListener('click', () => {
+                        fetchDataForPage(i);
+                    });
+                    paginationInner.appendChild(pageLink);
+                }
 
-    if (endPage < totalPages) {
-        const ellipsisEnd = document.createElement('span');
-        ellipsisEnd.textContent = '...';
-        paginationInner.appendChild(ellipsisEnd);
-    }
+                if (endPage < totalPages) {
+                    const ellipsisEnd = document.createElement('span');
+                    ellipsisEnd.textContent = '...';
+                    paginationInner.appendChild(ellipsisEnd);
+                }
 
-    paginationContainer.appendChild(paginationInner);
+                paginationContainer.appendChild(paginationInner);
 
-    const nextButton = document.createElement('a');
-    nextButton.classList.add('pagination-older');
-    nextButton.textContent = 'NEXT >';
-    // nextButton.href = '#';
-    nextButton.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            fetchDataForPage(currentPage + 1);
-        }
-    });
-    paginationContainer.appendChild(nextButton);
-};
-            
+                const nextButton = document.createElement('a');
+                nextButton.classList.add('pagination-older');
+                nextButton.textContent = 'ต่อไป >';
+                // nextButton.href = '#';
+                nextButton.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        fetchDataForPage(currentPage + 1);
+                    }
+                });
+                paginationContainer.appendChild(nextButton);
+            };
+
             // Function to fetch data for a specific page
             const fetchDataForPage = async (page) => {
                 try {
@@ -359,32 +362,32 @@ const createPagination = (currentPage, totalPages) => {
             initializePagination();
 
             // Event delegation for "Read More" buttons
-          // Event delegation for "Read More" buttons in related blogs and marketing articles
-document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('read-more-button')) {
-        event.preventDefault();
-        const button = event.target;
-        const newsId = button.getAttribute('data-news-id');
-        const imgUrl = button.getAttribute('data-img-url');
-        const titleTh = button.getAttribute('data-title-th');
-        const contentTh = button.getAttribute('data-content-th');
-        const titleEn = button.getAttribute('data-title-en');
-        const contentEn = button.getAttribute('data-content-en');
-        const date = button.getAttribute('data-date');
-        const author = button.getAttribute('data-author');
+            // Event delegation for "Read More" buttons in related blogs and marketing articles
+            document.addEventListener('click', function (event) {
+                if (event.target.classList.contains('read-more-button')) {
+                    event.preventDefault();
+                    const button = event.target;
+                    const newsId = button.getAttribute('data-news-id');
+                    const imgUrl = button.getAttribute('data-img-url');
+                    const titleTh = button.getAttribute('data-title-th');
+                    const contentTh = button.getAttribute('data-content-th');
+                    const titleEn = button.getAttribute('data-title-en');
+                    const contentEn = button.getAttribute('data-content-en');
+                    const date = button.getAttribute('data-date');
+                    const author = button.getAttribute('data-author');
 
-        // Store selected news data in localStorage
-        // localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author }));
+                    // Store selected news data in localStorage
+                    // localStorage.setItem('selectedNews', JSON.stringify({ newsId, imgUrl, titleTh, contentTh, titleEn, contentEn, date, author }));
 
-        let url;
-        if (button.classList.contains('related_blog')) {
-            url = `/news/${newsId}`; // Assuming the URL pattern for blogs is '/blogs/{id}'
-        } else {
-            url = `/news/${newsId}`; // Assuming the URL pattern for news is '/news/{id}'
-        }
-        window.location.href = url;
-    }
-});
+                    let url;
+                    if (button.classList.contains('related_blog')) {
+                        url = `/news/${newsId}`; // Assuming the URL pattern for blogs is '/blogs/{id}'
+                    } else {
+                        url = `/news/${newsId}`; // Assuming the URL pattern for news is '/news/{id}'
+                    }
+                    window.location.href = url;
+                }
+            });
 
 
         } catch (error) {
@@ -394,34 +397,34 @@ document.addEventListener('click', function(event) {
 
         const maxTextLength = 100;
 
-// Function to sanitize HTML content to text
-const sanitizeHTML = (html) => {
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    return temp.textContent || temp.innerText || '';
-};
+        // Function to sanitize HTML content to text
+        const sanitizeHTML = (html) => {
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            return temp.textContent || temp.innerText || '';
+        };
 
-// Function to fetch trending news with pagination
-const fetchTrendingNews = async () => {
-    try {
-        const response = await fetch('http://localhost:8000/api/news/search?trendNew=Trending%20News');
-        const data = await response.json();
-        const trendingNews = data.data;
-        const currentPage = data.pagination.currentPage;
-        const totalPages = data.pagination.totalPages;
+        // Function to fetch trending news with pagination
+        const fetchTrendingNews = async () => {
+            try {
+                const response = await fetch('http://localhost:8000/api/news/search?trendNew=Trending%20News');
+                const data = await response.json();
+                const trendingNews = data.data;
+                const currentPage = data.pagination.currentPage;
+                const totalPages = data.pagination.totalPages;
 
-        // Clear existing trending news items
-        const trendingNewsContainer = document.querySelector('.main_related_blog');
-        trendingNewsContainer.innerHTML = '';
+                // Clear existing trending news items
+                const trendingNewsContainer = document.querySelector('.main_related_blog');
+                trendingNewsContainer.innerHTML = '';
 
-        // Append trending news items
-        trendingNews.forEach(newsItem => {
-            // Create trending news item element
-            const trendingNewsItem = document.createElement('div');
-            trendingNewsItem.classList.add('related_blog');
+                // Append trending news items
+                trendingNews.forEach(newsItem => {
+                    // Create trending news item element
+                    const trendingNewsItem = document.createElement('div');
+                    trendingNewsItem.classList.add('related_blog');
 
-            // HTML template for each trending news item
-            trendingNewsItem.innerHTML = `
+                    // HTML template for each trending news item
+                    trendingNewsItem.innerHTML = `
                 <div class="related_blog_img">
                     <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks}">
                 </div>
@@ -456,20 +459,20 @@ const fetchTrendingNews = async () => {
                 </div>
             `;
 
-            trendingNewsContainer.appendChild(trendingNewsItem);
-        });
+                    trendingNewsContainer.appendChild(trendingNewsItem);
+                });
 
-        // Create pagination for trending news
-        createPagination(currentPage, totalPages);
-    } catch (error) {
-        console.error('Error fetching trending news:', error);
-    }
-};
+                // Create pagination for trending news
+                createPagination(currentPage, totalPages);
+            } catch (error) {
+                console.error('Error fetching trending news:', error);
+            }
+        };
 
-// Call the function to fetch and display trending news
-fetchTrendingNews();
+        // Call the function to fetch and display trending news
+        fetchTrendingNews();
 
 
     };
-    
+
 </script>

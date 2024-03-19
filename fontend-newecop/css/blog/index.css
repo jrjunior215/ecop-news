@@ -231,7 +231,7 @@
     flex-wrap: wrap;
     align-items: stretch;
     /* Ensure flex items stretch to equal height */
-    margin-bottom: 50px;
+    margin-bottom: 10px;
 }
 
 .maketing_articles {
@@ -365,9 +365,17 @@
 }
 
 .container_pagination {
-    margin: 100px auto;
+    margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 150px;
     text-align: center;
     width: 100%;
+}
+
+.pagination {
+    width: auto;
+    height: auto;
+    padding: 20px 30px;
 }
 
 .pagination-newer, .pagination-older {
@@ -376,7 +384,7 @@
     margin: 0 10px;
     cursor: pointer;
     text-decoration: none;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: #2c2c2c;
 }
 
@@ -435,3 +443,4 @@ a:not([href]):not([class]) {
 .articles_list span {
     margin-left: 4px;
 }
+

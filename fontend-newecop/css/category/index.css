@@ -86,7 +86,16 @@
 }
 
 .header_blog_list {
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    align-items: center;
+    width: 100%;
+}
+
+.header_blog_list h1 {
+    font-size: 3rem;
+    font-weight: 600;
 }
 
 .main_blog_list {
