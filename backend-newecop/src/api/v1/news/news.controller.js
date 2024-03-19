@@ -333,7 +333,11 @@ export const deleteNews = async (req, res, next) => {
 //http://ip-api.com/json/?fields=query
 export const logView = async (req, res, next) => {
   try {
-    const { newsId, userIp } = logViewSchema.parse(req.body);
+    // Parse newsId as number
+    const newsId = parseInt(req.body.newsId);
+
+    // Validate schema
+    const { userIp } = logViewSchema.parse({ ...req.body, newsId });
 
     // Check User-Agent
     const userAgent = req.get("User-Agent");
@@ -391,7 +395,6 @@ export const logView = async (req, res, next) => {
     await prisma.$disconnect();
   }
 };
-
 // Function to get user geographical information using ip-api.com
 export const getUserLocation = async (ip) => {
   try {
