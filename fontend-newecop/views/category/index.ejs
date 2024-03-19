@@ -206,6 +206,7 @@
             // Function to create pagination
            // Function to create pagination
 const createPagination = (currentPage, totalPages) => {
+    const baseURL = "<%= process.env.BACKEND_API %>";
     const paginationContainer = document.querySelector('.container_pagination');
     paginationContainer.innerHTML = ''; // Clear existing pagination
 
@@ -283,7 +284,7 @@ const fetchDataForPage = async (page) => {
             category = "Data Breach";
         }
 
-        let apiUrl = `http://localhost:8000/api/news/search?pageSize=12&page=${page}`;
+        let apiUrl = `${baseURL}/api/news/search?pageSize=12&page=${page}`;
         if (category) {
             apiUrl += `&category=${category}`;
         }
@@ -315,7 +316,7 @@ const initializePagination = async () => {
         console.log("🚀 ~ initializePagination ~ category:", category)
 
         // Build API URL with category
-        let apiUrl = `http://localhost:8000/api/news/search?pageSize=12&page=1`;
+        let apiUrl = `${baseURL}/api/news/search?pageSize=12&page=1`;
         if (category) {
             apiUrl += `&category=${category}`;
         }

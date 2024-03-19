@@ -32,22 +32,19 @@
     <div class="slide-container swiper">
       <div class="slide-content">
         <div class="card-wrapper swiper-wrapper">
-          <div class="card swiper-slide">
+          <!-- <div class="card swiper-slide">
             <div class="image-content">
               <img src="/img/background.png" alt="" />
             </div>
 
             <div class="card-content">
-              <h2 class="name">Mohamed Yousefaasdasdas</h2>
+              <h2 class="name"></h2>
               <p class="description">
-                The lorem text the section that contains header with having open
-                functionality. Lorem dolor sit amet consectetur adipisicing
-                elit.
               </p>
 
-              <button class="button">View More</button>
+              <button class="button"></button>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
 
@@ -120,6 +117,7 @@
 <script src="//cdn.jsdelivr.net/gh/freeps2/a7rarpress@main/script.js"></script>
 
 <script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
   document.addEventListener("DOMContentLoaded", async function () {
     try {
       document
@@ -127,7 +125,7 @@
         .addEventListener("click", async function () {
           const searchInputValue = document.getElementById("searchInput").value;
           const page = 1; // Assuming you start from page 1
-          const url = `http://localhost:8000/api/news/searchNews?pageSize=12&page=${page}&title=${searchInputValue}`;
+          const url = `${baseURL}/api/news/searchNews?pageSize=12&page=${page}&title=${searchInputValue}`;
 
           const response = await fetch(url);
           const data = await response.json();
@@ -208,18 +206,6 @@
         // HTML template for the news item
         item.innerHTML = `
                 <div class="container_box_articles">
-                        <div class="read-more-button" 
-                            data-news-id="${newsItem.id}"
-                            data-img-url="${newsItem.imgLinks}"
-                            data-title-th="${newsItem.titleTh}"
-                            data-content-th="${newsItem.contentTh}"
-                            data-title-en="${newsItem.title}"
-                            data-content-en="${sanitizeHTML(
-                              newsItem.contentEn
-                            )}"
-                            data-date="${newsItem.date}"
-                            data-author="${newsItem.author}"
-                            type="button">
                         <div class="articles_img">
                             <img src="/images/${newsItem.imgLinks}.webp" alt="${
           newsItem.imgLinks
@@ -257,7 +243,6 @@
                             data-date="${newsItem.date}"
                             data-author="${newsItem.author}"
                             type="button">Read More</a>
-                        </div>
                     </div>
                     <div class="article_option">
                         <div class="profile_article_writing">
@@ -478,71 +463,76 @@
     // Function to fetch trending news with pagination
     // Function to fetch trending news with pagination
     const fetchTrendingNews = async () => {
-      try {
-        const response = await fetch(
-          `${baseURL}/api/news/search?trendNew=Trending%20News`
-        );
-        const data = await response.json();
-        const trendingNews = data.data;
-        const currentPage = data.pagination.currentPage;
-        const totalPages = data.pagination.totalPages;
+  try {
+    const response = await fetch(
+      `${baseURL}/api/news/search?trendNew=Trending%20News`
+    );
+    const data = await response.json();
+    const trendingNews = data.data;
+    const currentPage = data.pagination.currentPage;
+    const totalPages = data.pagination.totalPages;
 
-        // Clear existing trending news items
-        const trendingNewsContainer = document.querySelector(
-          ".slide-container .card-wrapper"
-        );
-        trendingNewsContainer.innerHTML = "";
+    // Clear existing trending news items
+    const trendingNewsContainer = document.querySelector(
+      ".slide-container .card-wrapper"
+    );
+    trendingNewsContainer.innerHTML = "";
 
-        // Append trending news items
-        trendingNews.forEach((newsItem) => {
-          // Create trending news card element
-          const trendingNewsCard = document.createElement("div");
-          trendingNewsCard.classList.add("card", "swiper-slide");
-          const formattedDate = new Date(newsItem.date).toLocaleDateString(
-            "en-US",
-            { year: "numeric", month: "long", day: "numeric" }
-          );
-          // HTML template for each trending news card
-          trendingNewsCard.innerHTML = `
-                <div class="image-content">
-                    <img src="/images/${newsItem.imgLinks}.webp" alt="${
-            newsItem.imgLinks
-          }">
-                </div>
-                <div class="card-content">
-                    <h2 class="name">${newsItem.titleTh}</h2>
-                    <p class="description">${sanitizeHTML(
-                      newsItem.contentTh.substring(0, maxTextLength)
-                    )}${
-            newsItem.contentTh.length > maxTextLength ? "..." : ""
-          }</p>
-                    <button class="button read-more-button" 
-                            data-news-id="${newsItem.id}"
-                            data-img-url="${newsItem.imgLinks}"
-                            data-title-th="${newsItem.titleTh}"
-                            data-content-th="${newsItem.contentTh}"
-                            data-title-en="${newsItem.title}"
-                            data-content-en="${sanitizeHTML(
-                              newsItem.contentEn
-                            )}"
-                            data-date="${formattedDate}"
-                            data-author="${newsItem.author}">Read More</button>
-                </div>
-            `;
+    // Append trending news items
+    trendingNews.forEach((newsItem) => {
+      // Create trending news card element
+      const trendingNewsCard = document.createElement("div");
+      trendingNewsCard.classList.add("card", "swiper-slide");
+      
+      // Set image source
+      const imageContent = document.createElement("div");
+      imageContent.classList.add("image-content");
+      const img = document.createElement("img");
+      img.src = `/images/${newsItem.imgLinks}.webp`;
+      img.alt = newsItem.imgLinks;
+      imageContent.appendChild(img);
+      trendingNewsCard.appendChild(imageContent);
 
-          trendingNewsContainer.appendChild(trendingNewsCard);
-        });
+      // Set card content
+      const cardContent = document.createElement("div");
+      cardContent.classList.add("card-content");
+      const formattedDate = new Date(newsItem.date).toLocaleDateString(
+        "en-US",
+        { year: "numeric", month: "long", day: "numeric" }
+      );
+      cardContent.innerHTML = `
+        <h2 class="name">${newsItem.titleTh}</h2>
+        <p class="description">${sanitizeHTML(
+          newsItem.contentTh.substring(0, maxTextLength)
+        )}${newsItem.contentTh.length > maxTextLength ? "..." : ""}</p>
+        <button class="button read-more-button" 
+                data-news-id="${newsItem.id}"
+                data-img-url="${newsItem.imgLinks}"
+                data-title-th="${newsItem.titleTh}"
+                data-content-th="${newsItem.contentTh}"
+                data-title-en="${newsItem.title}"
+                data-content-en="${sanitizeHTML(newsItem.contentEn)}"
+                data-date="${formattedDate}"
+                data-author="${newsItem.author}">Read More</button>
+      `;
+      trendingNewsCard.appendChild(cardContent);
 
-        // Initialize Swiper slider after appending trending news cards
-        initSwiper();
+      // Append card to container
+      trendingNewsContainer.appendChild(trendingNewsCard);
+    });
 
-        // Create pagination for trending news
-        createPagination(currentPage, totalPages);
-      } catch (error) {
-        console.error("Error fetching trending news:", error);
-      }
-    };
-    // Call the function to fetch and display trending news
-    fetchTrendingNews();
+    // Initialize Swiper slider after appending trending news cards
+    initSwiper();
+
+    // Create pagination for trending news
+    createPagination(currentPage, totalPages);
+  } catch (error) {
+    console.error("Error fetching trending news:", error);
+  }
+};
+
+// Call the function to fetch and display trending news
+fetchTrendingNews();
+
   };
 </script>

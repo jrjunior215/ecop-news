@@ -53,12 +53,12 @@ app.use(
   })
 );
 
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50,
-});
-app.use("/api", limiter);
+// // Rate Limiting
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 50,
+// });
+// app.use("/api", limiter);
 
 // API Routes
 app.use("/api", api);

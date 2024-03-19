@@ -12,12 +12,13 @@
 
 <script>
     window.onload = async function () {
+        const baseURL = "<%= process.env.BACKEND_API %>";
         try {
             // ดึง ID ข่าวจาก URL
             const newsId = window.location.pathname.split('/').pop();
 
             // ส่งข้อมูล ID ไปยัง backend เพื่อค้นหาข้อมูลข่าว
-            const response = await fetch(`http://localhost:8000/api/news/searchNewsById?id=${newsId}`);
+            const response = await fetch(`${baseURL}/api/news/searchNewsById?id=${newsId}`);
             const data = await response.json();
             console.log("🚀 ~ data:", data)
 

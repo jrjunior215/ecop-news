@@ -10,6 +10,7 @@
     <div id="searchResultsContainer"></div>
 
     <script>
+        const baseURL = "<%= process.env.BACKEND_API %>";
         // Function to sanitize HTML content
         function sanitizeHTML(str) {
             return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -30,7 +31,7 @@
         // Function to log view
         async function logView(newsId, userIp) {
             try {
-                const logViewResponse = await fetch('http://localhost:8000/api/news/logView', {
+                const logViewResponse = await fetch(`${baseURL}/api/news/logView`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
