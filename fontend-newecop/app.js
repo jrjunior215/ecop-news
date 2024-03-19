@@ -15,9 +15,9 @@ app.set("layout", "./layouts/layout");
 
 //SET PAGE LAYOUT
 // Middleware for handling 404 errors
-app.use((req, res, next) => {
-  res.status(404).send("Page Not Found"); // Send "Page Not Found" message for 404 errors
-});
+// app.use((req, res, next) => {
+//   res.status(404).send("Page Not Found"); // Send "Page Not Found" message for 404 errors
+// });
 
 // SET EXPRESS
 
@@ -96,7 +96,7 @@ app.get("/admin-ecop/createnews", isAuthenticated, adminCreateController);
 const adminViewController = require("./controllers/views/admin/adminViewController");
 app.get("/admin-ecop/viewnews", isAuthenticated, adminViewController);
 const adminEditController = require("./controllers/views/admin/adminEditController");
-app.get("/admin-ecop/editnews", isAuthenticated, adminEditController);
+app.get("/admin-ecop/editnews/:id", isAuthenticated, adminEditController);
 
 app.listen(SERVER_PORT, () =>
   console.log(
