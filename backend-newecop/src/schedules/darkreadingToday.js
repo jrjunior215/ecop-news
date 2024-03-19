@@ -123,8 +123,7 @@ async function fetchDataFromLink(link) {
       );
       removeElementsByClass($, ".TwoColumnLayout-Sidebar");
 
-      const title = $('title').text();
-
+      const title = $("title").text();
 
       const existingNewsRecord = await prisma.news.findFirst({
         where: { title: title },
@@ -156,15 +155,14 @@ async function fetchDataFromLink(link) {
       const imagePath1 = "images/" + imageFileName + ".webp";
       const imagePath2 = "../fontend-newecop/images/" + imageFileName + ".webp";
 
-        const imageResponse = await axios.get(modifiedImageUrl, {
-          responseType: "arraybuffer",
-        });
+      const imageResponse = await axios.get(modifiedImageUrl, {
+        responseType: "arraybuffer",
+      });
 
-        await Promise.all([
-          fs.promises.writeFile(imagePath1, imageResponse.data),
-          fs.promises.writeFile(imagePath2, imageResponse.data)
-        ]);
-
+      await Promise.all([
+        fs.promises.writeFile(imagePath1, imageResponse.data),
+        fs.promises.writeFile(imagePath2, imageResponse.data),
+      ]);
 
       const paragraphs = [];
       $('div[data-module="content"] p').each((index, element) => {
@@ -220,7 +218,7 @@ async function fetchDataFromLink(link) {
 }
 // ฟังก์ชันสำหรับ scraping ข้อมูลจาก Dark Reading
 export async function scrapeDarkReading() {
-  cron.schedule("0 */2 * * *", async () => {
+  cron.schedule("0 */3 * * *", async () => {
     try {
       const url = "https://www.darkreading.com/";
       const response = await axios.get(url);
