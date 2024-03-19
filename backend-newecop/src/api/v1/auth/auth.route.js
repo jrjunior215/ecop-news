@@ -1,45 +1,26 @@
 import express from "express";
-import {
-  signin,
-  signout,
-  signup,
-  verifyEmail,
-  requestPasswordReset,
-  resetPassword
-} from "./auth.controller.js";
+import { googleAuth, signout } from "./auth.controller.js";
 import { validateRequestMiddleware } from "../../../middlewares/validate-request.middleware.js";
 import {
+  SigninMetamaskSchema,
   SigninSchema,
   SignupSchema,
 } from "./auth.schema.js";
+import passport from "passport";
 const router = express.Router();
 
-
-  // Route to request password reset
-router.post(
-    "/resetpassword/request",
-    // validateRequestMiddleware({ body: ResetPasswordSchema }),
-    requestPasswordReset,
-  );
-
-router.post("/resetpassword",
-// validateRequestMiddleware({ body: ResetPasswordSchema }),
-resetPassword
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
-
-router.post(
-  "/signin",
-  validateRequestMiddleware({ body: SigninSchema }),
-  signin
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: `${process.env.BACKEND_URL}`,
+  }),
+  googleAuth
 );
-router.post(
-  "/signup",
-  validateRequestMiddleware({ body: SignupSchema }),
-  signup
-);
-
-router.get("/verify/:email", verifyEmail);
-
 router.post("/signout", signout);
 
 export { router as authRoute };
