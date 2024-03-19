@@ -17,8 +17,23 @@
                     <input type="checkbox" id="rememberMe" name="rememberMe">
                     <label for="rememberMe">Remember Me</label>
                 </div> -->
-                <button type="submit">Login</button>
+                <button id="googleLoginBtn" type="button">Login with Google</button>
             </div>
         </form>
     </div>
 </div>
+
+
+<script>
+    // เรียกใช้งานฟังก์ชันเมื่อ DOM ถูกโหลดเสร็จแล้ว
+    document.addEventListener("DOMContentLoaded", function () {
+        // หาปุ่มที่มี id เป็น googleLoginBtn
+        const googleLoginBtn = document.getElementById("googleLoginBtn");
+
+        // เพิ่ม event listener เมื่อคลิกที่ปุ่ม
+        googleLoginBtn.addEventListener("click", function () {
+            // นำผู้ใช้ไปยัง URL ที่ต้องการเมื่อคลิกที่ปุ่ม
+            window.location.href = "http://localhost:8000/api/auth/google";
+        });
+    });
+</script>

@@ -21,6 +21,7 @@ router.get(
   }),
   googleAuth
 );
+
 router.post("/signout", signout);
 
 export { router as authRoute };
