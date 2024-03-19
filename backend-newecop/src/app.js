@@ -7,9 +7,8 @@ import api from "./api/v1/index.js";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
-import fs from "fs";
-import path from "path";
 
+import { PassportGoogle } from "./helpers/passports/google.passport.js";
 import { NotFoundRequestException } from "./exceptions/not-found-request.exception.js";
 import { errorHandlerMiddleware } from "./middlewares/error-handler.middleware.js";
 import { hackerNewFetchToday } from "./schedules/hackerNewFetchToday.js";
@@ -71,7 +70,7 @@ app.use((req, res, next) => {
 
 // Error Handling Middleware
 app.use(errorHandlerMiddleware);
-
+PassportGoogle();
 // Scheduled Tasks
 hackerNewFetchToday();
 scrapeDarkReading();

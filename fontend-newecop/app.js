@@ -1,6 +1,7 @@
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const path = require("path");
+const axios = require("axios");
 const { SERVER_PORT, SERVER_IP } = require("./js/server_setting");
 require("dotenv").config();
 // SET EXPRESS
@@ -39,12 +40,50 @@ app.use(express.json());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-// VIEWS INDEX
-// INDEX
-// const indexController = require("./controllers/views/index/indexController");
-// app.get("/", indexController);
+// Middleware function to check authentication
+const isAuthenticated = async (req, res, next) => {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/users/me`, {
+      headers: { cookie: req.headers.cookie },
+      withCredentials: true,
+    });
 
-// สมมติข้อมูลข่าว
+    const me = response.data;
+
+    console.log("user/me info => ", me);
+
+    if (!me) {
+      res.redirect("/admin-ecop/login"); // Redirect to login page if user is not logged in
+    } else if (me.role !== 1) {
+      res.redirect("/"); // Redirect to another page if user is not admin
+    } else {
+      next(); // Proceed to the next middleware if user is authenticated and is admin
+    }
+  } catch (error) {
+    console.error("Error fetching user/me info: ", error);
+    res.redirect("/admin-ecop/login"); // Redirect to login page in case of error
+  }
+};
+
+app.get("/logout", async (req, res) => {
+  try {
+    // Call the signout API
+    await axios.post("http://localhost:8000/api/auth/signout", null, {
+      withCredentials: true,
+    });
+
+    // Clear the cookie
+    res.clearCookie("session");
+    // Redirect to login page after successful logout
+    res.redirect("/admin-ecop/login");
+  } catch (error) {
+    console.error("Error during logout: ", error);
+    res.redirect("/"); // Redirect to homepage in case of error
+  }
+});
+
+// Apply authentication middleware to Admin routes
+// app.use("/admin-ecop", isAuthenticated);
 
 // Blog
 const blogController = require("./controllers/views/blog/blogController.js");
@@ -63,19 +102,19 @@ app.get("/searchnews", SearchNewsController);
 
 // ADMIN
 const adminController = require("./controllers/views/admin/adminController");
-app.get("/admin-ecop", adminController);
+app.get("/admin-ecop", isAuthenticated, adminController);
 
 const adminNewsController = require("./controllers/views/admin/adminNewsController");
-app.get("/admin-ecop/news", adminNewsController);
+app.get("/admin-ecop/news", isAuthenticated, adminNewsController);
 const adminLoginController = require("./controllers/views/admin/adminLoginController");
 app.get("/admin-ecop/login", adminLoginController);
 
 const adminCreateController = require("./controllers/views/admin/adminCreateController");
-app.get("/admin-ecop/createnews", adminCreateController);
+app.get("/admin-ecop/createnews", isAuthenticated, adminCreateController);
 const adminViewController = require("./controllers/views/admin/adminViewController");
-app.get("/admin-ecop/viewnews", adminViewController);
+app.get("/admin-ecop/viewnews", isAuthenticated, adminViewController);
 const adminEditController = require("./controllers/views/admin/adminEditController");
-app.get("/admin-ecop/editnews", adminEditController);
+app.get("/admin-ecop/editnews", isAuthenticated, adminEditController);
 
 app.listen(SERVER_PORT, () =>
   console.log(
@@ -83,6 +122,7 @@ app.listen(SERVER_PORT, () =>
       SERVER_PORT +
       " and Server ip : " +
       SERVER_IP +
-      ":" + SERVER_PORT
+      ":" +
+      SERVER_PORT
   )
 );

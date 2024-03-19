@@ -7,6 +7,7 @@ import { BadRequestException } from "../../../exceptions/bad-request.exception.j
 import { NotAuthorizeRequestException } from "../../../exceptions/not-authorize-request.exception.js";
 
 export const googleAuth = async (req, res, next) => {
+  const expirationTime = "1h";
   try {
     const { id, emails, photos, displayName } = req.user;
 
@@ -31,7 +32,6 @@ export const googleAuth = async (req, res, next) => {
             username: displayName,
             email: emails[0].value,
             google_id: id,
-            is_verified: true,
           },
         });
         const userJwt = jwt.sign(
@@ -39,7 +39,6 @@ export const googleAuth = async (req, res, next) => {
             id: created.id,
             email: created.email,
             role: created.role,
-            is_banned: created.is_banned,
           },
           config.jwtSecretKey
         );
@@ -47,7 +46,7 @@ export const googleAuth = async (req, res, next) => {
         req.session = {
           jwt: userJwt,
         };
-        res.redirect(`${process.env.FRONTEND_URL}/users`);
+        res.redirect(`${process.env.FRONTEND_URL}/admin-ecop`);
         //save and create account
         return;
       }
@@ -57,11 +56,11 @@ export const googleAuth = async (req, res, next) => {
       const userJwt = jwt.sign(
         {
           id: existingAccount.id,
-          // email: existingAccount.email,
+          email: existingAccount.email,
           role: existingAccount.role,
-          is_banned: existingAccount.is_banned,
         },
-        config.jwtSecretKey
+        config.jwtSecretKey,
+        { expiresIn: expirationTime }
       );
 
       req.session = {
@@ -73,7 +72,7 @@ export const googleAuth = async (req, res, next) => {
       }
 
       if (existingAccount.role === 1) {
-        res.redirect(`${process.env.FRONTEND_URL}/admin`);
+        res.redirect(`${process.env.FRONTEND_URL}/admin-ecop`);
       } else {
         res.redirect(`${process.env.FRONTEND_URL}/users`);
       }
