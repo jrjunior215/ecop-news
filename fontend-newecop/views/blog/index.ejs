@@ -497,10 +497,10 @@ const removeHTMLTags = (str) => {
 
 // Set slide content
 const slideHeader = document.createElement('h2');
-slideHeader.textContent = removeHTMLTags(newsItem.titleTh).substring(0, 50); // ตัดเนื้อหาหัวข้อให้สั้นลงเหลือ 50 ตัวอักษร
+slideHeader.textContent = removeHTMLTags(newsItem.titleTh).substring(0, 200); // ตัดเนื้อหาหัวข้อให้สั้นลงเหลือ 50 ตัวอักษร
 
 const slideDescription = document.createElement('p');
-slideDescription.textContent = removeHTMLTags(newsItem.contentTh).substring(0, 100); // ตัดเนื้อหาให้สั้นลงเหลือ 100 ตัวอักษร
+slideDescription.textContent = removeHTMLTags(newsItem.contentTh).substring(0, 300); // ตัดเนื้อหาให้สั้นลงเหลือ 100 ตัวอักษร
 
           slideContent.appendChild(slideHeader);
           slideContent.appendChild(slideDescription);
