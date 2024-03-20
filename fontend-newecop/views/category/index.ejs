@@ -174,13 +174,6 @@
                       </div>
                       <a href="#" class="read-more-button" 
                           data-news-id="${newsItem.id}"
-                          data-img-url="${newsItem.imgLinks}"
-                          data-title-th="${newsItem.titleTh}"
-                          data-content-th="${newsItem.contentTh}"
-                          data-title-en="${newsItem.title}"
-                          data-content-en="${sanitizeHTML(newsItem.contentEn)}"
-                          data-date="${newsItem.date}"
-                          data-author="${newsItem.author}"
                           type="button">Read More</a>
                   </div>
                   <div class="article_option">
@@ -414,19 +407,19 @@
           }
 
           // Store selected news data in localStorage
-          sessionStorage.setItem(
-            "selectedNews",
-            JSON.stringify({
-              newsId,
-              imgLinks,
-              titleTh,
-              contentTh,
-              titleEn,
-              contentEn,
-              date,
-              author,
-            })
-          );
+          // sessionStorage.setItem(
+          //   "selectedNews",
+          //   JSON.stringify({
+          //     newsId,
+          //     imgLinks,
+          //     titleTh,
+          //     contentTh,
+          //     titleEn,
+          //     contentEn,
+          //     date,
+          //     author,
+          //   })
+          // );
 
           const url = `/news/${newsId}`;
           window.location.href = url;

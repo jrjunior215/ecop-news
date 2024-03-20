@@ -30,13 +30,13 @@
   <div class="trending_slide">
     <div class="mySlides fade">
       <img src="/img/background.png" style="width:100%">
-      <a href="#" class="slide-content">
+      <a  class="slide-content">
         <h2>Header 1</h2>
         <p>Description 1</p>
       </a>
     </div>
 
-    <div class="mySlides fade">
+    <!-- <div class="mySlides fade">
       <img src="/img/blog1.jpg" style="width:100%">
       <a href="#" class="slide-content">
         <h2>Header 2</h2>
@@ -50,7 +50,7 @@
         <h2>Header 3</h2>
         <p>Description 3</p>
       </a>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -157,35 +157,35 @@
     }
   });
 
-  var swiper = new Swiper(".slide-content", {
-    slidesPerView: 3,
-    spaceBetween: 25,
-    loop: true,
-    centerSlide: "true",
-    fade: "true",
-    grabCursor: "true",
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-      dynamicBullets: true,
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
+  // var swiper = new Swiper(".slide-content", {
+  //   slidesPerView: 3,
+  //   spaceBetween: 25,
+  //   loop: true,
+  //   centerSlide: "true",
+  //   fade: "true",
+  //   grabCursor: "true",
+  //   pagination: {
+  //     el: ".swiper-pagination",
+  //     clickable: true,
+  //     dynamicBullets: true,
+  //   },
+  //   navigation: {
+  //     nextEl: ".swiper-button-next",
+  //     prevEl: ".swiper-button-prev",
+  //   },
 
-    breakpoints: {
-      0: {
-        slidesPerView: 1,
-      },
-      520: {
-        slidesPerView: 2,
-      },
-      950: {
-        slidesPerView: 3,
-      },
-    },
-  });
+  //   breakpoints: {
+  //     0: {
+  //       slidesPerView: 1,
+  //     },
+  //     520: {
+  //       slidesPerView: 2,
+  //     },
+  //     950: {
+  //       slidesPerView: 3,
+  //     },
+  //   },
+  // });
 </script>
 
 <script>
@@ -242,15 +242,6 @@
                         </div>
                         <a  class="read-more-button" 
                             data-news-id="${newsItem.id}"
-                            data-img-url="${newsItem.imgLinks}"
-                            data-title-th="${newsItem.titleTh}"
-                            data-content-th="${newsItem.contentTh}"
-                            data-title-en="${newsItem.title}"
-                            data-content-en="${sanitizeHTML(
-            newsItem.contentEn
-          )}"
-                            data-date="${newsItem.date}"
-                            data-author="${newsItem.author}"
                             type="button">Read More</a>
                     </div>
                     <div class="article_option">
@@ -400,65 +391,62 @@
       };
 
       // Event listener for "Read More" buttons
-      document.addEventListener("click", async function (event) {
-        if (event.target.classList.contains("read-more-button")) {
-          event.preventDefault();
-          const button = event.target;
-          const newsId = button.getAttribute("data-news-id");
-          const imgLinks = button.getAttribute("data-img-url");
-          const titleTh = button.getAttribute("data-title-th");
-          const contentTh = button.getAttribute("data-content-th");
-          const titleEn = button.getAttribute("data-title-en");
-          const contentEn = button.getAttribute("data-content-en");
-          const date = button.getAttribute("data-date");
-          const author = button.getAttribute("data-author");
+      // Event listener for "Read More" buttons
+document.addEventListener("click", async function (event) {
+  if (event.target.classList.contains("read-more-button")) {
+    event.preventDefault();
+    const button = event.target;
+    const newsId = button.getAttribute("data-news-id");
+    const imgLinks = button.getAttribute("data-img-url");
+    const titleTh = button.getAttribute("data-title-th");
+    const contentTh = button.getAttribute("data-content-th");
+    const titleEn = button.getAttribute("data-title-en");
+    const contentEn = button.getAttribute("data-content-en");
+    const date = button.getAttribute("data-date");
+    const author = button.getAttribute("data-author");
 
-          // Fetch user IP
-          const userIp = await fetchUserIp();
-          console.log("🚀 ~ document.addEventListener ~ userIp:", userIp);
-          if (userIp) {
-            // Prepare data to be sent to the backend API
-            const requestData = {
-              newsId: newsId,
-              userIp: userIp,
-            };
+    // Fetch user IP
+    const userIp = await fetchUserIp();
+    console.log("🚀 ~ document.addEventListener ~ userIp:", userIp);
+    if (userIp) {
+      // Prepare data to be sent to the backend API
+      const requestData = {
+        newsId: newsId,
+        userIp: userIp,
+      };
 
-            // Send the data to the backend API
-            try {
-              const logViewResponse = await fetch(
-                `${baseURL}/api/news/logView`,
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(requestData),
-                }
-              );
-
-              const logViewData = await logViewResponse.json();
-              // Do something with the response if needed
-            } catch (error) {
-              console.error("Error logging view:", error);
-            }
-          } else {
-            console.error("Unable to fetch user IP.");
+      // Send the data to the backend API
+      try {
+        const logViewResponse = await fetch(
+          `${baseURL}/api/news/logView`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestData),
           }
+        );
 
+        const logViewData = await logViewResponse.json();
+        // Do something with the response if needed
+      } catch (error) {
+        console.error("Error logging view:", error);
+      }
+    } else {
+      console.error("Unable to fetch user IP.");
+    }
 
-          // Store selected news data in localStorage
-          sessionStorage.setItem('selectedNews', JSON.stringify({ newsId, imgLinks, titleTh, contentTh, titleEn, contentEn, date, author }));
+    // Redirect to the news page
+    window.location.href = `/news/${newsId}`;
+  } else if (event.target.classList.contains("slide-content")) {
+    event.preventDefault();
+    const slideContent = event.target;
+    const newsId = slideContent.getAttribute("data-news-id");
+    window.location.href = `/news/${newsId}`;
+  }
+});
 
-          // Redirect to the news page
-          let url;
-          if (button.classList.contains("related_blog")) {
-            url = `/news/${newsId}`; // Assuming the URL pattern for blogs is '/blogs/{id}'
-          } else {
-            url = `/news/${newsId}`; // Assuming the URL pattern for news is '/news/{id}'
-          }
-          window.location.href = url;
-        }
-      });
     } catch (error) {
       console.error("Error loading data:", error);
     }
@@ -474,78 +462,89 @@
     };
 
     // Function to fetch trending news with pagination
-    // Function to fetch trending news with pagination
     const fetchTrendingNews = async () => {
       try {
-        const response = await fetch(
-          `${baseURL}/api/news/search?trendNew=Trending%20News`
-        );
+        const response = await fetch(`${baseURL}/api/news/search?trendNew=Trending%20News`);
         const data = await response.json();
         const trendingNews = data.data;
-        const currentPage = data.pagination.currentPage;
-        const totalPages = data.pagination.totalPages;
 
         // Clear existing trending news items
-        const trendingNewsContainer = document.querySelector(
-          ".slide-container .card-wrapper"
-        );
-        trendingNewsContainer.innerHTML = "";
+        const trendingSlide = document.querySelector('.trending_slide');
+        trendingSlide.innerHTML = '';
 
         // Append trending news items
-        trendingNews.forEach((newsItem) => {
-          // Create trending news card element
-          const trendingNewsCard = document.createElement("div");
-          trendingNewsCard.classList.add("card", "swiper-slide");
+        trendingNews.forEach(newsItem => {
+          // Create slide element
+          const slide = document.createElement('div');
+          slide.classList.add('mySlides', 'fade');
 
           // Set image source
-          const imageContent = document.createElement("div");
-          imageContent.classList.add("image-content");
-          const img = document.createElement("img");
+          const img = document.createElement('img');
           img.src = `/images/${newsItem.imgLinks}.webp`;
-          img.alt = newsItem.imgLinks;
-          imageContent.appendChild(img);
-          trendingNewsCard.appendChild(imageContent);
+          img.style.width = '100%';
+          slide.appendChild(img);
 
-          // Set card content
-          const cardContent = document.createElement("div");
-          cardContent.classList.add("card-content");
-          const formattedDate = new Date(newsItem.date).toLocaleDateString(
-            "en-US",
-            { year: "numeric", month: "long", day: "numeric" }
-          );
-          cardContent.innerHTML = `
-        <h2 class="name">${newsItem.titleTh}</h2>
-          <p class="description">${sanitizeHTML(
-            newsItem.contentTh.substring(0, maxTextLength)
-          )}${newsItem.contentTh.length > maxTextLength ? "..." : ""}</p>
-        <button class="button read-more-button" 
-                data-news-id="${newsItem.id}"
-                data-img-url="${newsItem.imgLinks}"
-                data-title-th="${newsItem.titleTh}"
-                data-content-th="${newsItem.contentTh}"
-                data-title-en="${newsItem.title}"
-                data-content-en="${sanitizeHTML(newsItem.contentEn)}"
-                data-date="${formattedDate}"
-                data-author="${newsItem.author}">Read More</button>
-      `;
-          trendingNewsCard.appendChild(cardContent);
+          // Create slide content link
+          const slideContent = document.createElement('a');
+          slideContent.href = '#';
+          slideContent.classList.add('slide-content');
 
-          // Append card to container
-          trendingNewsContainer.appendChild(trendingNewsCard);
+// Function to remove HTML tags from content
+const removeHTMLTags = (str) => {
+  // Remove HTML tags and replace "&quot;" with empty string
+  return str.replace(/<[^>]*>|&quot;/g, "");
+};
+
+// Set slide content
+const slideHeader = document.createElement('h2');
+slideHeader.textContent = removeHTMLTags(newsItem.titleTh).substring(0, 50); // ตัดเนื้อหาหัวข้อให้สั้นลงเหลือ 50 ตัวอักษร
+
+const slideDescription = document.createElement('p');
+slideDescription.textContent = removeHTMLTags(newsItem.contentTh).substring(0, 100); // ตัดเนื้อหาให้สั้นลงเหลือ 100 ตัวอักษร
+
+          slideContent.appendChild(slideHeader);
+          slideContent.appendChild(slideDescription);
+          slide.appendChild(slideContent);
+
+          // Append slide to trending slides container
+          trendingSlide.appendChild(slide);
+
+          // Add click event listener to slide content link
+          slideContent.addEventListener('click', () => {
+            handleSlideContentClick(newsItem);
+          });
         });
 
-        // Initialize Swiper slider after appending trending news cards
-        initSwiper();
+        // Start slideshow
+        let slideIndex = 0;
+        showSlides();
 
-        // Create pagination for trending news
-        createPagination(currentPage, totalPages);
+        function showSlides() {
+          const slides = document.getElementsByClassName("mySlides");
+          for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+          }
+          slideIndex++;
+          if (slideIndex > slides.length) {
+            slideIndex = 1;
+          }
+          slides[slideIndex - 1].style.display = "block";
+          setTimeout(showSlides, 6000); // Change image every 1 minute
+        }
+
+        // Function to handle slide content click
+        function handleSlideContentClick(newsItem) {
+          // Perform actions when slide content is clicked
+          console.log('Slide content clicked:', newsItem);
+          // Example: Redirect to news details page
+          window.location.href = `/news/${newsItem.id}`;
+        }
       } catch (error) {
-        console.error("Error fetching trending news:", error);
+        console.error('Error fetching trending news:', error);
       }
     };
 
     // Call the function to fetch and display trending news
     fetchTrendingNews();
-
   };
 </script>
