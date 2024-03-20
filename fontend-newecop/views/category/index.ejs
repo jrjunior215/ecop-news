@@ -128,7 +128,6 @@
       </a>
     </div>
   </div>
-
 </div>
 
 <script>
@@ -179,9 +178,7 @@
                           data-title-th="${newsItem.titleTh}"
                           data-content-th="${newsItem.contentTh}"
                           data-title-en="${newsItem.title}"
-                          data-content-en="${sanitizeHTML(
-                            newsItem.contentEn
-                          )}"
+                          data-content-en="${sanitizeHTML(newsItem.contentEn)}"
                           data-date="${newsItem.date}"
                           data-author="${newsItem.author}"
                           type="button">Read More</a>
@@ -327,8 +324,6 @@
             category = "Data Breach";
           }
 
-          console.log("🚀 ~ initializePagination ~ category:", category);
-
           // Build API URL with category
           let apiUrl = `${baseURL}/api/news/search?pageSize=12&page=1`;
           if (category) {
@@ -342,6 +337,15 @@
           const newsItems = data.data;
           const currentPage = data.pagination.currentPage;
           const totalPages = data.pagination.totalPages;
+
+          // Set the category as the h1 heading
+          const categoryHeading = document.querySelector(
+            ".header_blog_list h1"
+          );
+          if (categoryHeading) {
+            categoryHeading.textContent = category || "News Articles";
+          }
+
           appendNewsItems(marketingArticlesContainer, newsItems);
           createPagination(currentPage, totalPages);
         } catch (error) {
@@ -353,31 +357,29 @@
       initializePagination();
 
       const fetchUserIp = async () => {
-            try {
-              const response = await fetch(
-                "https://api.ipify.org?format=json"
-              );
-              const data = await response.json();
-              return data.ip;
-            } catch (error) {
-              console.error("Error fetching user IP:", error);
-              return null;
-            }
-          };
+        try {
+          const response = await fetch("https://api.ipify.org?format=json");
+          const data = await response.json();
+          return data.ip;
+        } catch (error) {
+          console.error("Error fetching user IP:", error);
+          return null;
+        }
+      };
 
       // Event delegation for "Read More" buttons
       document.addEventListener("click", async function (event) {
         if (event.target.classList.contains("read-more-button")) {
           event.preventDefault();
-      const button = event.target;
-        const newsId = button.getAttribute("data-news-id");
-        const imgLinks = button.getAttribute("data-img-url");
-        const titleTh = button.getAttribute("data-title-th");
-        const contentTh = button.getAttribute("data-content-th");
-        const titleEn = button.getAttribute("data-title-en");
-        const contentEn = button.getAttribute("data-content-en");
-        const date = button.getAttribute("data-date");
-        const author = button.getAttribute("data-author");
+          const button = event.target;
+          const newsId = button.getAttribute("data-news-id");
+          const imgLinks = button.getAttribute("data-img-url");
+          const titleTh = button.getAttribute("data-title-th");
+          const contentTh = button.getAttribute("data-content-th");
+          const titleEn = button.getAttribute("data-title-en");
+          const contentEn = button.getAttribute("data-content-en");
+          const date = button.getAttribute("data-date");
+          const author = button.getAttribute("data-author");
 
           // Fetch user IP
           const userIp = await fetchUserIp();
@@ -412,7 +414,19 @@
           }
 
           // Store selected news data in localStorage
-          sessionStorage.setItem('selectedNews', JSON.stringify({ newsId, imgLinks, titleTh, contentTh, titleEn, contentEn, date, author }));
+          sessionStorage.setItem(
+            "selectedNews",
+            JSON.stringify({
+              newsId,
+              imgLinks,
+              titleTh,
+              contentTh,
+              titleEn,
+              contentEn,
+              date,
+              author,
+            })
+          );
 
           const url = `/news/${newsId}`;
           window.location.href = url;
