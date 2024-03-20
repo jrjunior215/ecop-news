@@ -244,19 +244,29 @@ const translateArticleData = async (articleData) => {
 
 const downloadImage = async (imageUrl, folderPath) => {
   try {
-    const response = await axios.get(`${SCRAPER_API_URL}${imageUrl}`, { responseType: "arraybuffer" });
+    const response = await axios.get(`${SCRAPER_API_URL}${imageUrl}`, {
+      responseType: "arraybuffer",
+    });
     const webpBuffer = await sharp(response.data).webp().toBuffer();
     const fileNameWithoutExtension = generateUniqueId();
-    const webpFilePath = path.join(folderPath, `${fileNameWithoutExtension}.webp`);
-    const frontendWebpFilePath = path.join("../fontend-newecop/images/", `${fileNameWithoutExtension}.webp`);
+    const webpFilePath = path.join(
+      folderPath,
+      `${fileNameWithoutExtension}.webp`
+    );
+    const frontendWebpFilePath = path.join(
+      "../fontend-newecop/images/",
+      `${fileNameWithoutExtension}.webp`
+    );
     await Promise.all([
       fs.writeFile(webpFilePath, webpBuffer),
-      fs.writeFile(frontendWebpFilePath, webpBuffer)
+      fs.writeFile(frontendWebpFilePath, webpBuffer),
     ]);
     console.log(`Downloaded image: ${fileNameWithoutExtension}.webp`);
     return `${fileNameWithoutExtension}.webp`;
   } catch (error) {
-    console.error(`Failed to download image from ${imageUrl}: ${error.message}`);
+    console.error(
+      `Failed to download image from ${imageUrl}: ${error.message}`
+    );
     return null;
   }
 };
@@ -349,24 +359,33 @@ const checkAndUpdateCategory = async (url, expectedCategory) => {
 const scrapedData = [];
 
 export const hackerNewFetchToday = async () => {
-  cron.schedule("0 */2 * * *", async () => {
+  cron.schedule("0 */4 * * *", async () => {
     try {
       const response = await axios.get(
         `${SCRAPER_API_URL}https://thehackernews.com/`
       );
-      
+
       const $ = cheerio.load(response.data);
 
-      checkAndUpdateCategory('https://thehackernews.com/search/label/Cyber%20Attack', 'CyberAttack');
-      checkAndUpdateCategory('https://thehackernews.com/search/label/Vulnerability', 'Vulnerability');
+      checkAndUpdateCategory(
+        "https://thehackernews.com/search/label/Cyber%20Attack",
+        "CyberAttack"
+      );
+      checkAndUpdateCategory(
+        "https://thehackernews.com/search/label/Vulnerability",
+        "Vulnerability"
+      );
 
-      $(".icon-font.icon-calendar, .right-box, .below-post-box.cf, .footer-stuff.clear.cf, .email-box, .header.clear").remove();
-
+      $(
+        ".icon-font.icon-calendar, .right-box, .below-post-box.cf, .footer-stuff.clear.cf, .email-box, .header.clear"
+      ).remove();
 
       const simulateScrolling = async ($) => {
         for (let i = 0; i < SCROLL_ITERATIONS; i++) {
-          $('body').append(`<div style="height:${SCROLL_CHUNK_SIZE}px;"></div>`);
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          $("body").append(
+            `<div style="height:${SCROLL_CHUNK_SIZE}px;"></div>`
+          );
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       };
 
@@ -380,7 +399,10 @@ export const hackerNewFetchToday = async () => {
 
         $(".story-link").each((index, storyLinkElement) => {
           const linkHref = $(storyLinkElement).attr("href");
-          const linkDateTimeText = $(storyLinkElement).find(".h-datetime").text().trim();
+          const linkDateTimeText = $(storyLinkElement)
+            .find(".h-datetime")
+            .text()
+            .trim();
           const linkDatesMatch = compareDates(linkDateTimeText);
 
           if (linkDatesMatch) {
@@ -389,26 +411,31 @@ export const hackerNewFetchToday = async () => {
         });
 
         if (matchedLinks.length > 0) {
-          const scrapedData = await Promise.all(matchedLinks.map(scrapeArticleData));
+          const scrapedData = await Promise.all(
+            matchedLinks.map(scrapeArticleData)
+          );
           const allData = scrapedData.filter(Boolean);
 
           if (allData.length > 0) {
             const existingData = await prisma.news.findMany();
-            const uniqueData = allData.filter(newItem =>
-              !existingData.some(existingItem =>
-                newItem.title === existingItem.title && newItem.date === existingItem.date
-              )
+            const uniqueData = allData.filter(
+              (newItem) =>
+                !existingData.some(
+                  (existingItem) =>
+                    newItem.title === existingItem.title &&
+                    newItem.date === existingItem.date
+                )
             );
 
             if (uniqueData.length > 0) {
               await prisma.news.createMany({
-                data: uniqueData.map(articleData => ({
+                data: uniqueData.map((articleData) => ({
                   category: articleData.category,
                   title: articleData.title,
                   date: articleData.date,
                   author: articleData.author,
                   pTags: articleData.pTags,
-                  imgLinks: articleData.imgLinks.join(', '),
+                  imgLinks: articleData.imgLinks.join(", "),
                   contentEn: articleData.contentEn,
                   ref: articleData.ref,
                   titleTh: articleData.titleTh,

@@ -1,33 +1,37 @@
 // popularResources.js
-import axios from 'axios';
-import cheerio from 'cheerio';
-import cron from 'node-cron';
+import axios from "axios";
+import cheerio from "cheerio";
+import cron from "node-cron";
 import { PrismaClient } from "@prisma/client";
-
 
 const prisma = new PrismaClient();
 
+const SCRAPER_API_KEY = "c60f6edc3bd87093b9099fbc146ef612";
+const SCRAPER_API_URL = `https://api.scraperapi.com/?api_key=${SCRAPER_API_KEY}&url=`;
+
 async function getPopularResources() {
-  const url = 'https://thehackernews.com/';
+  const url = "https://thehackernews.com/";
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(`${SCRAPER_API_URL}url`);
     if (response.status === 200) {
       return response.data;
     }
   } catch (error) {
-    throw new Error('Error fetching data:', error);
+    throw new Error("Error fetching data:", error);
   }
 }
 
 function cleanHTML($) {
-  $('.header.clear, .left-box, .below-post-box.cf, .footer-stuff.clear.cf').remove();
+  $(
+    ".header.clear, .left-box, .below-post-box.cf, .footer-stuff.clear.cf"
+  ).remove();
 }
 
 function getResources($) {
-  $('.widget.PopularPosts').remove();
+  $(".widget.PopularPosts").remove();
   const resources = [];
-  $('.pop-article').each((index, element) => {
-    const title = $(element).find('.pop-title').text();
+  $(".pop-article").each((index, element) => {
+    const title = $(element).find(".pop-title").text();
     resources.push(title);
   });
   return resources;
@@ -39,7 +43,9 @@ async function updateNews(news, trend) {
       where: { id: news.id },
       data: { trend_new: trend },
     });
-    console.log(`News "${news.title}" is now marked as ${trend} in the database.`);
+    console.log(
+      `News "${news.title}" is now marked as ${trend} in the database.`
+    );
   } catch (error) {
     console.error(`Error updating news "${news.title}":`, error);
   }
@@ -47,55 +53,62 @@ async function updateNews(news, trend) {
 
 async function searchAndSetPopular(resources) {
   try {
-    await Promise.all(resources.map(async (resource) => {
-      const existingNews = await prisma.news.findFirst({ where: { title: resource } });
-      if (existingNews) {
-        return updateNews(existingNews, 'Popular');
-      }
-    }));
+    await Promise.all(
+      resources.map(async (resource) => {
+        const existingNews = await prisma.news.findFirst({
+          where: { title: resource },
+        });
+        if (existingNews) {
+          return updateNews(existingNews, "Popular");
+        }
+      })
+    );
   } catch (error) {
-    console.error('Error searching and updating:', error);
+    console.error("Error searching and updating:", error);
   }
 }
 
 async function searchAndResetTrendPopular(resources) {
   try {
     if (resources && resources.length > 0) {
-      const trendingNews = await prisma.news.findMany({ where: { trend_new: 'Popular' } });
+      const trendingNews = await prisma.news.findMany({
+        where: { trend_new: "Popular" },
+      });
 
       if (trendingNews.length > 0) {
-        await Promise.all(trendingNews.map(async (news) => {
-          if (!resources.includes(news.title)) {
-            return updateNews(news, 'Normal');
-          }
-        }));
+        await Promise.all(
+          trendingNews.map(async (news) => {
+            if (!resources.includes(news.title)) {
+              return updateNews(news, "Normal");
+            }
+          })
+        );
       }
     }
   } catch (error) {
-    console.error('Error searching and resetting Trending News:', error);
+    console.error("Error searching and resetting Trending News:", error);
   }
 }
 
 export async function fetchPopularResourcesAndSave() {
-  cron.schedule('0 */2 * * *', async () => {
+  cron.schedule("0 */1 * * *", async () => {
+    try {
+      const htmlData = await getPopularResources();
 
-  try {
-    const htmlData = await getPopularResources();
+      const $resources = cheerio.load(htmlData);
+      cleanHTML($resources);
 
-    const $resources = cheerio.load(htmlData);
-    cleanHTML($resources);
+      const resources = getResources($resources);
+      console.log("🚀 ~ cron.schedule ~ resources:", resources);
 
-    const resources = getResources($resources);
-    console.log("🚀 ~ cron.schedule ~ resources:", resources);
+      await Promise.all([
+        searchAndSetPopular(resources),
+        searchAndResetTrendPopular(resources),
+      ]);
 
-    await Promise.all([
-      searchAndSetPopular(resources),
-      searchAndResetTrendPopular(resources),
-    ]);
-
-    console.log('Popular Resources data saved to the database.');
-  } catch (error) {
-    console.error(error.message);
-  }
-});
+      console.log("Popular Resources data saved to the database.");
+    } catch (error) {
+      console.error(error.message);
+    }
+  });
 }

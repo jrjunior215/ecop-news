@@ -1,31 +1,36 @@
-import axios from 'axios';
-import cheerio from 'cheerio';
-import cron from 'node-cron';
+import axios from "axios";
+import cheerio from "cheerio";
+import cron from "node-cron";
 import { PrismaClient } from "@prisma/client";
 
-const url = 'https://thehackernews.com/';
+const url = "https://thehackernews.com/";
 const prisma = new PrismaClient();
+
+const SCRAPER_API_KEY = "c60f6edc3bd87093b9099fbc146ef612";
+const SCRAPER_API_URL = `https://api.scraperapi.com/?api_key=${SCRAPER_API_KEY}&url=`;
 
 async function fetchData(url) {
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(`${SCRAPER_API_URL}url`);
     if (response.status === 200) {
       return response.data;
     }
   } catch (error) {
-    throw new Error('Error fetching data:', error);
+    throw new Error("Error fetching data:", error);
   }
 }
 
 function cleanHTML($) {
   // $('.PopularPosts').remove();
-  $('.header.clear, .left-box, .below-post-box.cf, .footer-stuff.clear.cf').remove();
-  $('.clear.section.babsi.side_res').remove();
+  $(
+    ".header.clear, .left-box, .below-post-box.cf, .footer-stuff.clear.cf"
+  ).remove();
+  $(".clear.section.babsi.side_res").remove();
 }
 
 function getTitles($) {
   const titles = [];
-  $('.pop-title').each((index, element) => {
+  $(".pop-title").each((index, element) => {
     titles.push($(element).text());
   });
   return titles;
@@ -37,7 +42,9 @@ async function updateNews(news, trend) {
       where: { id: news.id },
       data: { trend_new: trend },
     });
-    console.log(`News "${news.title}" is now marked as ${trend} in the database.`);
+    console.log(
+      `News "${news.title}" is now marked as ${trend} in the database.`
+    );
   } catch (error) {
     console.error(`Error updating news "${news.title}":`, error);
   }
@@ -46,37 +53,42 @@ async function updateNews(news, trend) {
 async function searchAndResetTrending(titles) {
   try {
     if (titles && titles.length > 0) {
-      const trendingNews = await prisma.news.findMany({ where: { trend_new: 'Trending News' } });
+      const trendingNews = await prisma.news.findMany({
+        where: { trend_new: "Trending News" },
+      });
 
       if (trendingNews.length > 0) {
-        await Promise.all(trendingNews.map(async (news) => {
-          if (!titles.includes(news.title)) {
-            return updateNews(news, 'Normal');
-          }
-        }));
+        await Promise.all(
+          trendingNews.map(async (news) => {
+            if (!titles.includes(news.title)) {
+              return updateNews(news, "Normal");
+            }
+          })
+        );
       }
     }
   } catch (error) {
-    console.error('Error searching and resetting Trending News:', error);
+    console.error("Error searching and resetting Trending News:", error);
   }
 }
 
 async function searchAndSetTrending(titles) {
   try {
-    await Promise.all(titles.map(async (title) => {
-      const existingNews = await prisma.news.findFirst({ where: { title } });
-      if (existingNews) {
-        return updateNews(existingNews, 'Trending News');
-      }
-    }));
+    await Promise.all(
+      titles.map(async (title) => {
+        const existingNews = await prisma.news.findFirst({ where: { title } });
+        if (existingNews) {
+          return updateNews(existingNews, "Trending News");
+        }
+      })
+    );
   } catch (error) {
-    console.error('Error searching and updating:', error);
+    console.error("Error searching and updating:", error);
   }
 }
 
-
 export async function fetchDataAndSave() {
-  cron.schedule('0 */2 * * *', async () => {
+  cron.schedule("0 */2 * * *", async () => {
     try {
       const htmlData = await fetchData(url);
 
@@ -92,7 +104,7 @@ export async function fetchDataAndSave() {
         searchAndSetTrending(titles),
       ]);
 
-      console.log('Data saved to the database.');
+      console.log("Data saved to the database.");
     } catch (error) {
       console.error(error.message);
     }

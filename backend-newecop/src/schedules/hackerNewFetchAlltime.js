@@ -5,7 +5,7 @@ import puppeteer from "puppeteer";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs/promises";
-import sharp from "sharp"
+import sharp from "sharp";
 import { scrapeLinks, scrapeArticleContent } from "./fetchalltime/scraper.js";
 import { downloadImage } from "./fetchalltime/downloader.js";
 import { translateText, translateThai } from "./fetchalltime/translator.js";
@@ -22,15 +22,12 @@ const removeElements = async (page, selectors) => {
   }
 };
 
-
-
-
-
-
 const generateUniqueId = () => "_" + Math.random().toString(36).substr(2, 9);
 
 const scrapeAndSaveArticles = async () => {
-  const allLinks = JSON.parse(await fs.readFile("src/schedules/all_links.json", "utf8"));
+  const allLinks = JSON.parse(
+    await fs.readFile("src/schedules/all_links.json", "utf8")
+  );
   console.log("🚀 ~ scrapeAndSaveArticles ~ allLinks:", allLinks);
   let index = 1;
 
@@ -58,14 +55,15 @@ const scrapeAndSaveArticles = async () => {
       }
     }
 
-    await fs.writeFile("src/schedules/article_data.json", JSON.stringify(articles, null, 2));
+    await fs.writeFile(
+      "src/schedules/article_data.json",
+      JSON.stringify(articles, null, 2)
+    );
     console.log("All articles saved to article_data.json");
   } catch (error) {
     console.error("An error occurred:", error.message);
   }
 };
-
-
 
 let isTaskRunning = false;
 
@@ -89,7 +87,7 @@ const startTask = async () => {
 
 export const hackerNewFetchAlltime = async () => {
   // every 1 minute
-  cron.schedule("*/1 * * * *", async () => {
+  cron.schedule("*/4 * * * *", async () => {
     await startTask();
   });
 };
