@@ -474,6 +474,7 @@ a:not([href]):not([class]) {
 .card-content {
     height: 250px;
     padding: 10px 14px;
+    border-radius: 10px;
 }
 
 .image-content {
@@ -572,3 +573,4 @@ a:not([href]):not([class]) {
         display: none;
     }
 }
+

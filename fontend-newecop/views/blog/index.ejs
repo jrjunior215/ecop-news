@@ -506,9 +506,9 @@
       );
       cardContent.innerHTML = `
         <h2 class="name">${newsItem.titleTh}</h2>
-        <p class="description">${sanitizeHTML(
-          newsItem.contentTh.substring(0, maxTextLength)
-        )}${newsItem.contentTh.length > maxTextLength ? "..." : ""}</p>
+          <p class="description">${sanitizeHTML(
+            newsItem.contentTh.substring(0, maxTextLength)
+          )}${newsItem.contentTh.length > maxTextLength ? "..." : ""}</p>
         <button class="button read-more-button" 
                 data-news-id="${newsItem.id}"
                 data-img-url="${newsItem.imgLinks}"
