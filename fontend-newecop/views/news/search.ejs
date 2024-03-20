@@ -65,7 +65,12 @@
         });
 
         const content = document.createElement("p");
-        content.textContent = news.contentTh; // Display Thai content
+        content.textContent = news.contentTh; // Display Thai contentฃ
+        const maxLength = 300; // Set your desired maximum length
+            content.textContent =
+              news.contentTh.length > maxLength
+                ? news.contentTh.substring(0, maxLength) + "..."
+                : news.contentTh;
 
         const image = document.createElement("img");
         image.src = `/images/${news.imgLinks}.webp`; // Assuming image links are like "_12i4z0tdf.jpg"
