@@ -72,8 +72,8 @@
                 ? news.contentTh.substring(0, maxLength) + "..."
                 : news.contentTh;
 
-        const image = document.createElement("img");
-        image.src = `/images/${news.imgLinks}.webp`; // Assuming image links are like "_12i4z0tdf.jpg"
+        // const image = document.createElement("img");
+        // image.src = `/images/${news.imgLinks}.webp`; // Assuming image links are like "_12i4z0tdf.jpg"
 
         const readMoreLink = document.createElement("a");
         readMoreLink.textContent = "Read More";
@@ -114,7 +114,7 @@
 
         // Append news item details to the news div
         newsDiv.appendChild(title);
-        newsDiv.appendChild(image);
+        // newsDiv.appendChild(image);
         newsDiv.appendChild(date);
         newsDiv.appendChild(content);
         newsDiv.appendChild(readMoreLink);
