@@ -134,3 +134,22 @@
     margin-left: 10px;
     font-size: 15px;
 }
+
+
+#Dashboard .row{
+    padding-top: 0.5rem;
+    /* border: 1px solid red; */
+    width: 30rem;
+    height: 10rem;
+    text-align: center;
+    box-shadow: 5px 5px 10px #aaaaaa;
+    background: white;
+    border-radius: 1rem;
+}
+
+#Dashboard2 {
+    height: 34rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
