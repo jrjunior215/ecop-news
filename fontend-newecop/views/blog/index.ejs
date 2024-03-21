@@ -127,6 +127,7 @@
   }
 </script>
 
+
 <script>
   const baseURL = "<%= process.env.BACKEND_API %>";
   document.addEventListener("DOMContentLoaded", async function () {
@@ -139,53 +140,37 @@
           const url = `${baseURL}/api/news/searchNews?pageSize=12&page=${page}&title=${searchInputValue}`;
 
           const response = await fetch(url);
-          const data = await response.json();
-          console.log("🚀 ~ document.getElementById ~ data:", data);
 
-          // Check if data is not empty
-          if (data && data.data.length > 0) {
-            // Store data in localStorage
-            sessionStorage.setItem("searchResults", JSON.stringify(data.data));
-            // Redirect to /searchnews
-            window.location.href = "/searchnews";
+          // Check if response status is 404
+          if (response.status === 404) {
+            // Show toast notification for "Not Found"
+            Toastify({
+              text: "ไม่พบข้อมูลที่ค้นหา",
+              duration: 3000, // 3 seconds
+              close: true,
+              gravity: "top", // `top` or `bottom`
+              position: "right", // `left`, `center` or `right`
+              backgroundColor: "#ff4444",
+            }).showToast();
           } else {
-            console.log("No results found.");
+            const data = await response.json();
+            console.log("🚀 ~ document.getElementById ~ data:", data);
+
+            // Check if data is not empty
+            if (data && data.data.length > 0) {
+              // Store data in localStorage
+              sessionStorage.setItem("searchResults", JSON.stringify(data.data));
+              // Redirect to /searchnews
+              window.location.href = "/searchnews";
+            } else {
+              console.log("No results found.");
+            }
           }
         });
     } catch (error) {
       console.error("Error loading data:", error);
     }
   });
-
-  // var swiper = new Swiper(".slide-content", {
-  //   slidesPerView: 3,
-  //   spaceBetween: 25,
-  //   loop: true,
-  //   centerSlide: "true",
-  //   fade: "true",
-  //   grabCursor: "true",
-  //   pagination: {
-  //     el: ".swiper-pagination",
-  //     clickable: true,
-  //     dynamicBullets: true,
-  //   },
-  //   navigation: {
-  //     nextEl: ".swiper-button-next",
-  //     prevEl: ".swiper-button-prev",
-  //   },
-
-  //   breakpoints: {
-  //     0: {
-  //       slidesPerView: 1,
-  //     },
-  //     520: {
-  //       slidesPerView: 2,
-  //     },
-  //     950: {
-  //       slidesPerView: 3,
-  //     },
-  //   },
-  // });
 </script>
 
 <script>

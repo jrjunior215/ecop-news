@@ -40,6 +40,7 @@
 
 
 <script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
     document.addEventListener("DOMContentLoaded", function() {
         fetchNews(1); // Fetch news for the first page when the page loads
     });
@@ -47,7 +48,7 @@
     let currentPage = 1; // Initialize currentPage variable outside functions
 
     function fetchNews(page) {
-        const apiUrl = `http://localhost:8000/api/news/?page=${page}`; // Construct API URL with pagination parameter
+        const apiUrl = `${baseURL}/api/news/?page=${page}`; // Construct API URL with pagination parameter
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
@@ -150,7 +151,7 @@
         confirmButtonText: "Yes, delete it!"
     }).then((result) => {
         if (result.isConfirmed) {
-            const apiUrl = `http://localhost:8000/api/news/${newsId}`;
+            const apiUrl = `${baseURL}/api/news/${newsId}`;
             fetch(apiUrl, {
                 method: 'DELETE',
                 credentials: 'include' // Set the credentials option to 'include'

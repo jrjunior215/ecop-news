@@ -104,6 +104,7 @@
 
 
 <script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
     document.addEventListener("DOMContentLoaded", function() {
     const form = document.querySelector("form");
     form.addEventListener("submit", async function(event) {
@@ -136,7 +137,7 @@
             formData.append('author', author);
             formData.append('imageUpload', imageUpload); // เพิ่มไฟล์ภาพที่เลือกอัปโหลด
 
-            const newsResponse = await fetch("http://localhost:8000/api/news/create", {
+            const newsResponse = await fetch(`${baseURL}/api/news/create`, {
                 method: "POST",
                 credentials: 'include',
                 body: formData // ส่ง FormData ที่มีรายละเอียดข่าวและภาพไปยังเซิร์ฟเวอร์

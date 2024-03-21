@@ -59,8 +59,9 @@ fetch('http://localhost:8000/api/news/count-last7days')
 </script>
 
 <script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
     // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
-    fetch('http://localhost:8000/api/news/count')
+    fetch(`${baseURL}/api/news/count`)
         .then(response => response.json())
         .then(data => {
             // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด
@@ -71,7 +72,7 @@ fetch('http://localhost:8000/api/news/count-last7days')
 
 <script>
     // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
-    fetch('http://localhost:8000/api/news/count-today')
+    fetch(`${baseURL}/api/news/count-today`)
         .then(response => response.json())
         .then(data => {
             // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด
@@ -85,7 +86,7 @@ fetch('http://localhost:8000/api/news/count-last7days')
 
 <script>
     // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
-    fetch('http://localhost:8000/api/news/count-view')
+    fetch(`${baseURL}/api/news/count-view`)
         .then(response => response.json())
         .then(data => {
             // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด

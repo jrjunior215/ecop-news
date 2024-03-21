@@ -84,6 +84,7 @@
 
 
 <script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
     document.addEventListener("DOMContentLoaded", function() {
         fetchData();
 
@@ -129,7 +130,7 @@
                 formData.append('author', author);
                 formData.append('imageUpload', imageUpload); // เพิ่มไฟล์ภาพที่เลือกอัปโหลด
 
-                const newsResponse = await fetch(`http://localhost:8000/api/news/${newsId}`, {
+                const newsResponse = await fetch(`${baseURL}/api/news/${newsId}`, {
                     method: "PUT",
                     credentials: 'include',
                     body: formData // ส่ง FormData ที่มีรายละเอียดข่าวและภาพไปยังเซิร์ฟเวอร์
@@ -165,7 +166,7 @@
 
     function fetchData() {
         const newsId = getNewsIdFromURL();
-        const apiURL = `http://localhost:8000/api/news/searchNewsById?id=${newsId}`;
+        const apiURL = `${baseURL}/api/news/searchNewsById?id=${newsId}`;
 
         fetch(apiURL)
             .then(response => response.json())

@@ -1,60 +1,140 @@
-<!-- หน้าเว็บที่แสดงข่าว news.ejs -->
+<style>
+  .container_news {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #news-image {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .header_news {
+    margin-bottom: 10px;
+  }
+
+  #news-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  #news-date {
+    color: #888;
+  }
+
+  .desc_news {
+    line-height: 1.6;
+  }
+
+  .news-info {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+  }
+
+  .news-info p {
+    margin: 10px 0;
+  }
+
+  .news-info strong {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+
+  .news-info span {
+    color: #555;
+  }
+</style>
+
 <div class="container_news">
-    <img id="news-image" src="" alt="">
-    <div class="header_news">
-        <h1 id="news-title"></h1>
-        <span id="news-date"></span>
-    </div>
-    <div class="desc_news" id="news-content">
-    </div>
+  <img id="news-image" src="" alt="" />
+  <div class="header_news">
+    <h1 id="news-title"></h1>
+    <span id="news-date"></span>
+  </div>
+  <div class="desc_news" id="news-content"></div>
+  <div class="news-info">
+    <p><strong>Reference:</strong> <span id="news-ref"></span></p>
+    <p><strong>Trending:</strong> <span id="news-trending"></span></p>
+    <p><strong>View Count:</strong> <span id="news-view-count"></span></p>
+    <p><strong>pTags:</strong> <span id="news-p-tags"></span></p>
+    <p><strong>Category:</strong> <span id="news-category"></span></p>
+  </div>
 </div>
 
 <script>
-    window.onload = async function () {
-        const baseURL = "<%= process.env.BACKEND_API %>";
-        try {
-            // Extract news ID from URL
-            const newsId = window.location.pathname.split('/').pop();
+  window.onload = async function () {
+    const baseURL = "<%= process.env.BACKEND_API %>";
+    try {
+      // Extract news ID from URL
+      const newsId = window.location.pathname.split("/").pop();
 
-            // Fetch news data from the backend
-            const response = await fetch(`${baseURL}/api/news/searchNewsById?id=${newsId}`);
-            const data = await response.json();
-            console.log("🚀 ~ data:", data)
+      // Fetch news data from the backend
+      const response = await fetch(
+        `${baseURL}/api/news/searchNewsById?id=${newsId}`
+      );
+      const data = await response.json();
+      console.log("🚀 ~ data:", data);
 
-            // Check if news data is found
-            if (data && data.success && data.data) {
-                const selectedNews = data.data; // Found news data
-                updateNewsUI(selectedNews);
-            } else {
-                console.log('News not found.');
-            }
-        } catch (error) {
-            console.error('Error loading news:', error);
-        }
-    };
-
-    // Function to remove HTML tags from content
-    const removeHTMLTags = (str) => {
-        return str.replace(/<[^>]*>/g, "");
-    };
-
-    function updateNewsUI(selectedNews) {
-        // Construct complete URL for the image
-        const imageUrl = `/images/${selectedNews.imgLinks}.webp`;
-
-        // Set src attribute of the image tag
-        document.getElementById('news-image').setAttribute('src', imageUrl);
-
-        // Set text content of news title after removing HTML tags
-        const newsTitle = removeHTMLTags(selectedNews.titleTh);
-        document.getElementById('news-title').textContent = newsTitle;
-
-        // Format date as "Month Day, Year"
-        const formattedDate = new Date(selectedNews.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('news-date').textContent = formattedDate;
-
-        // Set innerHTML to display HTML content after removing HTML tags
-        const newsContent = removeHTMLTags(selectedNews.contentTh);
-        document.getElementById('news-content').innerHTML = newsContent;
+      // Check if news data is found
+      if (data && data.success && data.data) {
+        const selectedNews = data.data; // Found news data
+        updateNewsUI(selectedNews);
+      } else {
+        console.log("News not found.");
+      }
+    } catch (error) {
+      console.error("Error loading news:", error);
     }
+  };
+
+  // Function to remove HTML tags from content and classes
+  const removeHTMLTags = (str) => {
+    // Remove HTML tags
+    let strippedString = str.replace(/<[^>]*>/g, "");
+
+    // Remove class attributes
+    strippedString = strippedString.replace(/class\s*=\s*["'][^"']*["']/g, "");
+
+    return strippedString;
+  };
+
+  function updateNewsUI(selectedNews) {
+    // Construct complete URL for the image
+    const imageUrl = `/images/${selectedNews.imgLinks}.webp`;
+
+    // Set src attribute of the image tag
+    document.getElementById("news-image").setAttribute("src", imageUrl);
+
+    // Set text content of news title after removing HTML tags
+    const newsTitle = removeHTMLTags(selectedNews.titleTh);
+    document.getElementById("news-title").textContent = newsTitle;
+
+    // Format date as "Month Day, Year"
+    const formattedDate = new Date(selectedNews.date).toLocaleDateString(
+      "en-US",
+      { year: "numeric", month: "long", day: "numeric" }
+    );
+    document.getElementById("news-date").textContent = formattedDate;
+
+    // Set innerHTML to display HTML content after removing HTML tags
+    const newsContent = removeHTMLTags(selectedNews.contentTh);
+    document.getElementById("news-content").innerHTML = newsContent;
+
+    // Set text content for additional news information
+    document.getElementById("news-ref").textContent = selectedNews.ref;
+    document.getElementById("news-trending").textContent =
+      selectedNews.trend_new;
+    document.getElementById("news-view-count").textContent =
+      selectedNews.viewCount;
+    document.getElementById("news-p-tags").textContent = selectedNews.pTags;
+    document.getElementById("news-category").textContent =
+      selectedNews.category;
+  }
 </script>
