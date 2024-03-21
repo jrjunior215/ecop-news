@@ -106,14 +106,14 @@
             const imageUpload = document.getElementById('imageUpload').files[0];
 
             try {
-                // ตรวจสอบข้อมูลที่จำเป็นต้องกรอก
-                const requiredFields = ['title', 'titleTh', 'contentEn', 'contentTh', 'category', 'author', 'pTags', 'ref'];
-                for (const field of requiredFields) {
-                    if (!document.getElementById(field).value) { // แก้ไขตรวจสอบด้วย getElementById
-                        alert(`Please fill in the ${field} field.`);
-                        return;
-                    }
-                }
+                // // ตรวจสอบข้อมูลที่จำเป็นต้องกรอก
+                // const requiredFields = ['title', 'titleTh', 'contentEn', 'contentTh', 'category', 'author', 'pTags', 'ref'];
+                // for (const field of requiredFields) {
+                //     if (!document.getElementById(field).value) { // แก้ไขตรวจสอบด้วย getElementById
+                //         alert(`Please fill in the ${field} field.`);
+                //         return;
+                //     }
+                // }
 
                 // สร้าง FormData สำหรับการส่งข้อมูลข่าว
                 const formData = new FormData();
