@@ -62,27 +62,6 @@
     <h1>News Articles</h1>
   </div>
   <div class="main_maketing_articles">
-    <!-- <div class="maketing_articles">
-            <div class="articles_img">
-                <img src="" alt="">
-            </div>
-            <div class="header_articles">
-                <h1></h1>
-            </div>
-            <div class="desc_articles">
-                <p> </p>
-            </div>
-            <div class="article_option">
-                <div class="profile_article_writing">
-                    <img src="" alt="">
-                    <span></span>
-                </div>
-                <div class="related_article_view">
-                    <i class="fa-solid fa-eye"></i>
-                    <span></span>
-                </div>
-            </div>
-        </div> -->
   </div>
 
   <div class="container_pagination">
@@ -153,40 +132,51 @@
       const createNewsItem = (newsItem) => {
         const item = document.createElement("div");
         item.classList.add("maketing_articles");
-
+        const formattedDate = new Date(newsItem.date).toLocaleDateString(
+          "en-US",
+          { year: "numeric", month: "long", day: "numeric" }
+        );
         // HTML template for the news item
         item.innerHTML = `
-                  <div class="container_box_articles">
-                      <div class="articles_img">
-                          <img src="/images/${newsItem.imgLinks}.webp" alt="${
-          newsItem.imgLinks
-        }">
-                      </div>
-                      <div class="header_articles">
-                          <h1>${newsItem.titleTh}</h1>
-                      </div>
-                      <div class="desc_articles">
-                          <p>${sanitizeHTML(
-                            newsItem.contentTh.substring(0, maxTextLength)
-                          )}${
-          newsItem.contentTh.length > maxTextLength ? "..." : ""
-        }</p>
-                      </div>
-                      <a href="#" class="read-more-button" 
-                          data-news-id="${newsItem.id}"
-                          type="button">Read More</a>
-                  </div>
-                  <div class="article_option">
-                      <div class="profile_article_writing">
-                          <img src="img/rectangle-21.png" alt="">
-                          <span>${newsItem.author}</span>
-                      </div>
-                      <div class="related_article_view">
-                          <i class="fa-solid fa-eye"></i>
-                          <span>${newsItem.viewCount}</span>
-                      </div>
-                  </div>
-              `;
+                <div class="container_box_articles">
+                        <div class="articles_img">
+                            <img src="/images/${newsItem.imgLinks}.webp" alt="${newsItem.imgLinks
+          }">
+                        </div>
+                        <div class="articles_list">
+                            <div class="articles_category">
+                                <i class="fa fa-th-large"></i>
+                                <span>${newsItem.pTags}</span>
+                            </div>
+                            <div class="articles_date">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                <span>${formattedDate}</span>
+                            </div>
+                        </div>
+                        <div class="header_articles">
+                            <h1>${newsItem.titleTh}</h1>
+                        </div>
+                        <div class="desc_articles">
+                            <p>${sanitizeHTML(
+            newsItem.contentTh.substring(0, maxTextLength)
+          )}${newsItem.contentTh.length > maxTextLength ? "..." : ""
+          }</p>
+                        </div>
+                        <a  class="read-more-button" 
+                            data-news-id="${newsItem.id}"
+                            type="button">Read More</a>
+                    </div>
+                    <div class="article_option">
+                        <div class="profile_article_writing">
+                            <img src="img/rectangle-21.png" alt="">
+                            <span>${newsItem.author}</span>
+                        </div>
+                        <div class="related_article_view">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>${newsItem.viewCount}</span>
+                        </div>
+                    </div>
+                `;
 
         return item;
       };
