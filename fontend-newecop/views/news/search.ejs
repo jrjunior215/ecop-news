@@ -1,136 +1,139 @@
-<div id="searchResultsContainer">
-  
-</div>
-
 <script>
   const baseURL = "<%= process.env.BACKEND_API %>";
   // Function to sanitize HTML content
-  function sanitizeHTML(str) {
-    return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
+function sanitizeHTML(str) {
+    // Remove HTML tags
+    let strippedString = str.replace(/<[^>]*>/g, "");
+
+// Remove class attributes
+strippedString = strippedString.replace(/class\s*=\s*["'][^"']*["']/g, "");
+
+return strippedString;
+}
 
   // Function to fetch user IP using ipify.org API
   async function fetchUserIp() {
-    try {
-      const response = await fetch("https://api.ipify.org?format=json");
-      const data = await response.json();
-      return data.ip;
-    } catch (error) {
-      console.error("Error fetching user IP:", error);
-      return null;
-    }
+      try {
+          const response = await fetch("https://api.ipify.org?format=json");
+          const data = await response.json();
+          return data.ip;
+      } catch (error) {
+          console.error("Error fetching user IP:", error);
+          return null;
+      }
   }
 
   // Function to log view
   async function logView(newsId, userIp) {
-    try {
-      const logViewResponse = await fetch(`${baseURL}/api/news/logView`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ newsId, userIp }),
-      });
+      try {
+          const logViewResponse = await fetch(`${baseURL}/api/news/logView`, {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ newsId, userIp }),
+          });
 
-      const logViewData = await logViewResponse.json();
-      console.log("Log view response:", logViewData);
-      // Do something with the response if needed
-    } catch (error) {
-      console.error("Error logging view:", error);
-    }
+          const logViewData = await logViewResponse.json();
+          console.log("Log view response:", logViewData);
+          // Do something with the response if needed
+      } catch (error) {
+          console.error("Error logging view:", error);
+      }
   }
 
   // Wait for the DOM content to be fully loaded
   document.addEventListener("DOMContentLoaded", async function () {
-    // Get data from localStorage
-    const searchData = JSON.parse(sessionStorage.getItem("searchResults"));
+      // Get data from localStorage
+      const searchData = JSON.parse(sessionStorage.getItem("searchResults"));
 
-    // Check if there is data in localStorage
-    if (searchData && searchData.length > 0) {
-      // Loop through the data and create HTML elements to display each news item
-      searchData.forEach(function (news) {
-        // Create a div element to contain the news item
-        const newsDiv = document.createElement("div");
-        newsDiv.classList.add("news-item");
+      // Check if there is data in localStorage
+      if (searchData && searchData.length > 0) {
+          // Loop through the data and create HTML elements to display each news item
+          searchData.forEach(function (news) {
+              // Create a div element to contain the news item
+              const newsDiv = document.createElement("div");
+              newsDiv.classList.add("news-item");
 
-        // Create HTML elements for the news item details
-        const title = document.createElement("h2");
-        title.textContent = news.titleTh;
+              // Create HTML elements for the news item details
+              const title = document.createElement("h2");
+              title.textContent = sanitizeHTML(news.titleTh);
 
-        const date = document.createElement("p");
-        date.textContent = new Date(news.date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
+              const date = document.createElement("p");
+              date.textContent = new Date(news.date).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+              });
 
-        const content = document.createElement("p");
-        content.textContent = news.contentTh; // Display Thai contentฃ
-        const maxLength = 300; // Set your desired maximum length
-            content.textContent =
-              news.contentTh.length > maxLength
-                ? news.contentTh.substring(0, maxLength) + "..."
-                : news.contentTh;
+              const content = document.createElement("p");
+              
+              content.textContent = sanitizeHTML(news.contentTh); // Sanitize HTML content
+              const maxLength = 300; // Set your desired maximum length
+              content.textContent =
+                  content.textContent.length > maxLength
+                      ? content.textContent.substring(0, maxLength) + "..."
+                      : content.textContent;
 
-        // const image = document.createElement("img");
-        // image.src = `/images/${news.imgLinks}.webp`; // Assuming image links are like "_12i4z0tdf.jpg"
+              const readMoreLink = document.createElement("a");
+              readMoreLink.textContent = "Read More";
+              readMoreLink.href = `/news/${news.id}`;
 
-        const readMoreLink = document.createElement("a");
-        readMoreLink.textContent = "Read More";
-        readMoreLink.href = `/news/${news.id}`;
+              // Add click event listener to the readMoreLink to log view
+              readMoreLink.addEventListener("click", async function (event) {
+                  event.preventDefault();
+                  const userIp = await fetchUserIp();
+                  if (userIp) {
+                      // Log view
+                      logView(news.id, userIp);
 
-        // Add click event listener to the readMoreLink to log view
-        // Add click event listener to the readMoreLink to log view
-        readMoreLink.addEventListener("click", async function (event) {
-          event.preventDefault();
-          const userIp = await fetchUserIp();
-          if (userIp) {
-            // Log view
-            logView(news.id, userIp);
+                      // Store selected news data in sessionStorage
+                      sessionStorage.setItem(
+                          "selectedNews",
+                          JSON.stringify({
+                              newsId: news.id,
+                              imgLinks: news.imgLinks,
+                              titleTh: news.titleTh,
+                              contentTh: news.contentTh,
+                              titleEn: news.titleEn,
+                              contentEn: news.contentEn,
+                              date: news.date,
+                              author: news.author,
+                          })
+                      );
 
-            // Store selected news data in sessionStorage
-            sessionStorage.setItem(
-              "selectedNews",
-              JSON.stringify({
-                newsId: news.id,
-                imgLinks: news.imgLinks,
-                titleTh: news.titleTh,
-                contentTh: news.contentTh,
-                titleEn: news.titleEn,
-                contentEn: news.contentEn,
-                date: news.date,
-                author: news.author,
-              })
-            );
+                      // Redirect to the news page
+                      window.location.href = readMoreLink.href;
+                  } else {
+                      console.error("Unable to fetch user IP.");
+                      // Redirect to news page without logging view
+                      window.location.href = readMoreLink.href;
+                  }
+              });
 
-            // Redirect to the news page
-            window.location.href = readMoreLink.href;
-          } else {
-            console.error("Unable to fetch user IP.");
-            // Redirect to news page without logging view
-            window.location.href = readMoreLink.href;
-          }
-        });
+              // Append news item details to the news div
+              newsDiv.appendChild(title);
+              newsDiv.appendChild(date);
+              newsDiv.appendChild(content);
+              newsDiv.appendChild(readMoreLink);
 
-        // Append news item details to the news div
-        newsDiv.appendChild(title);
-        // newsDiv.appendChild(image);
-        newsDiv.appendChild(date);
-        newsDiv.appendChild(content);
-        newsDiv.appendChild(readMoreLink);
-
-        // Append the news div to the container on the page
-        document
-          .getElementById("searchResultsContainer")
-          .appendChild(newsDiv);
-      });
-    } else {
-      // If no data found in localStorage, display a message
-      const noResultsMessage = document.createElement("p");
-      noResultsMessage.textContent = "No search results found.";
-      document
-        .getElementById("searchResultsContainer")
-        .appendChild(noResultsMessage);
-    }
+              // Append the news div to the container on the page
+              document
+                  .getElementById("searchResultsContainer")
+                  .appendChild(newsDiv);
+          });
+      } else {
+          // If no data found in localStorage, display a message
+          const noResultsMessage = document.createElement("p");
+          noResultsMessage.textContent = "No search results found.";
+          document
+              .getElementById("searchResultsContainer")
+              .appendChild(noResultsMessage);
+      }
   });
 </script>
+
+<div id="searchResultsContainer">
+  
+</div>
+

@@ -1,116 +1,3 @@
-<div class="container_blog">
-  <div class="content_banner">
-    <div class="content_text_blog">
-      <div class="content_line1">
-        <span>By Themadbrains in</span>
-        <span id="span_blue">inspiration</span>
-      </div>
-      <div class="content_line2">
-        <h1>Why Swift UI Should Be on the Radar of Every Mobile Developer</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempos Lorem ipsum dolor sitamet, consectetur adipiscing elit,
-          sed do eiusmod tempor
-        </p>
-      </div>
-      <div class="content_line3">
-        <a href="#" type="button">Start learning now</a>
-      </div>
-    </div>
-    <div class="content_img_blog">
-      <img src="/img/darkweb.png" alt="" />
-    </div>
-  </div>
-</div>
-
-<div class="content_related_blog">
-  <div class="header_blog_list">
-    <h1>Trending News</h1>
-  </div>
-  <div class="trending_slide">
-    <!-- <div class="mySlides fade">
-      <img src="/img/background.png" style="width:100%">
-      <a  class="slide-content">
-        <h2>Header 1</h2>
-        <p>Description 1</p>
-      </a>
-    </div> -->
-
-    <!-- <div class="mySlides fade">
-      <img src="/img/blog1.jpg" style="width:100%">
-      <a href="#" class="slide-content">
-        <h2>Header 2</h2>
-        <p>Description 2</p>
-      </a>
-    </div>
-
-    <div class="mySlides fade">
-      <img src="/img/blog2.jpg" style="width:100%">
-      <a href="#" class="slide-content">
-        <h2>Header 3</h2>
-        <p>Description 3</p>
-      </a>
-    </div> -->
-  </div>
-</div>
-
-<div class="content_maketing_articles">
-  <div class="header_blog_list">
-    <h1>News Articles</h1>
-  </div>
-  <div class="search_blog_list">
-    <input type="text" id="searchInput" placeholder="Search News" />
-    <button id="searchButton">
-      <i class="fa fa-search" aria-hidden="true"></i>
-    </button>
-  </div>
-  <div class="main_maketing_articles"></div>
-
-  <div class="container_pagination">
-    <div class="pagination">
-      <a class="pagination-newer" href="#">PREV</a>
-      <span class="pagination-inner">
-        <a href="#">1</a>
-        <a href="#">2</a>
-        <a href="#">3</a>
-        <a href="#">4</a>
-        <a href="#">5</a>
-        <a href="#">6</a>
-      </span>
-      <a class="pagination-older" href="#">NEXT</a>
-    </div>
-  </div>
-
-  <div class="content_blog_list">
-    <div class="main_blog_list">
-      <a href="#" class="content_blog">
-        <div class="blog_image">
-          <img src="/img/blog1.jpg" alt="" />
-        </div>
-        <span>Cyber Attack</span>
-      </a>
-      <a href="#" class="content_blog">
-        <div class="blog_image">
-          <img src="/img/blog2.jpg" alt="" />
-        </div>
-        <span>Malware</span>
-      </a>
-      <a href="#" class="content_blog">
-        <div class="blog_image">
-          <img src="/img/blog3.jpg" alt="" />
-        </div>
-        <span>Cyber Threat</span>
-      </a>
-      <a href="#" class="content_blog">
-        <div class="blog_image">
-          <img src="/img/blog4.jpg" alt="" />
-        </div>
-        <span>Vulnerability</span>
-      </a>
-    </div>
-  </div>
-</div>
-
 <script>
   let slideIndex = 0;
   showSlides();
@@ -476,16 +363,25 @@ document.addEventListener("click", async function (event) {
 
 // Function to remove HTML tags from content
 const removeHTMLTags = (str) => {
-  // Remove HTML tags and replace "&quot;" with empty string
-  return str.replace(/<[^>]*>|&quot;/g, "");
+   // Remove HTML tags
+   let strippedString = str.replace(/<[^>]*>/g, "");
+
+// Remove class attributes
+strippedString = strippedString.replace(/class\s*=\s*["'][^"']*["']/g, "");
+
+return strippedString;
 };
 
 // Set slide content
 const slideHeader = document.createElement('h2');
-slideHeader.textContent = removeHTMLTags(newsItem.titleTh).substring(0, 200); // ตัดเนื้อหาหัวข้อให้สั้นลงเหลือ 50 ตัวอักษร
+const maxHeaderTextLength = 200; // จำนวนตัวอักษรสูงสุดที่ต้องการแสดง
+const trimmedHeaderText = removeHTMLTags(newsItem.titleTh).substring(0, maxHeaderTextLength);
+slideHeader.textContent = trimmedHeaderText + (newsItem.titleTh.length > maxHeaderTextLength ? '...' : '');
 
 const slideDescription = document.createElement('p');
-slideDescription.textContent = removeHTMLTags(newsItem.contentTh).substring(0, 300); // ตัดเนื้อหาให้สั้นลงเหลือ 100 ตัวอักษร
+const maxTextLength = 300; // จำนวนตัวอักษรสูงสุดที่ต้องการแสดง
+const trimmedContent = removeHTMLTags(newsItem.contentTh).substring(0, maxTextLength);
+slideDescription.textContent = trimmedContent + (newsItem.contentTh.length > maxTextLength ? '...' : '');
 
           slideContent.appendChild(slideHeader);
           slideContent.appendChild(slideDescription);
@@ -533,3 +429,116 @@ slideDescription.textContent = removeHTMLTags(newsItem.contentTh).substring(0, 3
     fetchTrendingNews();
   };
 </script>
+
+<div class="container_blog">
+  <div class="content_banner">
+    <div class="content_text_blog">
+      <div class="content_line1">
+        <span>By Themadbrains in</span>
+        <span id="span_blue">inspiration</span>
+      </div>
+      <div class="content_line2">
+        <h1>Why Swift UI Should Be on the Radar of Every Mobile Developer</h1>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempos Lorem ipsum dolor sitamet, consectetur adipiscing elit,
+          sed do eiusmod tempor
+        </p>
+      </div>
+      <div class="content_line3">
+        <a href="#" type="button">Start learning now</a>
+      </div>
+    </div>
+    <div class="content_img_blog">
+      <img src="/img/darkweb.png" alt="" />
+    </div>
+  </div>
+</div>
+
+<div class="content_related_blog">
+  <div class="header_blog_list">
+    <h1>Trending News</h1>
+  </div>
+  <div class="trending_slide">
+    <!-- <div class="mySlides fade">
+      <img src="/img/background.png" style="width:100%">
+      <a  class="slide-content">
+        <h2>Header 1</h2>
+        <p>Description 1</p>
+      </a>
+    </div> -->
+
+    <!-- <div class="mySlides fade">
+      <img src="/img/blog1.jpg" style="width:100%">
+      <a href="#" class="slide-content">
+        <h2>Header 2</h2>
+        <p>Description 2</p>
+      </a>
+    </div>
+
+    <div class="mySlides fade">
+      <img src="/img/blog2.jpg" style="width:100%">
+      <a href="#" class="slide-content">
+        <h2>Header 3</h2>
+        <p>Description 3</p>
+      </a>
+    </div> -->
+  </div>
+</div>
+
+<div class="content_maketing_articles">
+  <div class="header_blog_list">
+    <h1>News Articles</h1>
+  </div>
+  <div class="search_blog_list">
+    <input type="text" id="searchInput" placeholder="Search News" />
+    <button id="searchButton">
+      <i class="fa fa-search" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="main_maketing_articles"></div>
+
+  <div class="container_pagination">
+    <div class="pagination">
+      <a class="pagination-newer" href="#">PREV</a>
+      <span class="pagination-inner">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+        <a href="#">5</a>
+        <a href="#">6</a>
+      </span>
+      <a class="pagination-older" href="#">NEXT</a>
+    </div>
+  </div>
+
+  <div class="content_blog_list">
+    <div class="main_blog_list">
+      <a href="#" class="content_blog">
+        <div class="blog_image">
+          <img src="/img/blog1.jpg" alt="" />
+        </div>
+        <span>Cyber Attack</span>
+      </a>
+      <a href="#" class="content_blog">
+        <div class="blog_image">
+          <img src="/img/blog2.jpg" alt="" />
+        </div>
+        <span>Malware</span>
+      </a>
+      <a href="#" class="content_blog">
+        <div class="blog_image">
+          <img src="/img/blog3.jpg" alt="" />
+        </div>
+        <span>Cyber Threat</span>
+      </a>
+      <a href="#" class="content_blog">
+        <div class="blog_image">
+          <img src="/img/blog4.jpg" alt="" />
+        </div>
+        <span>Vulnerability</span>
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,73 +1,3 @@
-<style>
-  .container_news {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  #news-image {
-    max-width: 100%;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-
-  .header_news {
-    margin-bottom: 10px;
-  }
-
-  #news-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
-
-  #news-date {
-    color: #888;
-  }
-
-  .desc_news {
-    line-height: 1.6;
-  }
-
-  .news-info {
-    margin-top: 20px;
-    border-top: 1px solid #ddd;
-    padding-top: 20px;
-  }
-
-  .news-info p {
-    margin: 10px 0;
-  }
-
-  .news-info strong {
-    font-weight: bold;
-    margin-right: 5px;
-  }
-
-  .news-info span {
-    color: #555;
-  }
-</style>
-
-<div class="container_news">
-  <img id="news-image" src="" alt="" />
-  <div class="header_news">
-    <h1 id="news-title"></h1>
-    <span id="news-date"></span>
-  </div>
-  <div class="desc_news" id="news-content"></div>
-  <div class="news-info">
-    <p><strong>Reference:</strong> <span id="news-ref"></span></p>
-    <p><strong>Trending:</strong> <span id="news-trending"></span></p>
-    <p><strong>View Count:</strong> <span id="news-view-count"></span></p>
-    <p><strong>pTags:</strong> <span id="news-p-tags"></span></p>
-    <p><strong>Category:</strong> <span id="news-category"></span></p>
-  </div>
-</div>
-
 <script>
   window.onload = async function () {
     const baseURL = "<%= process.env.BACKEND_API %>";
@@ -138,3 +68,73 @@
       selectedNews.category;
   }
 </script>
+
+<style>
+  .container_news {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #news-image {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .header_news {
+    margin-bottom: 10px;
+  }
+
+  #news-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  #news-date {
+    color: #888;
+  }
+
+  .desc_news {
+    line-height: 1.6;
+  }
+
+  .news-info {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+  }
+
+  .news-info p {
+    margin: 10px 0;
+  }
+
+  .news-info strong {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+
+  .news-info span {
+    color: #555;
+  }
+</style>
+
+<div class="container_news">
+  <img id="news-image" src="" alt="" />
+  <div class="header_news">
+    <h1 id="news-title"></h1>
+    <span id="news-date"></span>
+  </div>
+  <div class="desc_news" id="news-content"></div>
+  <div class="news-info">
+    <p><strong>Reference:</strong> <span id="news-ref"></span></p>
+    <p><strong>Trending:</strong> <span id="news-trending"></span></p>
+    <p><strong>View Count:</strong> <span id="news-view-count"></span></p>
+    <p><strong>pTags:</strong> <span id="news-p-tags"></span></p>
+    <p><strong>Category:</strong> <span id="news-category"></span></p>
+  </div>
+</div>

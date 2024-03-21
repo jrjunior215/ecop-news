@@ -1,3 +1,18 @@
+<script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
+    // เรียกใช้งานฟังก์ชันเมื่อ DOM ถูกโหลดเสร็จแล้ว
+    document.addEventListener("DOMContentLoaded", function () {
+        // หาปุ่มที่มี id เป็น googleLoginBtn
+        const googleLoginBtn = document.getElementById("googleLoginBtn");
+
+        // เพิ่ม event listener เมื่อคลิกที่ปุ่ม
+        googleLoginBtn.addEventListener("click", function () {
+            // นำผู้ใช้ไปยัง URL ที่ต้องการเมื่อคลิกที่ปุ่ม
+            window.location.href = `${baseURL}/api/auth/google`;
+        });
+    });
+</script>
+
 <div class="container_admin_login">
     <div class="container_login">
         <div class="ecop_logo">
@@ -22,19 +37,3 @@
         </form>
     </div>
 </div>
-
-
-<script>
-    const baseURL = "<%= process.env.BACKEND_API %>";
-    // เรียกใช้งานฟังก์ชันเมื่อ DOM ถูกโหลดเสร็จแล้ว
-    document.addEventListener("DOMContentLoaded", function () {
-        // หาปุ่มที่มี id เป็น googleLoginBtn
-        const googleLoginBtn = document.getElementById("googleLoginBtn");
-
-        // เพิ่ม event listener เมื่อคลิกที่ปุ่ม
-        googleLoginBtn.addEventListener("click", function () {
-            // นำผู้ใช้ไปยัง URL ที่ต้องการเมื่อคลิกที่ปุ่ม
-            window.location.href = `${baseURL}/api/auth/google`;
-        });
-    });
-</script>
