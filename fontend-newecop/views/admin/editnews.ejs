@@ -7,17 +7,18 @@
             <h1 class="text-center">โชว์ข้อมูล</h1>
         </div>
         <div class="row mb-4 border-top">
-            <div class="col mt-3">
+            <div class="col-md-6 mt-3">
                 <div class="mb-3">
                     <!-- เพิ่มรูปภาพ -->
-                    <img src="" alt="Image" class="img-fluid">
+                    <img src="" alt="" class="img-fluid">
                     <!-- เพิ่มช่องแสดงชื่อรูป -->
                     <div class="form-group mt-2">
                         <label for="imageName">ชื่อรูปภาพ</label>
                         <input type="text" class="form-control" id="imageName" name="imageName" placeholder="ชื่อรูปภาพ" required>
                     </div>
-                    
                 </div>
+            </div>
+            <div class="col-md-6 mt-3">
                 <!-- เพิ่ม form สำหรับแก้ไขข้อมูล -->
                 <form method="PUT" enctype="multipart/form-data">
                     <div class="mb-3">
@@ -26,8 +27,9 @@
                     </div>
                     <div class="mb-3">
                         <label for="id">id</label>
-                        <input type="text" class="form-control" id="id" name="id" value="id" required>
+                        <input type="text" class="form-control" id="id" name="id" value="id" readonly>
                     </div>
+                    <!-- เพิ่ม input fields อื่น ๆ ตามต้องการ -->
                     <div class="mb-3">
                         <label for="title">Title EN</label>
                         <input type="text" class="form-control" id="title" name="title" value="TitleEN" required>
@@ -45,41 +47,40 @@
                         <textarea class="form-control" name="contentTh" id="contentTh" cols="30" rows="10" value="contentTh" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="category">category</label>
-                        <textarea class="form-control" name="category" id="category" cols="30" rows="10" value="category" required></textarea>
+                        <label for="category">Category</label>
+                        <input type="text" class="form-control" id="category" name="category" value="Category" required>
                     </div>
                     <div class="mb-3">
-                        <label for="date">date</label>
-                        <textarea class="form-control" name="date" id="date" cols="30" rows="10" value="date" required></textarea>
+                        <label for="date">Date</label>
+                        <input type="text" class="form-control" id="date" name="date" value="Date" required>
                     </div>
                     <div class="mb-3">
-                        <label for="author">author</label>
-                        <textarea class="form-control" name="author" id="author" cols="30" rows="10" value="author" required></textarea>
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" id="author" name="author" value="Author" required>
                     </div>
                     <div class="mb-3">
                         <label for="pTags">pTags</label>
                         <textarea class="form-control" name="pTags" id="pTags" cols="30" rows="10" value="pTags" required></textarea>
                     </div>
-                    <!-- <div class="mb-3">
-                        <label for="imgLinks">imgLinks</label>
-                        <textarea class="form-control" name="imgLinks" id="imgLinks" cols="30" rows="10" value="imgLinks" required></textarea>
-                    </div> -->
-                    <div class="col">
+                    <div class="mb-3">
                         <label for="editorUsername">Editor Username</label>
-                        <input type="text" class="form-control" id="editorUsername" name="editorUsername" placeholder="Editor Username" value="<%= locals.user.username %>">
+                        <input type="text" class="form-control" id="editorUsername" name="editorUsername" placeholder="Editor Username" value="<%= locals.user.username %>" readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="ref">ref</label>
+                        <label for="ref">Ref</label>
                         <textarea class="form-control" name="ref" id="ref" cols="30" rows="10" value="ref" required></textarea>
                     </div>
                     <!-- เพิ่ม input fields อื่น ๆ ตามต้องการ -->
-                    <button type="submit" class="btn btn-primary">แก้ไข</button>
+                    <button type="submit" class="btn btn-primary">Edit</button>
                     <a type="button" class="btn btn-danger" href="/admin-ecop/viewnews">Back</a>
                 </form>
             </div>
+            
         </div>
     </div>
 </div>
+
+
 
 
 <script>
@@ -148,7 +149,7 @@
                     timer: 1500
                 }).then(() => {
                     // ตัวอย่าง: เปิดหน้าใหม่หลังจากการส่งข้อมูลเสร็จสมบูรณ์
-                    window.location.href = "/admin-ecop/news";
+                    location.reload();
                 });
             } catch (error) {
                 console.error("Error adding news:", error);

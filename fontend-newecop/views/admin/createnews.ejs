@@ -77,6 +77,29 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // เมื่อมีการเลือกไฟล์รูปภาพ
+        document.getElementById('imageUpload').addEventListener('change', function() {
+            // เรียกใช้ฟังก์ชันเพื่อแสดงภาพที่เลือก
+            previewImage(this);
+        });
+    });
+
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                // แสดงภาพที่เลือกใน element img
+                document.getElementById('previewImage').style.display = 'block';
+                document.getElementById('previewImage').setAttribute('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]); // อ่านไฟล์รูปภาพและแปลงเป็น URL
+        }
+    }
+</script>
 
 
 

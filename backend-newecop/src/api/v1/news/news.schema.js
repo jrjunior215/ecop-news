@@ -82,7 +82,6 @@ export const updateNewsSchema = z.object({
   date: z.string(),
   author: z.string(),
   pTags: z.string(),
-  imgLinks: z.string(),
   contentEn: z.string().optional(),
   ref: z.string(),
   titleTh: z.string().optional(),
