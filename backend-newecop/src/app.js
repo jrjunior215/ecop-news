@@ -14,6 +14,7 @@ import { errorHandlerMiddleware } from "./middlewares/error-handler.middleware.j
 import { hackerNewFetchToday } from "./schedules/hackerNewFetchToday.js";
 import { scrapeDarkReading } from "./schedules/darkreadingToday.js";
 import { fetchDataAndSave } from "./schedules/update-trend.js";
+// import { securityWeek } from "./schedules/securityweek.js";
 import { fetchPopularResourcesAndSave } from "./schedules/popularResources.js";
 
 const app = express();
@@ -75,6 +76,7 @@ PassportGoogle();
 hackerNewFetchToday();
 scrapeDarkReading();
 fetchDataAndSave();
+// securityWeek();
 fetchPopularResourcesAndSave();
 
 // Server Listening
