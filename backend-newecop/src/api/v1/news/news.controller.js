@@ -9,9 +9,114 @@ import {
   idSchema,
   createNewsSchema,
 } from "./news.schema.js";
+import multer from 'multer';
+import path from "path";
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
 const prisma = new PrismaClient();
 
 const ITEMS_PER_PAGE = 12;
+
+export const getAllNewsCount = async (req, res, next) => {
+  try {
+    const totalNews = await prisma.news.count();
+
+    res.status(200).json({
+      totalNews,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const getLatestNewsCountToday = async (req, res, next) => {
+  try {
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+    const latestNewsCountToday = await prisma.news.count({
+      where: {
+        created_at: {
+          gte: startOfDay,
+          lt: endOfDay,
+        },
+      },
+    });
+
+    res.status(200).json({
+      latestNewsCountToday,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+export const getTotalViewersCount = async (req, res, next) => {
+  try {
+    const totalViewersCount = await prisma.view.count();
+
+    res.status(200).json({
+      totalViewersCount,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+
+
+
+export const getNewsCountPerWeek = async (req, res, next) => {
+  try {
+    const today = new Date();
+    const sevenDaysAgo = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7); // 7 วันย้อนหลัง
+    let startOfDay = new Date(sevenDaysAgo);
+    let endOfDay = new Date(today);
+
+    const dataLast7Days = [];
+
+    for (let i = 0; i < 7; i++) {
+      const start = new Date(startOfDay);
+      const end = new Date(endOfDay);
+      
+      const newsCount = await prisma.news.count({
+        where: {
+          AND: [
+            { created_at: { gte: start } },
+            { created_at: { lte: end } }
+          ]
+        }
+      });
+
+      const viewsCount = await prisma.view.count({
+        where: {
+          AND: [
+            { created_at: { gte: start } },
+            { created_at: { lte: end } }
+          ]
+        }
+      });
+
+      dataLast7Days.push({ newsCount, viewsCount });
+      
+      // ย้ายวันเริ่มต้นและวันสิ้นสุดไปข้างหน้าไปอีก 1 วัน
+      startOfDay.setDate(startOfDay.getDate() + 1);
+      endOfDay.setDate(endOfDay.getDate() + 1);
+    }
+
+    res.status(200).json({
+      dataLast7Days,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 
 export const getNews = async (req, res, next) => {
   try {
@@ -214,98 +319,137 @@ export const searchNews = async (req, res, next) => {
   }
 };
 
+const upload = multer({
+  dest: '../fontend-newecop/images/' // ระบุโฟลเดอร์ปลายทางสำหรับการอัปโหลดรูปภาพ
+});
 // CREATE
 export const createNews = async (req, res, next) => {
-  const {
-    category,
-    title,
-    date,
-    author,
-    pTags,
-    imgLinks,
-    contentEn,
-    ref,
-    titleTh,
-    contentTh,
-    editorUsername,
-  } = createNewsSchema.parse(req.body);
+  // Use multer middleware to handle image upload
+  upload.single('imageUpload')(req, res, async (err) => {
+    if (err) {
+      console.error("Error uploading image:", err);
+      return res.status(400).json({ success: false, message: "Error uploading image" });
+    }
 
-  try {
-    const news = await prisma.news.create({
-      data: {
-        category,
-        title,
-        date,
-        author,
-        pTags,
-        imgLinks,
-        contentEn,
-        ref,
-        titleTh,
-        contentTh,
-        editor: {
-          connect: { username: editorUsername },
+    const {
+      category,
+      title,
+      date,
+      author,
+      pTags,
+      contentEn,
+      ref,
+      titleTh,
+      contentTh,
+      editorUsername,
+    } = createNewsSchema.parse(req.body);
+
+    try {
+      // Generate unique filename with .webp extension
+      const fileName = `${uuidv4()}.webp`;
+      const imgLinks = path.parse(fileName).name; // Extract only the file name without extension
+
+      // Move the uploaded file to the destination folder
+      fs.rename(req.file.path, `../fontend-newecop/images/${fileName}`, (error) => {
+        if (error) {
+          console.error("Error moving file:", error);
+          return res.status(500).json({ success: false, message: "Error moving file" });
+        }
+      });
+
+      const news = await prisma.news.create({
+        data: {
+          category,
+          title,
+          date,
+          author,
+          pTags,
+          imgLinks, // Assign only the file name of the uploaded image
+          contentEn,
+          ref,
+          titleTh,
+          contentTh,
+          editor: {
+            connect: { username: editorUsername },
+          },
         },
-      },
-    });
+      });
 
-    return res.status(201).json({ success: true, data: news });
-  } catch (error) {
-    console.error("Error in createNews:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
-  } finally {
-    await prisma.$disconnect();
-  }
+      return res.status(201).json({ success: true, data: news });
+    } catch (error) {
+      console.error("Error in createNews:", error);
+      return res.status(500).json({ success: false, message: "Internal Server Error" });
+    } finally {
+      await prisma.$disconnect();
+    }
+  });
 };
 
-// UPDATE
 export const updateNews = async (req, res, next) => {
-  const { id } = idSchema.parse(req.params);
-  const {
-    category,
-    title,
-    date,
-    author,
-    pTags,
-    imgLinks,
-    contentEn,
-    ref,
-    titleTh,
-    contentTh,
-    editorUsername,
-  } = updateNewsSchema.parse(req.body);
+  // Use multer middleware to handle image upload
+  upload.single('imageUpload')(req, res, async (err) => {
+    if (err) {
+      console.error("Error uploading image:", err);
+      return res.status(400).json({ success: false, message: "Error uploading image" });
+    }
 
-  try {
-    const updatedNews = await prisma.news.update({
-      where: { id: parseInt(id) },
-      data: {
-        category,
-        title,
-        date,
-        author,
-        pTags,
-        imgLinks,
-        contentEn,
-        ref,
-        titleTh,
-        contentTh,
-        editor: editorUsername
-          ? { connect: { username: editorUsername } } // Connect by username if provided
-          : undefined,
-      },
-    });
+    const { id } = idSchema.parse(req.params);
+    const {
+      category,
+      title,
+      date,
+      author,
+      pTags,
+      contentEn,
+      ref,
+      titleTh,
+      contentTh,
+      editorUsername,
+    } = updateNewsSchema.parse(req.body);
 
-    return res.status(200).json({ success: true, data: updatedNews });
-  } catch (error) {
-    console.error("Error in updateNews:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
-  } finally {
-    await prisma.$disconnect();
-  }
+    try {
+      // Check if image is uploaded and generate new file name
+      let imgLinks = null;
+      if (req.file) {
+        const fileName = `${uuidv4()}.webp`; // Generate unique file name
+        imgLinks = path.parse(fileName).name; // Store only the file name without extension
+
+        // Move the uploaded file to the destination folder
+        fs.rename(req.file.path, `../fontend-newecop/images/${fileName}`, (error) => {
+          if (error) {
+            console.error("Error moving file:", error);
+            return res.status(500).json({ success: false, message: "Error moving file" });
+          }
+        });
+      }
+
+      const updatedNews = await prisma.news.update({
+        where: { id: parseInt(id) },
+        data: {
+          category,
+          title,
+          date,
+          author,
+          pTags,
+          imgLinks, // Assign the file name of the uploaded image(s)
+          contentEn,
+          ref,
+          titleTh,
+          contentTh,
+          editor: editorUsername
+            ? { connect: { username: editorUsername } } // Connect by username if provided
+            : undefined,
+        },
+      });
+
+      return res.status(200).json({ success: true, data: updatedNews });
+    } catch (error) {
+      console.error("Error in updateNews:", error);
+      return res.status(500).json({ success: false, message: "Internal Server Error" });
+    } finally {
+      await prisma.$disconnect();
+    }
+  });
 };
 
 // DELETE

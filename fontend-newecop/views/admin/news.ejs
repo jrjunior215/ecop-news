@@ -140,19 +140,39 @@
     }
 
     function deleteNews(newsId) {
-        const apiUrl = `http://localhost:8000/api/news/${newsId}`;
-        fetch(apiUrl, {
-            method: 'DELETE',
-            credentials: 'include' // Set the credentials option to 'include'
-        })
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const apiUrl = `http://localhost:8000/api/news/${newsId}`;
+            fetch(apiUrl, {
+                method: 'DELETE',
+                credentials: 'include' // Set the credentials option to 'include'
+            })
             .then(response => {
                 if (response.ok) {
-                    // If deletion is successful, you may want to refresh the news list
-                    fetchNews(1); // Fetch news for the first page after deletion
+                    // If deletion is successful, you may want to show a success message
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    }).then(() => {
+                        // After showing success message, you may want to refresh the news list
+                        fetchNews(1); // Fetch news for the first page after deletion
+                    });
                 } else {
                     throw new Error('Failed to delete news');
                 }
             })
             .catch(error => console.error('Error deleting news:', error));
-    }
+        }
+    });
+}
+
 </script>

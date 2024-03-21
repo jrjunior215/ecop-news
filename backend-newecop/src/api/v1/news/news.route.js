@@ -9,6 +9,10 @@ import {
   getViewCount,
   searchNewsTitle,
   searchNewsById,
+  getAllNewsCount,
+  getLatestNewsCountToday,
+  getTotalViewersCount,
+  getNewsCountPerWeek
 } from "./news.controller.js";
 import { validateRequestMiddleware } from "../../../middlewares/validate-request.middleware.js";
 // import {
@@ -30,5 +34,9 @@ router.get("/views", getViewCount);
 router.post("/create", jwtAuthMiddleware, roleMiddleware(1), createNews); // Create a new News
 router.put("/:id", jwtAuthMiddleware, roleMiddleware(1), updateNews); // Update a specific News by ID
 router.delete("/:id", jwtAuthMiddleware, roleMiddleware(1), deleteNews); // Delete a specific News by ID
+router.get("/count", getAllNewsCount);
+router.get("/count-today", getLatestNewsCountToday);
+router.get("/count-view", getTotalViewersCount);
+router.get("/count-last7days", getNewsCountPerWeek);
 
 export { router as newsRoute };

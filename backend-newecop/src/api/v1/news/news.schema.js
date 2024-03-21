@@ -30,15 +30,14 @@ export const SearchNewsQuerySchema = z.object({
 });
 
 export const NewsSchema = z.object({
-  id: z.number(),
   category: z.string().nullable(),
   title: z.string().nullable(),
-  date: z.string(),
-  author: z.string(),
-  pTags: z.string(),
-  imgLinks: z.string(),
+  date: z.string().nullable(),
+  author: z.string().nullable(),
+  pTags: z.string().nullable(),
+  imgLinks: z.string().nullable(),
   contentEn: z.string().nullable(),
-  ref: z.string(),
+  ref: z.string().nullable(),
   titleTh: z.string().nullable(),
   contentTh: z.string().nullable(),
   editor: z.object({
@@ -64,21 +63,20 @@ export const DeleteNewsSchema = z.object({
 
 
 export const createNewsSchema = z.object({
-  category: z.string(),
-  title: z.string(),
-  date: z.string(),
-  author: z.string(),
-  pTags: z.string(),
-  imgLinks: z.string(),
-  contentEn: z.string().optional(),
-  ref: z.string(),
-  titleTh: z.string().optional(),
-  contentTh: z.string().optional(),
-  editorUsername: z.string(),
+  category: z.string().nullable(),
+  title: z.string().nullable(),
+  date: z.string().nullable(),
+  author: z.string().nullable(),
+  pTags: z.string().nullable(),
+  contentEn: z.string().optional().nullable(),
+  ref: z.string().nullable(),
+  titleTh: z.string().optional().nullable(),
+  contentTh: z.string().optional().nullable(),
+  editorUsername: z.string().nullable(),
 });
 
+
 export const updateNewsSchema = z.object({
-  id: z.string(),
   category: z.string(),
   title: z.string(),
   date: z.string(),

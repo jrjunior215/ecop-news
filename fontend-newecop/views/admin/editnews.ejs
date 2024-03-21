@@ -16,27 +16,60 @@
                         <label for="imageName">ชื่อรูปภาพ</label>
                         <input type="text" class="form-control" id="imageName" name="imageName" placeholder="ชื่อรูปภาพ" required>
                     </div>
+                    
                 </div>
                 <!-- เพิ่ม form สำหรับแก้ไขข้อมูล -->
-                <form action="/admin-ecop/editnews" method="POST">
+                <form method="PUT" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="imageUpload">อัปโหลดรูปภาพใหม่</label>
+                        <input type="file" class="form-control" id="imageUpload" name="imageUpload">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id">id</label>
+                        <input type="text" class="form-control" id="id" name="id" value="id" required>
+                    </div>
                     <div class="mb-3">
                         <label for="title">Title EN</label>
-                        <input type="text" class="form-control" id="title" name="title" placeholder="TitleEN" required>
+                        <input type="text" class="form-control" id="title" name="title" value="TitleEN" required>
                     </div>
                     <div class="mb-3">
                         <label for="titleTh">Title TH</label>
-                        <input type="text" class="form-control" id="titleTh" name="titleTh" placeholder="TitleTH" required>
+                        <input type="text" class="form-control" id="titleTh" name="titleTh" value="TitleTH" required>
                     </div>
                     <div class="mb-3">
                         <label for="contentEn">Content En</label>
-                        <textarea class="form-control" name="contentEn" id="contentEn" cols="30" rows="10" placeholder="contentEn" required></textarea>
+                        <textarea class="form-control" name="contentEn" id="contentEn" cols="30" rows="10" value="contentEn" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="contentTh">Content Th</label>
-                        <textarea class="form-control" name="contentTh" id="contentTh" cols="30" rows="10" placeholder="contentTh" required></textarea>
+                        <textarea class="form-control" name="contentTh" id="contentTh" cols="30" rows="10" value="contentTh" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category">category</label>
+                        <textarea class="form-control" name="category" id="category" cols="30" rows="10" value="category" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date">date</label>
+                        <textarea class="form-control" name="date" id="date" cols="30" rows="10" value="date" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="author">author</label>
+                        <textarea class="form-control" name="author" id="author" cols="30" rows="10" value="author" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pTags">pTags</label>
+                        <textarea class="form-control" name="pTags" id="pTags" cols="30" rows="10" value="pTags" required></textarea>
+                    </div>
+                    <!-- <div class="mb-3">
+                        <label for="imgLinks">imgLinks</label>
+                        <textarea class="form-control" name="imgLinks" id="imgLinks" cols="30" rows="10" value="imgLinks" required></textarea>
+                    </div> -->
+                    <div class="mb-3">
+                        <label for="ref">ref</label>
+                        <textarea class="form-control" name="ref" id="ref" cols="30" rows="10" value="ref" required></textarea>
                     </div>
                     <!-- เพิ่ม input fields อื่น ๆ ตามต้องการ -->
-                    <button type="submit" class="btn btn-primary">Edit</button>
+                    <button type="submit" class="btn btn-primary">แก้ไข</button>
                     <a type="button" class="btn btn-danger" href="/admin-ecop/viewnews">Back</a>
                 </form>
             </div>
@@ -47,45 +80,115 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // เรียกฟังก์ชั่น fetchData() เมื่อหน้าเว็บโหลดเสร็จ
         fetchData();
+
+        const form = document.querySelector("form");
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault(); // ป้องกันการส่งฟอร์มโดยอัตโนมัติ
+
+            const newsId = document.getElementById('id').value;
+            const title = document.getElementById("title").value;
+            const titleTh = document.getElementById("titleTh").value;
+            const contentEn = document.getElementById("contentEn").value;
+            const contentTh = document.getElementById("contentTh").value;
+            const category = document.getElementById("category").value;
+            const pTags = document.getElementById("pTags").value;
+            const ref = document.getElementById("ref").value;
+            const editorUsername = document.getElementById("editorUsername").value;
+            const date = document.getElementById("date").value;
+            const author = document.getElementById("author").value;
+            const imageUpload = document.getElementById('imageUpload').files[0];
+
+            try {
+                // ตรวจสอบข้อมูลที่จำเป็นต้องกรอก
+                const requiredFields = ['title', 'titleTh', 'contentEn', 'contentTh', 'category', 'author', 'pTags', 'ref'];
+                for (const field of requiredFields) {
+                    if (!document.getElementById(field).value) { // แก้ไขตรวจสอบด้วย getElementById
+                        alert(`Please fill in the ${field} field.`);
+                        return;
+                    }
+                }
+
+                // สร้าง FormData สำหรับการส่งข้อมูลข่าว
+                const formData = new FormData();
+                formData.append('id', newsId);
+                formData.append('title', title);
+                formData.append('titleTh', titleTh);
+                formData.append('contentEn', contentEn);
+                formData.append('contentTh', contentTh);
+                formData.append('category', category);
+                formData.append('pTags', pTags);
+                formData.append('ref', ref);
+                formData.append('editorUsername', editorUsername);
+                formData.append('date', date);
+                formData.append('author', author);
+                formData.append('imageUpload', imageUpload); // เพิ่มไฟล์ภาพที่เลือกอัปโหลด
+
+                const newsResponse = await fetch("http://localhost:8000/api/news/create", {
+                    method: "POST",
+                    credentials: 'include',
+                    body: formData // ส่ง FormData ที่มีรายละเอียดข่าวและภาพไปยังเซิร์ฟเวอร์
+                });
+
+                if (!newsResponse.ok) {
+                    throw new Error("Failed to add news");
+                }
+
+                const responseData = await newsResponse.json();
+
+                // แสดงสวีทอลเอเลิร์ตเมื่อเพิ่มข่าวสำเร็จ
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'News added successfully!',
+                    timer: 1500
+                }).then(() => {
+                    // ตัวอย่าง: เปิดหน้าใหม่หลังจากการส่งข้อมูลเสร็จสมบูรณ์
+                    window.location.href = "/admin-ecop/news";
+                });
+            } catch (error) {
+                console.error("Error adding news:", error);
+                // แสดงสวีทอลเอเลิร์ตเมื่อเกิดข้อผิดพลาดในการเพิ่มข่าว
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add news!'
+                });
+            }
+        });
     });
 
     function fetchData() {
-        // ดึงเลขไอดีจาก query parameter id ใน URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const newsId = urlParams.get('id');
+        const newsId = getNewsIdFromURL();
+        const apiURL = `http://localhost:8000/api/news/searchNewsById?id=${newsId}`;
 
-        // URL ของ API backend
-        const baseURL = "<%= process.env.BACKEND_API %>";
-        const apiURL = `${baseURL}/api/news/searchNewsById?id=${newsId}`;
-
-        // เรียก API backend เพื่อดึงข้อมูลข่าวตามไอดีที่ระบุ
         fetch(apiURL)
             .then(response => response.json())
-            .then(data => {
-                // เรียกฟังก์ชั่น showData() เพื่อแสดงข้อมูลที่ได้จาก API
-                console.log("🚀 ~ fetchData ~ data:", data);
-                showData(data);
-            })
+            .then(data => showData(data))
             .catch(error => console.error('Error fetching data:', error));
     }
 
     function showData(data) {
-    // แสดงข้อมูลในฟอร์ม
-    document.getElementById('title').value = data.data.title;
-    document.getElementById('titleTh').value = data.data.titleTh;
-    document.getElementById('contentEn').value = data.data.contentEn;
-    document.getElementById('contentTh').value = data.data.contentTh;
-    document.getElementById('imageName').value = data.data.imgLinks;
+        document.getElementById('id').value = data.data.id;
+        document.getElementById('title').value = data.data.title;
+        document.getElementById('titleTh').value = data.data.titleTh;
+        document.getElementById('contentEn').value = data.data.contentEn;
+        document.getElementById('contentTh').value = data.data.contentTh;
+        document.getElementById('imageName').value = data.data.imgLinks;
+        document.getElementById('date').value = data.data.date;
+        document.getElementById('category').value = data.data.category;
+        document.getElementById('author').value = data.data.author;
+        document.getElementById('pTags').value = data.data.pTags;
+        document.getElementById('ref').value = data.data.ref;
 
-    // กำหนด URL ของรูปภาพที่ได้รับจากข้อมูล
-    const imageUrl = `/images/${data.data.imgLinks}.webp`;
+        const imageUrl = `/images/${data.data.imgLinks}.webp`;
+        const imageElement = document.querySelector('.img-fluid');
+        imageElement.src = imageUrl;
+        imageElement.alt = 'Image';
+    }
 
-    // กำหนดค่าให้กับแท็ก <img> เพื่อแสดงรูปภาพ
-    const imageElement = document.querySelector('.img-fluid');
-    imageElement.src = imageUrl;
-    imageElement.alt = 'Image';
-}
-
+    function getNewsIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id');
+    }
 </script>
