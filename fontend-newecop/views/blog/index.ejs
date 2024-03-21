@@ -332,20 +332,26 @@ document.addEventListener("click", async function (event) {
       temp.innerHTML = html;
       return temp.textContent || temp.innerText || "";
     };
+// Function to fetch trending news with pagination
+const fetchTrendingNews = async () => {
+    try {
+      const response = await fetch(`${baseURL}/api/news/search?trendNew=Trending%20News`);
+      const data = await response.json();
+      const trendingNews = data.data;
 
-    // Function to fetch trending news with pagination
-    const fetchTrendingNews = async () => {
-      try {
-        const response = await fetch(`${baseURL}/api/news/search?trendNew=Trending%20News`);
-        const data = await response.json();
-        const trendingNews = data.data;
+      // Clear existing trending news items
+      const trendingSlideContainers = document.querySelectorAll('.trending_slide');
+      trendingSlideContainers.forEach(container => {
+        container.innerHTML = '';
+      });
 
-        // Clear existing trending news items
-        const trendingSlide = document.querySelector('.trending_slide');
-        trendingSlide.innerHTML = '';
+      // Append trending news items to each slide container
+      trendingSlideContainers.forEach((container, index) => {
+        const startIndex = index * 3; // Show 3 news items per slide
+        const endIndex = startIndex + 3;
+        const newsItems = trendingNews.slice(startIndex, endIndex);
 
-        // Append trending news items
-        trendingNews.forEach(newsItem => {
+        newsItems.forEach(newsItem => {
           // Create slide element
           const slide = document.createElement('div');
           slide.classList.add('mySlides', 'fade');
@@ -361,47 +367,50 @@ document.addEventListener("click", async function (event) {
           slideContent.href = '#';
           slideContent.classList.add('slide-content');
 
-// Function to remove HTML tags from content
-const removeHTMLTags = (str) => {
-   // Remove HTML tags
-   let strippedString = str.replace(/<[^>]*>/g, "");
+          // Function to remove HTML tags from content
+          const removeHTMLTags = (str) => {
+            // Remove HTML tags
+            let strippedString = str.replace(/<[^>]*>/g, "");
 
-// Remove class attributes
-strippedString = strippedString.replace(/class\s*=\s*["'][^"']*["']/g, "");
+            // Remove class attributes
+            strippedString = strippedString.replace(/class\s*=\s*["'][^"']*["']/g, "");
 
-return strippedString;
-};
+            return strippedString;
+          };
 
-// Set slide content
-const slideHeader = document.createElement('h2');
-const maxHeaderTextLength = 200; // จำนวนตัวอักษรสูงสุดที่ต้องการแสดง
-const trimmedHeaderText = removeHTMLTags(newsItem.titleTh).substring(0, maxHeaderTextLength);
-slideHeader.textContent = trimmedHeaderText + (newsItem.titleTh.length > maxHeaderTextLength ? '...' : '');
+          // Set slide content
+          const slideHeader = document.createElement('h2');
+          const maxHeaderTextLength = 200; // Maximum number of characters to display
+          const trimmedHeaderText = removeHTMLTags(newsItem.titleTh).substring(0, maxHeaderTextLength);
+          slideHeader.textContent = trimmedHeaderText + (newsItem.titleTh.length > maxHeaderTextLength ? '...' : '');
 
-const slideDescription = document.createElement('p');
-const maxTextLength = 300; // จำนวนตัวอักษรสูงสุดที่ต้องการแสดง
-const trimmedContent = removeHTMLTags(newsItem.contentTh).substring(0, maxTextLength);
-slideDescription.textContent = trimmedContent + (newsItem.contentTh.length > maxTextLength ? '...' : '');
+          const slideDescription = document.createElement('p');
+          const maxTextLength = 300; // Maximum number of characters to display
+          const trimmedContent = removeHTMLTags(newsItem.contentTh).substring(0, maxTextLength);
+          slideDescription.textContent = trimmedContent + (newsItem.contentTh.length > maxTextLength ? '...' : '');
 
           slideContent.appendChild(slideHeader);
           slideContent.appendChild(slideDescription);
           slide.appendChild(slideContent);
 
           // Append slide to trending slides container
-          trendingSlide.appendChild(slide);
+          container.appendChild(slide);
 
           // Add click event listener to slide content link
           slideContent.addEventListener('click', () => {
             handleSlideContentClick(newsItem);
           });
         });
+      });
 
-        // Start slideshow
+      // Start slideshow for each trending slide container
+      const slideContainers = document.querySelectorAll('.trending_slide');
+      slideContainers.forEach(container => {
         let slideIndex = 0;
-        showSlides();
+        showSlides(container);
 
-        function showSlides() {
-          const slides = document.getElementsByClassName("mySlides");
+        function showSlides(container) {
+          const slides = container.getElementsByClassName("mySlides");
           for (let i = 0; i < slides.length; i++) {
             slides[i].style.display = "none";
           }
@@ -410,25 +419,27 @@ slideDescription.textContent = trimmedContent + (newsItem.contentTh.length > max
             slideIndex = 1;
           }
           slides[slideIndex - 1].style.display = "block";
-          setTimeout(showSlides, 6000); // Change image every 1 minute
+          setTimeout(() => showSlides(container), 6000); // Change image every 1 minute
         }
+      });
 
-        // Function to handle slide content click
-        function handleSlideContentClick(newsItem) {
-          // Perform actions when slide content is clicked
-          console.log('Slide content clicked:', newsItem);
-          // Example: Redirect to news details page
-          window.location.href = `/news/${newsItem.id}`;
-        }
-      } catch (error) {
-        console.error('Error fetching trending news:', error);
+      // Function to handle slide content click
+      function handleSlideContentClick(newsItem) {
+        // Perform actions when slide content is clicked
+        console.log('Slide content clicked:', newsItem);
+        // Example: Redirect to news details page
+        window.location.href = `/news/${newsItem.id}`;
       }
-    };
+    } catch (error) {
+      console.error('Error fetching trending news:', error);
+    }
+  };
 
-    // Call the function to fetch and display trending news
-    fetchTrendingNews();
+  // Call the function to fetch and display trending news
+  fetchTrendingNews();
   };
 </script>
+
 
 <div class="container_blog">
   <div class="content_banner">
@@ -455,6 +466,7 @@ slideDescription.textContent = trimmedContent + (newsItem.contentTh.length > max
     <h1>Trending News</h1>
   </div>
   <div class="trending_slide">
+    
     <!-- <div class="mySlides fade">
       <img src="/img/background.png" style="width:100%">
       <a  class="slide-content">
@@ -478,6 +490,12 @@ slideDescription.textContent = trimmedContent + (newsItem.contentTh.length > max
         <p>Description 3</p>
       </a>
     </div> -->
+  </div>
+  <div class="trending_slide">
+  
+  </div>
+  <div class="trending_slide">
+  
   </div>
 </div>
 
