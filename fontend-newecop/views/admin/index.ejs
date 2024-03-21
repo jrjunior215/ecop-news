@@ -1,0 +1,50 @@
+<div class="container_dashboard px-3 pt-3">
+    <div class="col border-bottom">
+        <h1>Dashboard</h1>
+    </div>
+    <div class="col py-3 px-3 d-flex justify-content-around" id="Dashboard">
+        <div class="row mb-4">
+            <h1>ข่าวใหม่ของวันนี้</h1>
+            <h2>3</h2>
+        </div>
+        <div class="row mb-4">
+            <h1>ข่าวทั้งหมด</h1>
+            <h2>123</h2>
+        </div>
+        <div class="row mb-4">
+            <h1>จำนวนผู้เข้าชม</h1>
+            <h2>1230</h2>
+        </div>
+    </div>
+    <div class="col py-3 px-3" id="Dashboard2">
+
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน' , 'ตุลาคม' , 'พฤศจิกายน' , 'ธันวาคม'],
+            datasets: [{
+                label: 'ผู้เข้าชม',
+                data: [12, 19, 30, 50, 10, 0],
+                borderWidth: 1
+            },{
+                label: 'ข่าว',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>

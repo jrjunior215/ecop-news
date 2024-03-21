@@ -40,29 +40,29 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 // Middleware function to check authentication
-const isAuthenticated = async (req, res, next) => {
-  try {
-    const response = await axios.get(`http://localhost:8000/api/users/me`, {
-      headers: { cookie: req.headers.cookie },
-      withCredentials: true,
-    });
+// const isAuthenticated = async (req, res, next) => {
+//   try {
+//     const response = await axios.get(`http://localhost:8000/api/users/me`, {
+//       headers: { cookie: req.headers.cookie },
+//       withCredentials: true,
+//     });
 
-    const me = response.data;
+//     const me = response.data;
 
-    console.log("user/me info => ", me);
+//     console.log("user/me info => ", me);
 
-    if (!me) {
-      res.redirect("/admin-ecop/login"); // Redirect to login page if user is not logged in
-    } else if (me.role !== 1) {
-      res.redirect("/"); // Redirect to another page if user is not admin
-    } else {
-      next(); // Proceed to the next middleware if user is authenticated and is admin
-    }
-  } catch (error) {
-    console.error("Error fetching user/me info: ", error);
-    res.redirect("/admin-ecop/login"); // Redirect to login page in case of error
-  }
-};
+//     if (!me) {
+//       res.redirect("/admin-ecop/login"); // Redirect to login page if user is not logged in
+//     } else if (me.role !== 1) {
+//       res.redirect("/"); // Redirect to another page if user is not admin
+//     } else {
+//       next(); // Proceed to the next middleware if user is authenticated and is admin
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user/me info: ", error);
+//     res.redirect("/admin-ecop/login"); // Redirect to login page in case of error
+//   }
+// };
 
 // Apply authentication middleware to Admin routes
 // app.use("/admin-ecop", isAuthenticated);
@@ -84,19 +84,19 @@ app.get("/searchnews", SearchNewsController);
 
 // ADMIN
 const adminController = require("./controllers/views/admin/adminController");
-app.get("/admin-ecop", isAuthenticated, adminController);
+app.get("/admin-ecop", adminController);
 
 const adminNewsController = require("./controllers/views/admin/adminNewsController");
-app.get("/admin-ecop/news", isAuthenticated, adminNewsController);
+app.get("/admin-ecop/news", adminNewsController);
 const adminLoginController = require("./controllers/views/admin/adminLoginController");
 app.get("/admin-ecop/login", adminLoginController);
 
 const adminCreateController = require("./controllers/views/admin/adminCreateController");
-app.get("/admin-ecop/createnews", isAuthenticated, adminCreateController);
+app.get("/admin-ecop/createnews", adminCreateController);
 const adminViewController = require("./controllers/views/admin/adminViewController");
-app.get("/admin-ecop/viewnews", isAuthenticated, adminViewController);
+app.get("/admin-ecop/viewnews", adminViewController);
 const adminEditController = require("./controllers/views/admin/adminEditController");
-app.get("/admin-ecop/editnews/:id", isAuthenticated, adminEditController);
+app.get("/admin-ecop/editnews/:id", adminEditController);
 
 app.listen(SERVER_PORT, () =>
   console.log(
