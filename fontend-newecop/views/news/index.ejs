@@ -46,6 +46,7 @@
     const newsTitle = removeHTMLTags(selectedNews.titleTh);
     document.getElementById("news-title").textContent = newsTitle;
 
+    const newsTitleEn = removeHTMLTags(selectedNews.title);
     // Format date as "Month Day, Year"
     const formattedDate = new Date(selectedNews.date).toLocaleDateString(
       "en-US",
@@ -58,7 +59,11 @@
     document.getElementById("news-content").innerHTML = newsContent;
 
     // Set text content for additional news information
-    document.getElementById("news-ref").textContent = selectedNews.ref;
+    if (selectedNews.ref) {
+      document.getElementById("news-ref").innerHTML = `<a href="${selectedNews.ref}">${newsTitleEn}</a>`;
+    } else {
+      document.getElementById("news-ref").innerHTML = "N/A"; // or any text you want to display when there's no reference link
+    }
     document.getElementById("news-trending").textContent =
       selectedNews.trend_new;
     document.getElementById("news-view-count").textContent =
@@ -68,6 +73,7 @@
       selectedNews.category;
   }
 </script>
+
 
 <style>
   .container_news {
