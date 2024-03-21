@@ -1,0 +1,100 @@
+<div class="container_dashboard px-3 pt-3">
+    <div class="col border-bottom">
+        <h1>Dashboard</h1>
+    </div>
+    <div class="col py-3 px-3 d-flex justify-content-around" id="Dashboard">
+        <div class="row mb-4">
+            <h1>ข่าวใหม่ของวันนี้</h1>
+            <h2 id="newNewsCount"></h2> <!-- เพิ่ม ID เพื่อรองรับการแสดงผลจำนวนข่าวใหม่ -->
+        </div>
+        <div class="row mb-4">
+            <h1>ข่าวทั้งหมด</h1>
+            <h2 id="totalNewsCount"></h2> <!-- เพิ่ม ID เพื่อรองรับการแสดงผลจำนวนข่าวทั้งหมด -->
+        </div>
+        <div class="row mb-4">
+            <h1>จำนวนผู้เข้าชม</h1>
+            <h2 id="totalViewsCount"></h2>
+        </div>
+    </div>
+    <div class="col py-3 px-3" id="Dashboard2">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+        const baseURL = "<%= process.env.BACKEND_API %>";
+   const ctx = document.getElementById('myChart');
+
+   
+
+fetch(`${baseURL}/api/news/count-last7days`)
+    .then(response => response.json())
+    .then(data => {
+        const labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
+        const newsData = data.dataLast7Days.map(day => day.newsCount);
+        const viewsData = data.dataLast7Days.map(day => day.viewsCount);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'News',
+                    data: newsData,
+                    borderWidth: 1
+                },{
+                    label: 'Viewers',
+                    data: viewsData,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching data: ', error));
+
+</script>
+
+<script>
+    // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
+    fetch(`${baseURL}/api/news/count`)
+        .then(response => response.json())
+        .then(data => {
+            // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด
+            document.getElementById('totalNewsCount').innerText = data.totalNews;
+        })
+        .catch(error => console.error('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
+</script>
+
+<script>
+    // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
+    fetch(`${baseURL}/api/news/count-today`)
+        .then(response => response.json())
+        .then(data => {
+            // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด
+            document.getElementById('newNewsCount').innerText = data.latestNewsCountToday;
+        })
+        .catch(error => console.error('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
+
+    // ต่อไปเราสามารถเพิ่มการดึงข้อมูลข่าวใหม่ของวันนี้ได้ในนี้
+</script>
+
+
+<script>
+    // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
+    fetch(`${baseURL}/api/news/count-view`)
+        .then(response => response.json())
+        .then(data => {
+            // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด
+            document.getElementById('totalViewsCount').innerText = data.totalViewersCount;
+        })
+        .catch(error => console.error('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
+
+    // ต่อไปเราสามารถเพิ่มการดึงข้อมูลข่าวใหม่ของวันนี้ได้ในนี้
+</script>

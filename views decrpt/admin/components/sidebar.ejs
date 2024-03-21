@@ -1,0 +1,77 @@
+<div class="sidebar_warpper">
+    <div class="sidebar_logo">
+        <img src="/img/logo_alt.png" alt="logo_ecop">
+    </div>
+    <ul class="sidebar_menu">
+
+        <li class="menu_label">
+            <a href="/admin-ecop">
+                <span class="menu_icon"><i class="fa fa-home fa-1x" aria-hidden="true"></i></span>
+                <span class="menu_title">Dashboard</span>
+            </a>
+        </li>
+        <!-- <ul class="mm_collapse">
+            <li class="mm_label">
+                <a href="#">
+                    <span class="mm_icon">></span>
+                    <span class="mm_title">หน้าหลัก</span>
+                </a>
+            </li>
+            <li class="mm_label">
+                <a href="#">
+                    <span class="mm_icon">></span>
+                    <span class="mm_title">ข่าว & จำนวนคนดู</span>
+                </a>
+            </li>
+            <li class="mm_label">
+                <a href="#">
+                    <span class="mm_icon">></span>
+                    <span class="mm_title">ผู้ใช้</span>
+                </a>
+            </li>
+        </ul> -->
+
+        <!-- <li class="menu_label">
+            <a href="#">
+                <span class="menu_icon"><i class="fa fa-users fa-1x" aria-hidden="true"></i></span>
+                <span class="menu_title">User</span>
+            </a>
+        </li> -->
+
+        <li class="menu_label">
+            <a href="/admin-ecop/news">
+                <span class="menu_icon"><i class="fa fa-clipboard fa-1x" aria-hidden="true"></i></span>
+                <span class="menu_title">Post</span>
+            </a>
+        </li>
+        <li class="menu_label">
+            <a onclick="logout()">
+                <span class="menu_icon"><i class="fa fa-clipboard fa-1x" aria-hidden="true"></i></span>
+                <span class="menu_title">Logout</span>
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+<script>
+    async function logout() {
+        console.log("Calling logout function");
+        try {
+            const response = await fetch("http://localhost:8000/api/auth/signout", {
+                method: "POST",
+                credentials: "include"
+            });
+            if (response.ok) {
+                // Redirect to the login page or perform any other action after logout
+                window.location.href = "/admin-ecop/login"; 
+            } else {
+                console.error("Error logging out:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    }
+</script>
+

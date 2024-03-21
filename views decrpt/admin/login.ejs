@@ -1,0 +1,39 @@
+<script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
+    // เรียกใช้งานฟังก์ชันเมื่อ DOM ถูกโหลดเสร็จแล้ว
+    document.addEventListener("DOMContentLoaded", function () {
+        // หาปุ่มที่มี id เป็น googleLoginBtn
+        const googleLoginBtn = document.getElementById("googleLoginBtn");
+
+        // เพิ่ม event listener เมื่อคลิกที่ปุ่ม
+        googleLoginBtn.addEventListener("click", function () {
+            // นำผู้ใช้ไปยัง URL ที่ต้องการเมื่อคลิกที่ปุ่ม
+            window.location.href = `${baseURL}/api/auth/google`;
+        });
+    });
+</script>
+
+<div class="container_admin_login">
+    <div class="container_login">
+        <div class="ecop_logo">
+            <img src="/img/logo_alt.png" alt="logo_alt">
+        </div>
+        <form class="box_login" action="/admin-ecop/submit_login" method="POST">
+            <!-- <div class="forum_login">
+                <span>Username</span>
+                <input type="text">
+            </div>
+            <div class="forum_login">
+                <span>Password</span>
+                <input type="password">
+            </div>
+            <div class="forum_btn">
+                <div class="container_rememberme">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <label for="rememberMe">Remember Me</label>
+                </div> -->
+                <button id="googleLoginBtn" type="button">Login with Google</button>
+            </div>
+        </form>
+    </div>
+</div>

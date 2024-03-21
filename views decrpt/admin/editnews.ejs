@@ -1,0 +1,200 @@
+<div class="container_crud_edit px-3 pt-3">
+    <div class="col border-bottom">
+        <h1>Editnews</h1>
+    </div>
+    <div class="col py-3 px-3">
+        <div class="row mb-4">
+            <h1 class="text-center">โชว์ข้อมูล</h1>
+        </div>
+        <div class="row mb-4 border-top">
+            <div class="col-md-6 mt-3">
+                <div class="mb-3">
+                    <!-- เพิ่มรูปภาพ -->
+                    <img src="" alt="" class="img-fluid">
+                    <!-- เพิ่มช่องแสดงชื่อรูป -->
+                    <div class="form-group mt-2">
+                        <label for="imageName">ชื่อรูปภาพ</label>
+                        <input type="text" class="form-control" id="imageName" name="imageName" placeholder="ชื่อรูปภาพ" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mt-3">
+                <!-- เพิ่ม form สำหรับแก้ไขข้อมูล -->
+                <form method="PUT" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="imageUpload">อัปโหลดรูปภาพใหม่</label>
+                        <input type="file" class="form-control" id="imageUpload" name="imageUpload">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id">id</label>
+                        <input type="text" class="form-control" id="id" name="id" value="id" readonly>
+                    </div>
+                    <!-- เพิ่ม input fields อื่น ๆ ตามต้องการ -->
+                    <div class="mb-3">
+                        <label for="title">Title EN</label>
+                        <input type="text" class="form-control" id="title" name="title" value="TitleEN" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="titleTh">Title TH</label>
+                        <input type="text" class="form-control" id="titleTh" name="titleTh" value="TitleTH" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contentEn">Content En</label>
+                        <textarea class="form-control" name="contentEn" id="contentEn" cols="30" rows="10" value="contentEn" ></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contentTh">Content Th</label>
+                        <textarea class="form-control" name="contentTh" id="contentTh" cols="30" rows="10" value="contentTh" ></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category">Category</label>
+                        <input type="text" class="form-control" id="category" name="category" value="Category" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="date">Date</label>
+                        <input type="text" class="form-control" id="date" name="date" value="Date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="author">Author</label>
+                        <input type="text" class="form-control" id="author" name="author" value="Author" >
+                    </div>
+                    <div class="mb-3">
+                        <label for="pTags">pTags</label>
+                        <textarea class="form-control" name="pTags" id="pTags" cols="30" rows="10" value="pTags" ></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editorUsername">Editor Username</label>
+                        <input type="text" class="form-control" id="editorUsername" name="editorUsername" placeholder="Editor Username" value="<%= locals.user.username %>" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ref">Ref</label>
+                        <textarea class="form-control" name="ref" id="ref" cols="30" rows="10" value="ref" ></textarea>
+                    </div>
+                    <!-- เพิ่ม input fields อื่น ๆ ตามต้องการ -->
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                    <a type="button" class="btn btn-danger" href="/admin-ecop/viewnews">Back</a>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchData();
+
+        const form = document.querySelector("form");
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault(); // ป้องกันการส่งฟอร์มโดยอัตโนมัติ
+
+            const newsId = document.getElementById('id').value;
+            const title = document.getElementById("title").value;
+            const titleTh = document.getElementById("titleTh").value;
+            const contentEn = document.getElementById("contentEn").value;
+            const contentTh = document.getElementById("contentTh").value;
+            const category = document.getElementById("category").value;
+            const pTags = document.getElementById("pTags").value;
+            const ref = document.getElementById("ref").value;
+            const editorUsername = document.getElementById("editorUsername").value;
+            const date = document.getElementById("date").value;
+            const author = document.getElementById("author").value;
+            const imageUpload = document.getElementById('imageUpload').files[0];
+
+            try {
+                // // ตรวจสอบข้อมูลที่จำเป็นต้องกรอก
+                // const requiredFields = ['title', 'titleTh', 'contentEn', 'contentTh', 'category', 'author', 'pTags', 'ref'];
+                // for (const field of requiredFields) {
+                //     if (!document.getElementById(field).value) { // แก้ไขตรวจสอบด้วย getElementById
+                //         alert(`Please fill in the ${field} field.`);
+                //         return;
+                //     }
+                // }
+
+                // สร้าง FormData สำหรับการส่งข้อมูลข่าว
+                const formData = new FormData();
+                // formData.append('id', newsId);
+                formData.append('title', title);
+                formData.append('titleTh', titleTh);
+                formData.append('contentEn', contentEn);
+                formData.append('contentTh', contentTh);
+                formData.append('category', category);
+                formData.append('pTags', pTags);
+                formData.append('ref', ref);
+                formData.append('editorUsername', editorUsername);
+                formData.append('date', date);
+                formData.append('author', author);
+                formData.append('imageUpload', imageUpload); // เพิ่มไฟล์ภาพที่เลือกอัปโหลด
+
+                const newsResponse = await fetch(`${baseURL}/api/news/${newsId}`, {
+                    method: "PUT",
+                    credentials: 'include',
+                    body: formData // ส่ง FormData ที่มีรายละเอียดข่าวและภาพไปยังเซิร์ฟเวอร์
+                });
+
+                if (!newsResponse.ok) {
+                    throw new Error("Failed to add news");
+                }
+
+                const responseData = await newsResponse.json();
+
+                // แสดงสวีทอลเอเลิร์ตเมื่อเพิ่มข่าวสำเร็จ
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'News added successfully!',
+                    timer: 1500
+                }).then(() => {
+                    // ตัวอย่าง: เปิดหน้าใหม่หลังจากการส่งข้อมูลเสร็จสมบูรณ์
+                    location.reload();
+                });
+            } catch (error) {
+                console.error("Error adding news:", error);
+                // แสดงสวีทอลเอเลิร์ตเมื่อเกิดข้อผิดพลาดในการเพิ่มข่าว
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to add news!'
+                });
+            }
+        });
+    });
+
+    function fetchData() {
+        const newsId = getNewsIdFromURL();
+        const apiURL = `${baseURL}/api/news/searchNewsById?id=${newsId}`;
+
+        fetch(apiURL)
+            .then(response => response.json())
+            .then(data => showData(data))
+            .catch(error => console.error('Error fetching data:', error));
+    }
+
+    function showData(data) {
+        document.getElementById('id').value = data.data.id;
+        document.getElementById('title').value = data.data.title;
+        document.getElementById('titleTh').value = data.data.titleTh;
+        document.getElementById('contentEn').value = data.data.contentEn;
+        document.getElementById('contentTh').value = data.data.contentTh;
+        document.getElementById('imageName').value = data.data.imgLinks;
+        document.getElementById('date').value = data.data.date;
+        document.getElementById('category').value = data.data.category;
+        document.getElementById('author').value = data.data.author;
+        document.getElementById('pTags').value = data.data.pTags;
+        document.getElementById('ref').value = data.data.ref;
+
+        const imageUrl = `/images/${data.data.imgLinks}.webp`;
+        const imageElement = document.querySelector('.img-fluid');
+        imageElement.src = imageUrl;
+        imageElement.alt = 'Image';
+    }
+
+    function getNewsIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id');
+    }
+</script>

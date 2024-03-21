@@ -1,0 +1,182 @@
+<script>
+    const baseURL = "<%= process.env.BACKEND_API %>";
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchNews(1); // Fetch news for the first page when the page loads
+    });
+
+    let currentPage = 1; // Initialize currentPage variable outside functions
+
+    function fetchNews(page) {
+        const apiUrl = `${baseURL}/api/news/?page=${page}`; // Construct API URL with pagination parameter
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                displayNews(data.news); // Display news data
+                displayPagination(data.pagination); // Display pagination
+            })
+            .catch(error => console.error('Error fetching news:', error));
+    }
+
+    function displayNews(news) {
+    const newsTableBody = document.getElementById('newsTableBody');
+    newsTableBody.innerHTML = ''; // Clear existing table rows
+    news.forEach((item, index) => {
+        const formattedDate = new Date(item.date).toLocaleDateString(
+            "en-US",
+            { year: "numeric", month: "long", day: "numeric" }
+        );
+
+        // Limit contentTh to 100 characters and add an ellipsis if it exceeds the limit
+        const truncatedContentTH = item.contentTh.length > 100 ? item.contentTh.substring(0, 50) + '...' : item.contentTh;
+        const truncatedContentEN = item.contentEn.length > 100 ? item.contentEn.substring(0, 50) + '...' : item.contentEn;
+        const truncatedImgName = item.imgLinks.length > 100 ? item.imgLinks.substring(0, 50) + '...' : item.imgLinks;
+
+        const row = `
+            <tr class="align-middle">
+                <td>${item.id}</td>
+                <td>${item.titleTh}</td>
+                <td>${truncatedContentTH}</td>
+                <td>${item.title}</td>
+                <td>${truncatedContentEN}</td>
+                <td>${truncatedImgName}</td>
+                <td>${formattedDate}</td>
+                <td>
+                    <div class="d-flex flex-row justify-content-end">
+                        <a href="/admin-ecop/editnews/${item.id}?id=${item.id}" type="button" class="btn btn-warning me-2">edit</a>
+                        <button type="button" class="btn btn-danger" onclick="deleteNews(${item.id})">delete</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        newsTableBody.innerHTML += row;
+    });
+}
+
+
+    function displayPagination(pagination) {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = ''; // Clear existing pagination buttons
+        const totalPages = pagination.totalPages;
+        const visiblePages = 5; // Number of pagination buttons you want to display
+
+        // Update currentPage
+        currentPage = pagination.currentPage;
+
+        // Previous button
+        if (currentPage > 1) {
+            const prevButton = `
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="fetchNews(${currentPage - 1})" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                </li>
+            `;
+            paginationContainer.innerHTML += prevButton;
+        }
+
+        // Pagination buttons
+        for (let i = currentPage; i <= Math.min(currentPage + visiblePages - 1, totalPages); i++) {
+            const button = `
+                <li class="page-item ${currentPage === i ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="fetchNews(${i})">${i}</a>
+                </li>
+            `;
+            paginationContainer.innerHTML += button;
+        }
+
+        // Next button
+        if (currentPage < totalPages) {
+            const nextButton = `
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="fetchNews(${currentPage + 1})" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </li>
+            `;
+            paginationContainer.innerHTML += nextButton;
+        }
+    }
+
+    function deleteNews(newsId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const apiUrl = `${baseURL}/api/news/${newsId}`;
+            fetch(apiUrl, {
+                method: 'DELETE',
+                credentials: 'include' // Set the credentials option to 'include'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // If deletion is successful, you may want to show a success message
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    }).then(() => {
+                        // After showing success message, you may want to refresh the news list
+                        fetchNews(1); // Fetch news for the first page after deletion
+                    });
+                } else {
+                    throw new Error('Failed to delete news');
+                }
+            })
+            .catch(error => console.error('Error deleting news:', error));
+        }
+    });
+}
+
+</script>
+
+
+<div class="container_crud_news px-3 pt-3">
+    <div class="container_create">
+        <a type="button" class="btn btn-primary" href="/admin-ecop/createnews">Add News</a>
+    </div>
+    <div class="container_news border-top mt-2">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">titleTh</th>
+                    <th scope="col">contentTh</th>
+                    <th scope="col">title</th>
+                    <th scope="col">contentEn</th>
+                    <th scope="col">imageName</th>
+                    <th scope="col">date</th>
+                    <th scope="col" class="text-end">#</th>
+                </tr>
+            </thead>
+            <tbody id="newsTableBody">
+                <tr class="align-middle">
+                    <td>1</td>
+                    <td>News</td>
+                    <td>11/11/2024</td>
+                    <td>
+                        <div class="d-flex flex-row justify-content-end">
+                            <a href="/admin-ecop/viewnews" type="button" class="btn btn-warning me-2">edit</a>
+                            <!-- <a href="#" type="button" class="btn btn-danger">delete</a> -->
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <nav>
+        <ul class="pagination justify-content-center" id="pagination">
+            <!-- Pagination Buttons will be added here dynamically -->
+        </ul>
+    </nav>
+</div>
+
+
+

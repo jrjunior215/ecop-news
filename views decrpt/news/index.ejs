@@ -1,6 +1,6 @@
 <script>
-  const baseURL = "<%= process.env.BACKEND_API %>";
   window.onload = async function () {
+    const baseURL = "<%= process.env.BACKEND_API %>";
     try {
       // Extract news ID from URL
       const newsId = window.location.pathname.split("/").pop();
