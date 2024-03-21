@@ -64,6 +64,10 @@
                         <label for="imgLinks">imgLinks</label>
                         <textarea class="form-control" name="imgLinks" id="imgLinks" cols="30" rows="10" value="imgLinks" required></textarea>
                     </div> -->
+                    <div class="col">
+                        <label for="editorUsername">Editor Username</label>
+                        <input type="text" class="form-control" id="editorUsername" name="editorUsername" placeholder="Editor Username" value="<%= locals.user.username %>">
+                    </div>
                     <div class="mb-3">
                         <label for="ref">ref</label>
                         <textarea class="form-control" name="ref" id="ref" cols="30" rows="10" value="ref" required></textarea>
@@ -111,7 +115,7 @@
 
                 // สร้าง FormData สำหรับการส่งข้อมูลข่าว
                 const formData = new FormData();
-                formData.append('id', newsId);
+                // formData.append('id', newsId);
                 formData.append('title', title);
                 formData.append('titleTh', titleTh);
                 formData.append('contentEn', contentEn);
@@ -124,8 +128,8 @@
                 formData.append('author', author);
                 formData.append('imageUpload', imageUpload); // เพิ่มไฟล์ภาพที่เลือกอัปโหลด
 
-                const newsResponse = await fetch("http://localhost:8000/api/news/create", {
-                    method: "POST",
+                const newsResponse = await fetch(`http://localhost:8000/api/news/${newsId}`, {
+                    method: "PUT",
                     credentials: 'include',
                     body: formData // ส่ง FormData ที่มีรายละเอียดข่าวและภาพไปยังเซิร์ฟเวอร์
                 });
