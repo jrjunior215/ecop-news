@@ -14,11 +14,17 @@ import { errorHandlerMiddleware } from "./middlewares/error-handler.middleware.j
 import { hackerNewFetchToday } from "./schedules/hackerNewFetchToday.js";
 import { scrapeDarkReading } from "./schedules/darkreadingToday.js";
 import { fetchDataAndSave } from "./schedules/update-trend.js";
-// import { securityWeek } from "./schedules/securityweek.js";
+import { cybersecurityNews } from "./schedules/cybersecurityNews.js";
 import { fetchPopularResourcesAndSave } from "./schedules/popularResources.js";
 
 const app = express();
 
+// Scheduled Tasks
+// hackerNewFetchToday();
+// scrapeDarkReading();
+// fetchDataAndSave();
+cybersecurityNews();
+// fetchPopularResourcesAndSave();
 // Middlewares
 app.use(helmet());
 app.use(bodyParser.json());
@@ -55,11 +61,11 @@ app.use(
 );
 
 // // Rate Limiting
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000, // 15 minutes
-//   max: 50,
-// });
-// app.use("/api", limiter);
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000,
+});
+app.use("/api", limiter);
 
 // API Routes
 app.use("/api", api);
@@ -72,12 +78,6 @@ app.use((req, res, next) => {
 // Error Handling Middleware
 app.use(errorHandlerMiddleware);
 PassportGoogle();
-// Scheduled Tasks
-hackerNewFetchToday();
-scrapeDarkReading();
-fetchDataAndSave();
-// securityWeek();
-fetchPopularResourcesAndSave();
 
 // Server Listening
 app.listen(config.port, () => {

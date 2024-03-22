@@ -9,6 +9,9 @@ function removeElementsByClass($, className) {
   $(className).remove();
 }
 
+const SCRAPER_API_KEY = "c60f6edc3bd87093b9099fbc146ef612";
+const SCRAPER_API_URL = `https://api.scraperapi.com/?api_key=${SCRAPER_API_KEY}&url=`;
+
 async function translateText(text, targetLanguage = "th") {
   const apiKey = process.env.GOOGLE_TRANSLATE_API_KEY;
   const translateApiUrl =
@@ -67,31 +70,32 @@ async function translateData(data, targetLanguage = "th") {
 }
 
 function extractLinks($) {
-  const linkElements = $(".ListPreview-ImageWrapper a");
-  // console.log("🚀 ~ extractLinks ~ linkElements:", linkElements)
-  const links = [];
-
-  linkElements.each((index, element) => {
-    const contentItem = $(element).closest(".LatestFeatured-ContentItem_left");
-    const dateElement = contentItem.find(".ListPreview-Date");
-    // console.log("🚀 ~ linkElements.each ~ dateElement:", dateElement)
-
-    if (dateElement.length) {
-      // const currentDate = new Date(2024, 2, 14);
-      const currentDate = new Date();
-      const newsDate = new Date(dateElement.text());
-      // console.log("🚀 ~ linkElements.each ~ newsDate:", newsDate)
-
-      // ตรวจสอบว่ามีวันที่และวันที่เป็นปัจจุบันหรือไม่
-      if (!isNaN(newsDate) && newsDate >= currentDate) {
-        const href = "https://www.darkreading.com" + $(element).attr("href");
-        links.push({ href });
-      }
-    }
-  });
-
-  return links;
+    const linkElements = $(".td_module_10.td_module_wrap.td-animation-stack .entry-title.td-module-title a");
+    // const currentDate = new Date(); // กำหนด currentDate ที่นี่
+    const currentDate = new Date(2024, 2, 21);
+    const links = [];
+  
+    linkElements.each((index, element) => {
+        const contentItem = $(element).closest(".vc_column.tdi_20.wpb_column.vc_column_container.tdc-column.td-pb-span8");
+        const dateElement = contentItem.find(".td-post-date");
+  
+        if (dateElement.length) {
+            const newsDateStr = dateElement.find('time').attr('datetime'); // ดึงค่า datetime ออกมา
+            const newsDate = new Date(newsDateStr); // แปลงค่า datetime เป็น Date object
+            console.log("🚀 ~ linkElements.each ~ newsDate:", newsDate)
+  
+            // ตรวจสอบว่ามีวันที่และวันที่เป็นปัจจุบันหรือไม่
+            if (!isNaN(newsDate) && newsDate >= currentDate) {
+                const href = $(element).attr("href");
+                console.log("🚀 ~ extractLinks ~ links:", href)
+                links.push({ href });
+            }
+        }
+    });
+  
+    return links;
 }
+
 
 async function fetchDataFromLink(link) {
   const prisma = new PrismaClient();
@@ -103,26 +107,28 @@ async function fetchDataFromLink(link) {
       const $ = cheerio.load(html);
       removeElementsByClass(
         $,
-        ".FullScreenBackground.NavBase-SecondaryMenuBackground"
+        ".td-header-wrap.td-header-style-1"
       );
       removeElementsByClass(
         $,
-        ".FullScreenBackground.MainMenu-BackgroundMenuItem"
+        ".td-ss-main-sidebar"
       );
       removeElementsByClass(
         $,
-        ".FullScreenBackground.NavBase-SecondaryMenuBackground"
+        ".author-box-wrap"
       );
       removeElementsByClass(
         $,
-        ".celtra-screen.celtra-screen-object-container.celtra-view"
+        ".td-post-source-tags"
       );
       removeElementsByClass(
         $,
-        ".ContributorSummary.ContributorSummary_variant_author"
+        ".td-author-by"
       );
-      removeElementsByClass($, ".TwoColumnLayout-Sidebar");
-
+      removeElementsByClass(
+        $,
+        ".td-author-line"
+      );
       const title = $("title").text();
 
       const existingNewsRecord = await prisma.news.findFirst({
@@ -136,10 +142,10 @@ async function fetchDataFromLink(link) {
         return;
       }
 
-      const imageUrlElement = $(".ArticleBase-FeaturedImage");
+      const imageUrlElement = $(".entry-thumb");
       const author = $(".Contributors-ContributorName").text();
-      const pTags = $(".ArticleBase-Topics").text();
-      const date = $(".Contributors-Date").text();
+      const pTags = $(".td-post-author-name").text();
+      const date = $(".entry-date.updated.td-module-date").text();
       const imageUrl = imageUrlElement.attr("src");
       const parsedUrl = new URL(imageUrl);
       const searchParams = new URLSearchParams(parsedUrl.search);
@@ -165,12 +171,12 @@ async function fetchDataFromLink(link) {
       ]);
 
       const paragraphs = [];
-      $('div[data-module="content"] p').each((index, element) => {
-        const $paragraph = $(element);
-        const text = $paragraph.text();
-        paragraphs.push(`<p>${text}</p>`);
+      $('.td-pb-span8.td-main-content p').each((index, element) => {
+          const $paragraph = $(element);
+          const text = $paragraph.text();
+          paragraphs.push(`<p>${text}</p>`);
       });
-
+      
       const jsonData = {
         title,
         imageUrl: imageFileName,
@@ -217,30 +223,28 @@ async function fetchDataFromLink(link) {
   }
 }
 // ฟังก์ชันสำหรับ scraping ข้อมูลจาก Dark Reading
-export async function scrapeDarkReading() {
-  cron.schedule("0 */3 * * *", async () => {
+export async function cybersecurityNews() {
     try {
-      const url = "https://www.darkreading.com/";
-      const response = await axios.get(url);
+      const response = await axios.get(`${SCRAPER_API_URL}https://cybersecuritynews.com/`);
+      console.log("🚀 ~ cron.schedule ~ response:", response)
 
       if (response.status === 200) {
         const html = response.data;
         const $ = cheerio.load(html);
 
-        removeElementsByClass($, ".TopFeatured.TopFeatured_variant_recent");
-        removeElementsByClass(
-          $,
-          ".FullScreenBackground.MainMenu-BackgroundMenuItem"
-        );
-        removeElementsByClass($, ".Ad.Ad_pos_300_1v_article");
-        removeElementsByClass($, ".SocialShare");
-        removeElementsByClass($, ".n_native_wrapper");
-        removeElementsByClass(
-          $,
-          ".FullScreenBackground.NavBase-SecondaryMenuBackground"
-        );
-        removeElementsByClass($, ".SubscribeBanner-Wrapper");
-
+        // removeElementsByClass($, ".vc_column.tdi_12.wpb_column.vc_column_container.tdc-column.td-pb-span12");
+        // removeElementsByClass(
+        //   $,
+        //   ".td-header-wrap.td-header-style-1 "
+        // );
+        // removeElementsByClass(
+        //   $,
+        //   ".td-a-rec.td-a-rec-id-custom_ad_1.tdi_27.td_block_template_1"
+        // );
+        // removeElementsByClass(
+        //   $,
+        //   ".wpb_wrapper"
+        // );
         const links = extractLinks($);
 
         const dataFromLinks = await Promise.all(
@@ -260,11 +264,23 @@ export async function scrapeDarkReading() {
         );
 
         return dataFromLinks;
-      } else {
+    } else {
         throw new Error("Failed to fetch data from Dark Reading");
-      }
+    }
+} catch (error) {
+    console.error("Error scraping Dark Reading:", error);
+    throw error; // แก้ไขนี้เพื่อส่งข้อผิดพลาดออกไป
+}
+}
+
+
+
+cron.schedule("0 */5 * * *", async () => {
+    try {
+      await cybersecurityNews();
+      console.log("cybersecurityNews has started.");
     } catch (error) {
-      throw new Error("Error scraping Dark Reading:", error);
+      console.error("Error occurred in cybersecurityNews:", error);
     }
   });
-}
+  
