@@ -191,46 +191,53 @@ async function fetchDataFromLink(link) {
       console.log("🚀 ~ fetchDataFromLink ~ translatedData:", translatedData);
 
       try {
-        await prisma.$transaction(async (prisma) => {
-          // ค้นหา Trending News จากฐานข้อมูลโดยใช้ title
-          const existingTrendingNews = await prisma.news.findUnique({
-            where: { title: translatedData.title, trend_new: "Trending News" },
+        // ค้นหา Trending News จากฐานข้อมูลโดยใช้ title
+        const existingTrendingNews = await prisma.news.findFirst({
+          where: { title: translatedData.title, trend_new: "Trending News" },
+        });
+      
+        // หากไม่พบข่าวที่เป็น Trending News กับ title เดียวกัน
+        if (!existingTrendingNews) {
+          // ค้นหาข่าวที่มี title เหมือนกันแต่เป็น Normal News
+          const existingNormalNews = await prisma.news.findFirst({
+            where: { title: translatedData.title, trend_new: "Normal" },
           });
       
-          // หากพบข่าวที่เป็น Trending News
-          if (existingTrendingNews) {
-            // ทำการเปลี่ยนเป็น Normal News และเปลี่ยน ref เป็น "https://thehackernews.com"
+          // หากพบข่าวที่เป็น Normal News จะทำการอัปเดตเป็น Trending News
+          if (existingNormalNews) {
             await prisma.news.update({
-              where: { id: existingTrendingNews.id },
-              data: { trend_new: "Normal", ref: "https://thehackernews.com" },
+              where: { id: existingNormalNews.id },
+              data: { trend_new: "Trending News" },
             });
             console.log(
-              `News "${translatedData.title}" updated from Trending to Normal in the database.`
+              `News "${translatedData.title}" updated from Normal to Trending in the database.`
             );
-          } else {
-            // หากไม่พบข่าวที่เป็น Trending News
-            console.log(`News "${translatedData.title}" is already Normal in the database.`);
           }
+        }
       
-          // สร้างข่าวใหม่ในฐานข้อมูล
-          const newsRecord = await prisma.news.create({
-            data: {
-              title: translatedData.title,
-              date,
-              imgLinks: translatedData.imageUrl,
-              contentEn: translatedData.paragraphs ? translatedData.paragraphs.join("\n") : "",
-              titleTh: translatedData.titleTh,
-              contentTh: translatedData.paragraphsTh ? translatedData.paragraphsTh.join("\n") : "",
-              ref: translatedData.ref,
-              author: author,
-              trend_new: "Trending News", // สร้างเป็น Trending News ตามเงื่อนไข
-              pTags: pTags,
-            },
-          });
-      
-          console.log("Saved news record to MySQL:", newsRecord);
-          return translatedData;
+        // สร้างข่าวใหม่ในฐานข้อมูล
+        const newsRecord = await prisma.news.create({
+          data: {
+            title: translatedData.title,
+            date,
+            imgLinks: translatedData.imageUrl,
+            contentEn: translatedData.paragraphs
+              ? translatedData.paragraphs.join("\n")
+              : "",
+            titleTh: translatedData.titleTh,
+            contentTh: translatedData.paragraphsTh
+              ? translatedData.paragraphsTh.join("\n")
+              : "",
+            ref: translatedData.ref,
+            author: author,
+            trend_new: "Trending News", // สร้างเป็น Trending News ตามเงื่อนไข
+            pTags: pTags,
+          },
         });
+      
+        console.log("Saved news record to MySQL:", newsRecord);
+        
+        return translatedData;
       } catch (prismaError) {
         console.error("Error creating news record with Prisma:", prismaError);
         throw prismaError;
