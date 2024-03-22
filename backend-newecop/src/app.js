@@ -15,16 +15,18 @@ import { hackerNewFetchToday } from "./schedules/hackerNewFetchToday.js";
 import { scrapeDarkReading } from "./schedules/darkreadingToday.js";
 import { fetchDataAndSave } from "./schedules/update-trend.js";
 import { cybersecurityNews } from "./schedules/cybersecurityNews.js";
+import { trendCybersecurityNews } from "./schedules/trendCybersecurityNews.js";
 import { fetchPopularResourcesAndSave } from "./schedules/popularResources.js";
 
 const app = express();
 
 // Scheduled Tasks
-// hackerNewFetchToday();
-// scrapeDarkReading();
-// fetchDataAndSave();
+hackerNewFetchToday();
+scrapeDarkReading();
+fetchDataAndSave();
 cybersecurityNews();
-// fetchPopularResourcesAndSave();
+trendCybersecurityNews();
+fetchPopularResourcesAndSave();
 // Middlewares
 app.use(helmet());
 app.use(bodyParser.json());

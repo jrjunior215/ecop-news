@@ -70,13 +70,13 @@ async function translateData(data, targetLanguage = "th") {
 }
 
 function extractLinks($) {
-    const linkElements = $(".td_module_10.td_module_wrap.td-animation-stack .entry-title.td-module-title a");
+    const linkElements = $(".td_block_wrap.td_block_21.tdi_30.td_with_ajax_pagination.td-pb-border-top.td_block_template_1.td-column-1 a");
     // const currentDate = new Date(); // กำหนด currentDate ที่นี่
-    const currentDate = new Date();
+    const currentDate = new Date(2024, 2, 8);
     const links = [];
   
     linkElements.each((index, element) => {
-        const contentItem = $(element).closest(".vc_column.tdi_20.wpb_column.vc_column_container.tdc-column.td-pb-span8");
+        const contentItem = $(element).closest(".item-details");
         const dateElement = contentItem.find(".td-post-date");
   
         if (dateElement.length) {
@@ -100,7 +100,7 @@ function extractLinks($) {
 async function fetchDataFromLink(link) {
   const prisma = new PrismaClient();
   try {
-    const response = await axios.get(link);
+    const response = await axios.get(`${SCRAPER_API_URL}${link}`);
 
     if (response.status === 200) {
       const html = response.data;
@@ -111,24 +111,27 @@ async function fetchDataFromLink(link) {
       );
       removeElementsByClass(
         $,
-        ".td-ss-main-sidebar"
+        ".vc_row tdi_10.wpb_row td-pb-row"
       );
       removeElementsByClass(
         $,
-        ".author-box-wrap"
+        ".vc_column tdi_20.wpb_column.vc_column_container.tdc-column.td-pb-span8"
       );
       removeElementsByClass(
         $,
-        ".td-post-source-tags"
+        ".vc_column tdi_49.wpb_column.vc_column_container.tdc-column.td-pb-span12"
       );
       removeElementsByClass(
         $,
-        ".td-author-by"
+        ".td-footer-wrapper.td-footer-container.td-container-wrap.td-footer-template-14 "
       );
       removeElementsByClass(
         $,
-        ".td-author-line"
+        "author-box-wrap"
       );
+
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
       const title = $("title").text();
 
       const existingNewsRecord = await prisma.news.findFirst({
@@ -143,8 +146,8 @@ async function fetchDataFromLink(link) {
       }
 
       const imageUrlElement = $(".entry-thumb");
-      const author = $(".Contributors-ContributorName").text();
-      const pTags = $(".td-post-author-name").text();
+      const author = $(".td-post-author-name").text();
+      const pTags = "";
       const date = $(".entry-date.updated.td-module-date").text();
       const imageUrl = imageUrlElement.attr("src");
       const parsedUrl = new URL(imageUrl);
@@ -171,7 +174,7 @@ async function fetchDataFromLink(link) {
       ]);
 
       const paragraphs = [];
-      $('.td-pb-span8.td-main-content p').each((index, element) => {
+      $('.td-post-content.tagdiv-type p').each((index, element) => {
           const $paragraph = $(element);
           const text = $paragraph.text();
           paragraphs.push(`<p>${text}</p>`);
@@ -188,29 +191,51 @@ async function fetchDataFromLink(link) {
       console.log("🚀 ~ fetchDataFromLink ~ translatedData:", translatedData);
 
       try {
-        const newsRecord = await prisma.news.create({
-          data: {
-            title: translatedData.title,
-            date,
-            imgLinks: translatedData.imageUrl,
-            contentEn: translatedData.paragraphs
-              ? translatedData.paragraphs.join("\n")
-              : "",
-            titleTh: translatedData.titleTh,
-            contentTh: translatedData.paragraphsTh
-              ? translatedData.paragraphsTh.join("\n")
-              : "",
-            ref: translatedData.ref,
-            author: author,
-            pTags: pTags,
-          },
+        await prisma.$transaction(async (prisma) => {
+          // ค้นหา Trending News จากฐานข้อมูลโดยใช้ title
+          const existingTrendingNews = await prisma.news.findUnique({
+            where: { title: translatedData.title, trend_new: "Trending News" },
+          });
+      
+          // หากพบข่าวที่เป็น Trending News
+          if (existingTrendingNews) {
+            // ทำการเปลี่ยนเป็น Normal News และเปลี่ยน ref เป็น "https://thehackernews.com"
+            await prisma.news.update({
+              where: { id: existingTrendingNews.id },
+              data: { trend_new: "Normal", ref: "https://thehackernews.com" },
+            });
+            console.log(
+              `News "${translatedData.title}" updated from Trending to Normal in the database.`
+            );
+          } else {
+            // หากไม่พบข่าวที่เป็น Trending News
+            console.log(`News "${translatedData.title}" is already Normal in the database.`);
+          }
+      
+          // สร้างข่าวใหม่ในฐานข้อมูล
+          const newsRecord = await prisma.news.create({
+            data: {
+              title: translatedData.title,
+              date,
+              imgLinks: translatedData.imageUrl,
+              contentEn: translatedData.paragraphs ? translatedData.paragraphs.join("\n") : "",
+              titleTh: translatedData.titleTh,
+              contentTh: translatedData.paragraphsTh ? translatedData.paragraphsTh.join("\n") : "",
+              ref: translatedData.ref,
+              author: author,
+              trend_new: "Trending News", // สร้างเป็น Trending News ตามเงื่อนไข
+              pTags: pTags,
+            },
+          });
+      
+          console.log("Saved news record to MySQL:", newsRecord);
+          return translatedData;
         });
-
-        console.log("Saved news record to MySQL:", newsRecord);
       } catch (prismaError) {
         console.error("Error creating news record with Prisma:", prismaError);
         throw prismaError;
       }
+      
 
       return translatedData;
     } else {
@@ -223,7 +248,7 @@ async function fetchDataFromLink(link) {
   }
 }
 // ฟังก์ชันสำหรับ scraping ข้อมูลจาก Dark Reading
-export async function cybersecurityNews() {
+export async function trendCybersecurityNews() {
     try {
       const response = await axios.get(`${SCRAPER_API_URL}https://cybersecuritynews.com/`);
       console.log("🚀 ~ cron.schedule ~ response:", response)
@@ -232,19 +257,30 @@ export async function cybersecurityNews() {
         const html = response.data;
         const $ = cheerio.load(html);
 
-        // removeElementsByClass($, ".vc_column.tdi_12.wpb_column.vc_column_container.tdc-column.td-pb-span12");
-        // removeElementsByClass(
-        //   $,
-        //   ".td-header-wrap.td-header-style-1 "
-        // );
-        // removeElementsByClass(
-        //   $,
-        //   ".td-a-rec.td-a-rec-id-custom_ad_1.tdi_27.td_block_template_1"
-        // );
-        // removeElementsByClass(
-        //   $,
-        //   ".wpb_wrapper"
-        // );
+        removeElementsByClass(
+          $,
+          ".td-header-wrap.td-header-style-1"
+        );
+        removeElementsByClass(
+          $,
+          ".vc_row tdi_10.wpb_row td-pb-row"
+        );
+        removeElementsByClass(
+          $,
+          ".vc_column tdi_20.wpb_column.vc_column_container.tdc-column.td-pb-span8"
+        );
+        removeElementsByClass(
+          $,
+          ".vc_column tdi_49.wpb_column.vc_column_container.tdc-column.td-pb-span12"
+        );
+        removeElementsByClass(
+          $,
+          ".td-footer-wrapper.td-footer-container.td-container-wrap.td-footer-template-14 "
+        );
+        removeElementsByClass(
+          $,
+          ".td-post-author-name"
+        );
         const links = extractLinks($);
 
         const dataFromLinks = await Promise.all(
@@ -277,7 +313,7 @@ export async function cybersecurityNews() {
 
 cron.schedule("0 */5 * * *", async () => {
     try {
-      await cybersecurityNews();
+      await trendCybersecurityNews();
       console.log("cybersecurityNews has started.");
     } catch (error) {
       console.error("Error occurred in cybersecurityNews:", error);

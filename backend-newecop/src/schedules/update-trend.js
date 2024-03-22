@@ -38,13 +38,25 @@ function getTitles($) {
 
 async function updateNews(news, trend) {
   try {
-    await prisma.news.update({
+    // ค้นหาข้อมูลข่าวในฐานข้อมูล
+    const existingNewsRecord = await prisma.news.findUnique({
       where: { id: news.id },
-      data: { trend_new: trend },
     });
-    console.log(
-      `News "${news.title}" is now marked as ${trend} in the database.`
-    );
+
+    // ตรวจสอบว่าข้อมูลถูกพบและ ref เป็น https://thehackernews.com
+    if (existingNewsRecord && existingNewsRecord.ref === 'https://thehackernews.com') {
+      await prisma.news.update({
+        where: { id: news.id },
+        data: { trend_new: trend },
+      });
+      console.log(
+        `News "${news.title}" is now marked as ${trend} in the database.`
+      );
+    } else {
+      console.log(
+        `News "${news.title}" either not found or not from thehackernews.com. Skipped updating.`
+      );
+    }
   } catch (error) {
     console.error(`Error updating news "${news.title}":`, error);
   }
