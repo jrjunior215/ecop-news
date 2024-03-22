@@ -338,6 +338,7 @@ document.addEventListener("click", async function (event) {
       const response = await fetch(`${baseURL}/api/news/search?trendNew=Trending%20News`);
       const data = await response.json();
       const trendingNews = data.data;
+      console.log("🚀 ~ fetchTrendingNews ~ trendingNews:", trendingNews)
 
       // Clear existing trending news items
       const trendingSlideContainers = document.querySelectorAll('.trending_slide');

@@ -222,7 +222,7 @@ async function fetchDataFromLink(link) {
               titleTh: translatedData.titleTh,
               contentTh: translatedData.paragraphsTh ? translatedData.paragraphsTh.join("\n") : "",
               ref: translatedData.ref,
-              author: "Cyber Writes Team",
+              author: author,
               trend_new: "Trending News", // สร้างเป็น Trending News ตามเงื่อนไข
               pTags: pTags,
             },
