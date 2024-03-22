@@ -320,3 +320,79 @@ cron.schedule("0 */5 * * *", async () => {
     }
   });
   
+
+
+  Invalid `prisma.news.findUnique()` invocation:
+
+{
+  where: {
+    title: "Best Network Security Solutions for CSO - 2024",
+    trend_new: "Trending News",
+?   id?: Int,
+?   AND?: NewsWhereInput | NewsWhereInput[],
+?   OR?: NewsWhereInput[],
+?   NOT?: NewsWhereInput | NewsWhereInput[],
+?   category?: StringNullableFilter | String | Null,
+?   date?: StringNullableFilter | String | Null,
+?   author?: StringFilter | String,
+?   pTags?: StringFilter | String,
+?   imgLinks?: StringFilter | String,
+?   contentEn?: StringNullableFilter | String | Null,
+?   ref?: StringFilter | String,
+?   titleTh?: StringNullableFilter | String | Null,
+?   contentTh?: StringNullableFilter | String | Null,
+?   editorUsername?: StringNullableFilter | String | Null,
+?   created_at?: DateTimeFilter | DateTime,
+?   updated_at?: DateTimeFilter | DateTime,
+?   viewCount?: IntFilter | Int,
+?   editor?: UserNullableRelationFilter | UserWhereInput | Null,
+?   viewedBy?: ViewListRelationFilter
+  }
+}
+
+Argument `where` of type NewsWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+    at fetchDataFromLink (file:///C:/Users/USOCTC02/Documents/GitHub/ecop-news/backend-newecop/src/schedules/trendCybersecurityNews.js:245:11)
+    at async file:///C:/Users/USOCTC02/Documents/GitHub/ecop-news/backend-newecop/src/schedules/trendCybersecurityNews.js:289:28
+    at async Promise.all (index 1)
+    at async trendCybersecurityNews (file:///C:/Users/USOCTC02/Documents/GitHub/ecop-news/backend-newecop/src/schedules/trendCybersecurityNews.js:286:31)
+node:internal/process/promises:289
+            triggerUncaughtException(err, true /* fromPromise */);
+            ^
+
+Error: Error fetching data from the link: https://cybersecuritynews.com/network-security-solutions-for-cso/.
+Invalid `prisma.news.findUnique()` invocation:
+
+// {
+//   where: {
+//     title: "Best Network Security Solutions for CSO - 2024",
+//     trend_new: "Trending News",
+// ?   id?: Int,
+// ?   AND?: NewsWhereInput | NewsWhereInput[],
+// ?   OR?: NewsWhereInput[],
+// ?   NOT?: NewsWhereInput | NewsWhereInput[],
+// ?   category?: StringNullableFilter | String | Null,
+// ?   date?: StringNullableFilter | String | Null,
+// ?   author?: StringFilter | String,
+// ?   pTags?: StringFilter | String,
+// ?   imgLinks?: StringFilter | String,
+// ?   contentEn?: StringNullableFilter | String | Null,
+// ?   ref?: StringFilter | String,
+// ?   titleTh?: StringNullableFilter | String | Null,
+// ?   contentTh?: StringNullableFilter | String | Null,
+// ?   editorUsername?: StringNullableFilter | String | Null,
+// ?   created_at?: DateTimeFilter | DateTime,
+// ?   updated_at?: DateTimeFilter | DateTime,
+// ?   viewCount?: IntFilter | Int,
+// ?   editor?: UserNullableRelationFilter | UserWhereInput | Null,
+// ?   viewedBy?: ViewListRelationFilter
+//   }
+// }
+
+// Argument `where` of type NewsWhereUniqueInput needs at least one of `id` arguments. Available options are marked with ?.
+//     at fetchDataFromLink (file:///C:/Users/USOCTC02/Documents/GitHub/ecop-news/backend-newecop/src/schedules/trendCybersecurityNews.js:245:11)
+//     at async file:///C:/Users/USOCTC02/Documents/GitHub/ecop-news/backend-newecop/src/schedules/trendCybersecurityNews.js:289:28
+//     at async Promise.all (index 1)
+//     at async trendCybersecurityNews (file:///C:/Users/USOCTC02/Documents/GitHub/ecop-news/backend-newecop/src/schedules/trendCybersecurityNews.js:286:31)
+
+// Node.js v20.10.0
+// [nodemon] app crashed - waiting for file changes before starting...
