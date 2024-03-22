@@ -4,6 +4,7 @@ import cron from "node-cron";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 import { PrismaClient } from "@prisma/client";
+
 // ฟังก์ชันสำหรับลบ element ที่มี class ที่ระบุ
 function removeElementsByClass($, className) {
   $(className).remove();
