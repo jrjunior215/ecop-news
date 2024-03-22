@@ -422,3 +422,18 @@ a:not([href]):not([class]) {
     background-color: #4289d4;
     color: #fff;
 }
+
+.articles_list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    padding: 10px 5px 5px 5px;
+    color: #646464;
+    font-size: 0.9rem;
+}
+
+.articles_list span {
+    margin-left: 4px;
+}

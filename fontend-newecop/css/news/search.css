@@ -5,3 +5,14 @@
     border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
+
+.news-item h2 {
+    padding: 20px;
+    background-color: #00a2ff;
+    color: #fff;
+    border-radius: 20px;
+}
+
+.news-item p, .news-item a {
+    padding: 0 20px;
+}
