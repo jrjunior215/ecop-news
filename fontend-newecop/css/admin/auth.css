@@ -76,3 +76,28 @@
 .forum_btn button:hover {
     background-color: #2f69ac;
 }
+
+.box_login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: auto;
+}
+
+#googleLoginBtn {
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #4393F0;
+    transition: 0.3s;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+#googleLoginBtn:hover {
+    color: #fff;
+    background: #9c9c9c;
+    transform: scale(1.1);
+}
+
+.box_login i {
+    font-size: 24px;
+}
