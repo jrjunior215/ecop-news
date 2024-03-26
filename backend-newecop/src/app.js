@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3000/blog"],
+    origin: ["http://localhost:3000", "http://localhost:3000/blog","http://172.19.1.113:3000"],
     credentials: true,
   })
 );
