@@ -25,9 +25,9 @@ const app = express();
 hackerNewFetchToday();
 scrapeDarkReading();
 fetchDataAndSave();
-cybersecurityNews();
+// cybersecurityNews();
 hackerNewFetchCat();
-trendCybersecurityNews();
+// trendCybersecurityNews();
 fetchPopularResourcesAndSave();
 // Middlewares
 app.use(helmet());
@@ -67,7 +67,7 @@ app.use(
 // // Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000,
+  max: 500,
 });
 app.use("/api", limiter);
 

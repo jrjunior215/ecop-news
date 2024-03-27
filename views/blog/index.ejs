@@ -65,6 +65,7 @@
     const baseURL = "<%= process.env.BACKEND_API %>";
     try {
       const maxTextLength = 100;
+      const pTagsMaxTextLength = 10;
       // Function to fetch data from the provided URL
       const fetchData = async (url) => {
         const response = await fetch(url);
@@ -96,7 +97,10 @@
                         <div class="articles_list">
                             <div class="articles_category">
                                 <i class="fa fa-th-large"></i>
-                                <span>${newsItem.pTags}</span>
+                                <span> ${sanitizeHTML(
+            newsItem.pTags.substring(0, pTagsMaxTextLength)
+          )}${newsItem.pTags.length > pTagsMaxTextLength ? "..." : ""
+          }</span>
                             </div>
                             <div class="articles_date">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
@@ -119,7 +123,10 @@
                     <div class="article_option">
                         <div class="profile_article_writing">
                             <img src="img/rectangle-21.png" alt="">
-                            <span>${newsItem.author}</span>
+                            <span>${sanitizeHTML(
+            newsItem.author.substring(0, pTagsMaxTextLength)
+          )}${newsItem.author.length > pTagsMaxTextLength ? "..." : ""
+          }</span>
                         </div>
                         <div class="related_article_view">
                             <i class="fa-solid fa-eye"></i>
@@ -338,7 +345,8 @@ document.addEventListener("click", async function (event) {
       const response = await fetch(`${baseURL}/api/news/search?trendNew=Trending%20News`);
       const data = await response.json();
       const trendingNews = data.data;
-
+      console.log("🚀 ~ fetchTrendingNews ~ trendingNews:", trendingNews)
+      const newsCount = trendingNews.length;
       // Clear existing trending news items
       const trendingSlideContainers = document.querySelectorAll('.trending_slide');
       trendingSlideContainers.forEach(container => {
@@ -347,8 +355,8 @@ document.addEventListener("click", async function (event) {
 
       // Append trending news items to each slide container
       trendingSlideContainers.forEach((container, index) => {
-        const startIndex = index * 3; // Show 3 news items per slide
-        const endIndex = startIndex + 3;
+        const startIndex = index * 1000; // Show 3 news items per slide
+        const endIndex = startIndex + newsCount;
         const newsItems = trendingNews.slice(startIndex, endIndex);
 
         newsItems.forEach(newsItem => {
@@ -419,7 +427,7 @@ document.addEventListener("click", async function (event) {
             slideIndex = 1;
           }
           slides[slideIndex - 1].style.display = "block";
-          setTimeout(() => showSlides(container), 6000); // Change image every 1 minute
+          setTimeout(() => showSlides(container), 2000); // Change image every 1 minute
         }
       });
 

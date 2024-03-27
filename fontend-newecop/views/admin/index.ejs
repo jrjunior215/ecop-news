@@ -23,78 +23,22 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
         const baseURL = "<%= process.env.BACKEND_API %>";
-   const ctx = document.getElementById('myChart');
-
-   
-
-fetch(`${baseURL}/api/news/count-last7days`)
-    .then(response => response.json())
-    .then(data => {
-        const labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'];
-        const newsData = data.dataLast7Days.map(day => day.newsCount);
-        const viewsData = data.dataLast7Days.map(day => day.viewsCount);
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'News',
-                    data: newsData,
-                    borderWidth: 1
-                },{
-                    label: 'Viewers',
-                    data: viewsData,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    })
-    .catch(error => console.error('Error fetching data: ', error));
+        const _0x567738=_0x2ab4;function _0x3086(){const _0x522a2c=['512211taTJAC','4QattiQ','Day\x206','24122CxDfdU','78zlvWfU','4114116QoMDqH','getElementById','2238324INYXDU','/api/news/count-last7days','newsCount','Error\x20fetching\x20data:\x20','dataLast7Days','myChart','651545ANuwMT','470523ZPIDpP','Day\x205','Day\x202','map','756360EzqKDm','then'];_0x3086=function(){return _0x522a2c;};return _0x3086();}(function(_0x37803b,_0xe402fd){const _0x47ebb1=_0x2ab4,_0x40977d=_0x37803b();while(!![]){try{const _0x39914d=parseInt(_0x47ebb1(0x144))/0x1+parseInt(_0x47ebb1(0x145))/0x2*(-parseInt(_0x47ebb1(0x13e))/0x3)+parseInt(_0x47ebb1(0x137))/0x4+parseInt(_0x47ebb1(0x13d))/0x5+-parseInt(_0x47ebb1(0x148))/0x6*(parseInt(_0x47ebb1(0x147))/0x7)+-parseInt(_0x47ebb1(0x142))/0x8+-parseInt(_0x47ebb1(0x149))/0x9;if(_0x39914d===_0xe402fd)break;else _0x40977d['push'](_0x40977d['shift']());}catch(_0x1f784f){_0x40977d['push'](_0x40977d['shift']());}}}(_0x3086,0x47470));const ctx=document[_0x567738(0x14a)](_0x567738(0x13c));function _0x2ab4(_0x1e285b,_0x33a1df){const _0x308693=_0x3086();return _0x2ab4=function(_0x2ab446,_0x40d1fd){_0x2ab446=_0x2ab446-0x137;let _0x453a84=_0x308693[_0x2ab446];return _0x453a84;},_0x2ab4(_0x1e285b,_0x33a1df);}fetch(baseURL+_0x567738(0x138))[_0x567738(0x143)](_0x2e6f3d=>_0x2e6f3d['json']())['then'](_0x111476=>{const _0x28be52=_0x567738,_0x557352=['Day\x201',_0x28be52(0x140),'Day\x203','Day\x204',_0x28be52(0x13f),_0x28be52(0x146),'Day\x207'],_0xc87e28=_0x111476[_0x28be52(0x13b)][_0x28be52(0x141)](_0x50708b=>_0x50708b[_0x28be52(0x139)]),_0x361950=_0x111476[_0x28be52(0x13b)][_0x28be52(0x141)](_0x1d05b5=>_0x1d05b5['viewsCount']);new Chart(ctx,{'type':'line','data':{'labels':_0x557352,'datasets':[{'label':'News','data':_0xc87e28,'borderWidth':0x1},{'label':'Viewers','data':_0x361950,'borderWidth':0x2}]},'options':{'scales':{'y':{'beginAtZero':!![]}}}});})['catch'](_0x38d124=>console['error'](_0x567738(0x13a),_0x38d124));
 
 </script>
 
 <script>
     // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
-    fetch(`${baseURL}/api/news/count`)
-        .then(response => response.json())
-        .then(data => {
-            // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด
-            document.getElementById('totalNewsCount').innerText = data.totalNews;
-        })
-        .catch(error => console.error('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
+    function _0x40fc(){var _0x536765=['12591108yuZbMQ','6308160OZJvFR','innerText','2933917MnPDRU','totalNews','3054QRjeiR','then','catch','json','2284635kFpUiH','800306jMyejO','2156OsvAzh','/api/news/count','totalNewsCount','8yglieA','1499466PXrGSQ','getElementById'];_0x40fc=function(){return _0x536765;};return _0x40fc();}function _0x2898(_0x253d7e,_0x4a2b00){var _0x40fc77=_0x40fc();return _0x2898=function(_0x289852,_0x30d567){_0x289852=_0x289852-0xef;var _0x4c6256=_0x40fc77[_0x289852];return _0x4c6256;},_0x2898(_0x253d7e,_0x4a2b00);}var _0x1d1e1b=_0x2898;(function(_0x4489e5,_0x5ad5d8){var _0x57989d=_0x2898,_0xc064bd=_0x4489e5();while(!![]){try{var _0x275281=parseInt(_0x57989d(0xff))/0x1+parseInt(_0x57989d(0xf3))/0x2+parseInt(_0x57989d(0xfa))/0x3*(-parseInt(_0x57989d(0xef))/0x4)+parseInt(_0x57989d(0xfe))/0x5+parseInt(_0x57989d(0xf6))/0x6+parseInt(_0x57989d(0xf8))/0x7*(-parseInt(_0x57989d(0xf2))/0x8)+-parseInt(_0x57989d(0xf5))/0x9;if(_0x275281===_0x5ad5d8)break;else _0xc064bd['push'](_0xc064bd['shift']());}catch(_0x1dc237){_0xc064bd['push'](_0xc064bd['shift']());}}}(_0x40fc,0xa8d19),fetch(baseURL+_0x1d1e1b(0xf0))[_0x1d1e1b(0xfb)](_0x448d60=>_0x448d60[_0x1d1e1b(0xfd)]())[_0x1d1e1b(0xfb)](_0x35d241=>{var _0x5b307a=_0x1d1e1b;document[_0x5b307a(0xf4)](_0x5b307a(0xf1))[_0x5b307a(0xf7)]=_0x35d241[_0x5b307a(0xf9)];})[_0x1d1e1b(0xfc)](_0x46af7a=>console['error']('เกิดข้อผิดพลาดในการดึงข้อมูล:\x20',_0x46af7a)));
 </script>
 
 <script>
     // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
-    fetch(`${baseURL}/api/news/count-today`)
-        .then(response => response.json())
-        .then(data => {
-            // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด
-            document.getElementById('newNewsCount').innerText = data.latestNewsCountToday;
-        })
-        .catch(error => console.error('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
-
-    // ต่อไปเราสามารถเพิ่มการดึงข้อมูลข่าวใหม่ของวันนี้ได้ในนี้
+    var _0x325207=_0x3de1;function _0x3de1(_0x308b97,_0x536644){var _0xb7f5ab=_0xb7f5();return _0x3de1=function(_0x3de1c1,_0x30590f){_0x3de1c1=_0x3de1c1-0xe8;var _0x8a0bc2=_0xb7f5ab[_0x3de1c1];return _0x8a0bc2;},_0x3de1(_0x308b97,_0x536644);}function _0xb7f5(){var _0x50d2b6=['error','2080043KNlDiM','969936hqxQRf','16sJdhBb','674086fTZcZa','เกิดข้อผิดพลาดในการดึงข้อมูล:\x20','564378Ztmenn','/api/news/count-today','4580748ueEaUu','8gfzFjS','20530UzBhsp','getElementById','then','latestNewsCountToday','catch','436eFPFFT','2093860CSakiI'];_0xb7f5=function(){return _0x50d2b6;};return _0xb7f5();}(function(_0x5a6866,_0x37253c){var _0x521eb4=_0x3de1,_0x498dc6=_0x5a6866();while(!![]){try{var _0x4999a8=-parseInt(_0x521eb4(0xea))/0x1+-parseInt(_0x521eb4(0xef))/0x2*(-parseInt(_0x521eb4(0xec))/0x3)+-parseInt(_0x521eb4(0xf5))/0x4*(-parseInt(_0x521eb4(0xf0))/0x5)+parseInt(_0x521eb4(0xe8))/0x6+-parseInt(_0x521eb4(0xf8))/0x7*(-parseInt(_0x521eb4(0xe9))/0x8)+-parseInt(_0x521eb4(0xee))/0x9+-parseInt(_0x521eb4(0xf6))/0xa;if(_0x4999a8===_0x37253c)break;else _0x498dc6['push'](_0x498dc6['shift']());}catch(_0x4e54a1){_0x498dc6['push'](_0x498dc6['shift']());}}}(_0xb7f5,0x89970),fetch(baseURL+_0x325207(0xed))[_0x325207(0xf2)](_0x77a029=>_0x77a029['json']())[_0x325207(0xf2)](_0xb08490=>{var _0x23ab81=_0x325207;document[_0x23ab81(0xf1)]('newNewsCount')['innerText']=_0xb08490[_0x23ab81(0xf3)];})[_0x325207(0xf4)](_0x3b37b9=>console[_0x325207(0xf7)](_0x325207(0xeb),_0x3b37b9)));
 </script>
 
 
 <script>
     // เรียกใช้ Fetch API เพื่อดึงข้อมูลจำนวนข่าวทั้งหมดจาก API endpoint
-    fetch(`${baseURL}/api/news/count-view`)
-        .then(response => response.json())
-        .then(data => {
-            // นำข้อมูลที่ได้มาแสดงผลใน <h2> ของข่าวทั้งหมด
-            document.getElementById('totalViewsCount').innerText = data.totalViewersCount;
-        })
-        .catch(error => console.error('เกิดข้อผิดพลาดในการดึงข้อมูล: ', error));
-
-    // ต่อไปเราสามารถเพิ่มการดึงข้อมูลข่าวใหม่ของวันนี้ได้ในนี้
+    var _0x570c09=_0x3088;function _0x12f7(){var _0x4041bc=['280015BrBejN','222984XDzXzI','totalViewsCount','error','getElementById','totalViewersCount','/api/news/count-view','json','2817bmRcsM','13820joMpCk','catch','394212lntwxa','23721sArBAx','174156QjgVHV','186805SYwBgW','6VnPnJQ','then','35sCQgIW'];_0x12f7=function(){return _0x4041bc;};return _0x12f7();}function _0x3088(_0x5c884b,_0x2239fb){var _0x12f797=_0x12f7();return _0x3088=function(_0x3088ec,_0x3a21be){_0x3088ec=_0x3088ec-0xa0;var _0x5248b6=_0x12f797[_0x3088ec];return _0x5248b6;},_0x3088(_0x5c884b,_0x2239fb);}(function(_0x92dabf,_0x56edae){var _0x17612b=_0x3088,_0x3844ca=_0x92dabf();while(!![]){try{var _0x668c48=-parseInt(_0x17612b(0xa2))/0x1+parseInt(_0x17612b(0xa3))/0x2*(parseInt(_0x17612b(0xa0))/0x3)+-parseInt(_0x17612b(0xb1))/0x4+parseInt(_0x17612b(0xa6))/0x5+-parseInt(_0x17612b(0xa1))/0x6*(parseInt(_0x17612b(0xa5))/0x7)+parseInt(_0x17612b(0xa7))/0x8+parseInt(_0x17612b(0xae))/0x9*(parseInt(_0x17612b(0xaf))/0xa);if(_0x668c48===_0x56edae)break;else _0x3844ca['push'](_0x3844ca['shift']());}catch(_0x5cb38b){_0x3844ca['push'](_0x3844ca['shift']());}}}(_0x12f7,0x1ac6b),fetch(baseURL+_0x570c09(0xac))[_0x570c09(0xa4)](_0x3d41c1=>_0x3d41c1[_0x570c09(0xad)]())[_0x570c09(0xa4)](_0xd39383=>{var _0x26606e=_0x570c09;document[_0x26606e(0xaa)](_0x26606e(0xa8))['innerText']=_0xd39383[_0x26606e(0xab)];})[_0x570c09(0xb0)](_0x794c4e=>console[_0x570c09(0xa9)]('เกิดข้อผิดพลาดในการดึงข้อมูล:\x20',_0x794c4e)));
 </script>
