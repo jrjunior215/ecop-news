@@ -1,96 +1,12 @@
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // เมื่อมีการเลือกไฟล์รูปภาพ
-        document.getElementById('imageUpload').addEventListener('change', function() {
-            // เรียกใช้ฟังก์ชันเพื่อแสดงภาพที่เลือก
-            previewImage(this);
-        });
-    });
-
-    function previewImage(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                // แสดงภาพที่เลือกใน element img
-                document.getElementById('previewImage').style.display = 'block';
-                document.getElementById('previewImage').setAttribute('src', e.target.result);
-            }
-
-            reader.readAsDataURL(input.files[0]); // อ่านไฟล์รูปภาพและแปลงเป็น URL
-        }
-    }
+    var _0xb24fa9=_0x4b50;function _0x4b50(_0x4838ad,_0x59364d){var _0x28b6dd=_0x28b6();return _0x4b50=function(_0x4b5060,_0x5db378){_0x4b5060=_0x4b5060-0x123;var _0x32473f=_0x28b6dd[_0x4b5060];return _0x32473f;},_0x4b50(_0x4838ad,_0x59364d);}function _0x28b6(){var _0x200528=['DOMContentLoaded','9438oERMmw','addEventListener','106IyVisw','display','src','530444oPoZSi','getElementById','321438fvVNQg','files','style','736848VlhEbG','previewImage','5694201bTPbBJ','952630juGAMe','setAttribute','77ZmrFUx','readAsDataURL','208hZuXSu','block','target'];_0x28b6=function(){return _0x200528;};return _0x28b6();}(function(_0x50ba16,_0x238725){var _0x511f98=_0x4b50,_0x45723a=_0x50ba16();while(!![]){try{var _0x1c8fd6=-parseInt(_0x511f98(0x12e))/0x1*(-parseInt(_0x511f98(0x128))/0x2)+-parseInt(_0x511f98(0x133))/0x3+-parseInt(_0x511f98(0x131))/0x4+-parseInt(_0x511f98(0x124))/0x5+-parseInt(_0x511f98(0x12c))/0x6*(parseInt(_0x511f98(0x126))/0x7)+-parseInt(_0x511f98(0x136))/0x8+parseInt(_0x511f98(0x123))/0x9;if(_0x1c8fd6===_0x238725)break;else _0x45723a['push'](_0x45723a['shift']());}catch(_0x146975){_0x45723a['push'](_0x45723a['shift']());}}}(_0x28b6,0x19655),document[_0xb24fa9(0x12d)](_0xb24fa9(0x12b),function(){var _0x3fd755=_0xb24fa9;document[_0x3fd755(0x132)]('imageUpload')[_0x3fd755(0x12d)]('change',function(){previewImage(this);});}));function previewImage(_0x53b72f){var _0x3f94d9=_0xb24fa9;if(_0x53b72f[_0x3f94d9(0x134)]&&_0x53b72f[_0x3f94d9(0x134)][0x0]){var _0x1a5e38=new FileReader();_0x1a5e38['onload']=function(_0x4410da){var _0x154453=_0x3f94d9;document[_0x154453(0x132)](_0x154453(0x137))[_0x154453(0x135)][_0x154453(0x12f)]=_0x154453(0x129),document[_0x154453(0x132)]('previewImage')[_0x154453(0x125)](_0x154453(0x130),_0x4410da[_0x154453(0x12a)]['result']);},_0x1a5e38[_0x3f94d9(0x127)](_0x53b72f[_0x3f94d9(0x134)][0x0]);}}
 </script>
 
 
 
 <script>
     const baseURL = "<%= process.env.BACKEND_API %>";
-    document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector("form");
-    form.addEventListener("submit", async function(event) {
-        event.preventDefault(); // ป้องกันการส่งฟอร์มโดยอัตโนมัติ
-
-        const title = document.getElementById("title").value;
-        const titleTh = document.getElementById("titleTh").value;
-        const contentEn = document.getElementById("contentEn").value;
-        const contentTh = document.getElementById("contentTh").value;
-        const category = document.getElementById("category").value;
-        const pTags = document.getElementById("pTags").value;
-        const ref = document.getElementById("ref").value;
-        const editorUsername = document.getElementById("editorUsername").value;
-        const date = document.getElementById("date").value;
-        const author = document.getElementById("author").value;
-        const imageUpload = document.getElementById('imageUpload').files[0];
-
-        try {
-            // สร้าง FormData สำหรับการส่งข้อมูลข่าว
-            const formData = new FormData();
-            formData.append('title', title);
-            formData.append('titleTh', titleTh);
-            formData.append('contentEn', contentEn);
-            formData.append('contentTh', contentTh);
-            formData.append('category', category);
-            formData.append('pTags', pTags);
-            formData.append('ref', ref);
-            formData.append('editorUsername', editorUsername);
-            formData.append('date', date);
-            formData.append('author', author);
-            formData.append('imageUpload', imageUpload); // เพิ่มไฟล์ภาพที่เลือกอัปโหลด
-
-            const newsResponse = await fetch(`${baseURL}/api/news/create`, {
-                method: "POST",
-                credentials: 'include',
-                body: formData // ส่ง FormData ที่มีรายละเอียดข่าวและภาพไปยังเซิร์ฟเวอร์
-            });
-
-            if (!newsResponse.ok) {
-                throw new Error("Failed to add news");
-            }
-
-            const responseData = await newsResponse.json();
-
-            // แสดงสวีทอลเอเลิร์ตเมื่อเพิ่มข่าวสำเร็จ
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'News added successfully!',
-                timer: 1500
-            }).then(() => {
-                // ตัวอย่าง: เปิดหน้าใหม่หลังจากการส่งข้อมูลเสร็จสมบูรณ์
-                window.location.href = "/admin-ecop/news";
-            });
-        } catch (error) {
-            console.error("Error adding news:", error);
-            // แสดงสวีทอลเอเลิร์ตเมื่อเกิดข้อผิดพลาดในการเพิ่มข่าว
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to add news!'
-            });
-        }
-    });
-});
+   function _0x25d6(_0x375107,_0xb6a31f){const _0x1367b8=_0x1367();return _0x25d6=function(_0x25d664,_0x8a55a3){_0x25d664=_0x25d664-0x1dc;let _0x2f92a1=_0x1367b8[_0x25d664];return _0x2f92a1;},_0x25d6(_0x375107,_0xb6a31f);}function _0x1367(){const _0x5608ad=['11dzdgBS','success','include','contentTh','contentEn','titleTh','ref','json','append','editorUsername','792fJoRKg','12404950qKRcbw','29112ikDEOF','addEventListener','26632zpnvFJ','225LrRncQ','imageUpload','2513760ElLKbx','value','Failed\x20to\x20add\x20news','fire','getElementById','POST','href','location','Success','pTags','341166knSqLy','415DytOKN','Error\x20adding\x20news:','/admin-ecop/news','date','title','category','querySelector','author','News\x20added\x20successfully!','form','submit','/api/news/create','5384oevOAs','files','3253271lYTEhY'];_0x1367=function(){return _0x5608ad;};return _0x1367();}(function(_0x3ce3d7,_0x2b91e2){const _0x363f34=_0x25d6,_0x2125d7=_0x3ce3d7();while(!![]){try{const _0x3d8b0e=parseInt(_0x363f34(0x1f1))/0x1+parseInt(_0x363f34(0x1fe))/0x2*(parseInt(_0x363f34(0x1e0))/0x3)+parseInt(_0x363f34(0x1e2))/0x4*(parseInt(_0x363f34(0x1f2))/0x5)+-parseInt(_0x363f34(0x1e7))/0x6+parseInt(_0x363f34(0x200))/0x7+-parseInt(_0x363f34(0x1e4))/0x8*(parseInt(_0x363f34(0x1e5))/0x9)+parseInt(_0x363f34(0x1e1))/0xa*(-parseInt(_0x363f34(0x201))/0xb);if(_0x3d8b0e===_0x2b91e2)break;else _0x2125d7['push'](_0x2125d7['shift']());}catch(_0x24bbbb){_0x2125d7['push'](_0x2125d7['shift']());}}}(_0x1367,0x5c491),document['addEventListener']('DOMContentLoaded',function(){const _0x13a2f0=_0x25d6,_0x13abb1=document[_0x13a2f0(0x1f8)](_0x13a2f0(0x1fb));_0x13abb1[_0x13a2f0(0x1e3)](_0x13a2f0(0x1fc),async function(_0x409d4e){const _0xef882a=_0x13a2f0;_0x409d4e['preventDefault']();const _0x795ba5=document['getElementById'](_0xef882a(0x1f6))['value'],_0x11c5f2=document[_0xef882a(0x1eb)]('titleTh')[_0xef882a(0x1e8)],_0x30dee5=document[_0xef882a(0x1eb)](_0xef882a(0x205))['value'],_0x56c337=document[_0xef882a(0x1eb)]('contentTh')[_0xef882a(0x1e8)],_0x2caa0d=document[_0xef882a(0x1eb)](_0xef882a(0x1f7))[_0xef882a(0x1e8)],_0x20d7df=document[_0xef882a(0x1eb)]('pTags')[_0xef882a(0x1e8)],_0x3ce40a=document[_0xef882a(0x1eb)](_0xef882a(0x1dc))[_0xef882a(0x1e8)],_0x9a8b1d=document[_0xef882a(0x1eb)](_0xef882a(0x1df))[_0xef882a(0x1e8)],_0x34c0b5=document['getElementById'](_0xef882a(0x1f5))['value'],_0x4702c1=document[_0xef882a(0x1eb)](_0xef882a(0x1f9))[_0xef882a(0x1e8)],_0x2cf40d=document[_0xef882a(0x1eb)](_0xef882a(0x1e6))[_0xef882a(0x1ff)][0x0];try{const _0x8a29fb=new FormData();_0x8a29fb['append']('title',_0x795ba5),_0x8a29fb['append'](_0xef882a(0x206),_0x11c5f2),_0x8a29fb[_0xef882a(0x1de)](_0xef882a(0x205),_0x30dee5),_0x8a29fb[_0xef882a(0x1de)](_0xef882a(0x204),_0x56c337),_0x8a29fb[_0xef882a(0x1de)]('category',_0x2caa0d),_0x8a29fb['append'](_0xef882a(0x1f0),_0x20d7df),_0x8a29fb['append']('ref',_0x3ce40a),_0x8a29fb[_0xef882a(0x1de)](_0xef882a(0x1df),_0x9a8b1d),_0x8a29fb[_0xef882a(0x1de)](_0xef882a(0x1f5),_0x34c0b5),_0x8a29fb[_0xef882a(0x1de)](_0xef882a(0x1f9),_0x4702c1),_0x8a29fb[_0xef882a(0x1de)](_0xef882a(0x1e6),_0x2cf40d);const _0x394764=await fetch(baseURL+_0xef882a(0x1fd),{'method':_0xef882a(0x1ec),'credentials':_0xef882a(0x203),'body':_0x8a29fb});if(!_0x394764['ok'])throw new Error(_0xef882a(0x1e9));const _0x500f21=await _0x394764[_0xef882a(0x1dd)]();Swal[_0xef882a(0x1ea)]({'icon':_0xef882a(0x202),'title':_0xef882a(0x1ef),'text':_0xef882a(0x1fa),'timer':0x5dc})['then'](()=>{const _0x1babcf=_0xef882a;window[_0x1babcf(0x1ee)][_0x1babcf(0x1ed)]=_0x1babcf(0x1f4);});}catch(_0x552e26){console['error'](_0xef882a(0x1f3),_0x552e26),Swal[_0xef882a(0x1ea)]({'icon':'error','title':'Error','text':'Failed\x20to\x20add\x20news!'});}});}));
 
 </script>
 
