@@ -17,6 +17,7 @@ import { fetchDataAndSave } from "./schedules/update-trend.js";
 import { cybersecurityNews } from "./schedules/cybersecurityNews.js";
 import { trendCybersecurityNews } from "./schedules/trendCybersecurityNews.js";
 import { fetchPopularResourcesAndSave } from "./schedules/popularResources.js";
+import { hackerNewFetchCat } from "./schedules/hackerNewCat.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ hackerNewFetchToday();
 scrapeDarkReading();
 fetchDataAndSave();
 cybersecurityNews();
+hackerNewFetchCat();
 trendCybersecurityNews();
 fetchPopularResourcesAndSave();
 // Middlewares

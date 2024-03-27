@@ -358,14 +358,14 @@ const checkAndUpdateCategory = async (url, expectedCategory) => {
 
 const scrapedData = [];
 
-export const hackerNewFetchToday = async () => {
-  cron.schedule("0 */3 * * *", async () => {
+export const hackerNewFetchCat = async () => {
+    cron.schedule("*/50 * * * *", async () => {
     try {
-      const response = await axios.get(
-        `${SCRAPER_API_URL}https://thehackernews.com/`
-      );
+    //   const response = await axios.get(
+    //     `${SCRAPER_API_URL}https://thehackernews.com/`
+    //   );
 
-      const $ = cheerio.load(response.data);
+    //   const $ = cheerio.load(response.data);
 
       checkAndUpdateCategory(
         "https://thehackernews.com/search/label/Cyber%20Attack",
@@ -376,88 +376,9 @@ export const hackerNewFetchToday = async () => {
         "Vulnerability"
       );
 
-      $(
-        ".icon-font.icon-calendar, .right-box, .below-post-box.cf, .footer-stuff.clear.cf, .email-box, .header.clear"
-      ).remove();
-
-      const simulateScrolling = async ($) => {
-        for (let i = 0; i < SCROLL_ITERATIONS; i++) {
-          $("body").append(
-            `<div style="height:${SCROLL_CHUNK_SIZE}px;"></div>`
-          );
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-      };
-
-      simulateScrolling($);
-
-      const dateTimeText = $(".h-datetime").text().trim();
-      const datesMatch = compareDates(dateTimeText);
-
-      if (datesMatch) {
-        const matchedLinks = [];
-
-        $(".story-link").each((index, storyLinkElement) => {
-          const linkHref = $(storyLinkElement).attr("href");
-          const linkDateTimeText = $(storyLinkElement)
-            .find(".h-datetime")
-            .text()
-            .trim();
-          const linkDatesMatch = compareDates(linkDateTimeText);
-
-          if (linkDatesMatch) {
-            matchedLinks.push(linkHref);
-          }
-        });
-
-        if (matchedLinks.length > 0) {
-          const scrapedData = await Promise.all(
-            matchedLinks.map(scrapeArticleData)
-          );
-          const allData = scrapedData.filter(Boolean);
-
-          if (allData.length > 0) {
-            const existingData = await prisma.news.findMany();
-            const uniqueData = allData.filter(
-              (newItem) =>
-                !existingData.some(
-                  (existingItem) =>
-                    newItem.title === existingItem.title &&
-                    newItem.date === existingItem.date
-                )
-            );
-
-            if (uniqueData.length > 0) {
-              await prisma.news.createMany({
-                data: uniqueData.map((articleData) => ({
-                  category: articleData.category,
-                  title: articleData.title,
-                  date: articleData.date,
-                  author: articleData.author,
-                  pTags: articleData.pTags,
-                  imgLinks: articleData.imgLinks.join(", "),
-                  contentEn: articleData.contentEn,
-                  ref: articleData.ref,
-                  titleTh: articleData.titleTh,
-                  contentTh: articleData.contentTh,
-                  editorUsername: articleData.editorUsername,
-                })),
-              });
-
-              console.log(`Scraped data has been saved to the database`);
-            } else {
-              console.log("No unique data found, not saving to the database.");
-            }
-          } else {
-            console.log("No valid data to scrape.");
-          }
-        } else {
-          console.log("No elements with class 'story-link' found.");
-        }
-      } else {
-        // Perform actions when dates do not match
-        // ...
-      }
+      // $(
+      //   ".icon-font.icon-calendar, .right-box, .below-post-box.cf, .footer-stuff.clear.cf, .email-box, .header.clear"
+      // ).remove();
     } catch (error) {
       console.error("An error occurred:", error);
     }
