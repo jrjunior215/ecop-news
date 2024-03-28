@@ -4,6 +4,7 @@ const path = require("path");
 const axios = require("axios");
 const { SERVER_PORT, SERVER_IP } = require("./js/server_setting");
 require("dotenv").config();
+const API_URL = process.env.BACKEND_API;
 // SET EXPRESS
 
 const app = express();
@@ -42,7 +43,7 @@ app.set("view engine", "ejs");
 // Middleware function to check authentication
 const isAuthenticated = async (req, res, next) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/users/me`, {
+    const response = await axios.get(`${API_URL}/api/users/me`, {
       headers: { cookie: req.headers.cookie },
       withCredentials: true,
     });
