@@ -95,8 +95,8 @@ app.get("/admin-ecop/login", adminLoginController);
 
 const adminCreateController = require("./controllers/views/admin/adminCreateController");
 app.get("/admin-ecop/createnews",isAuthenticated, adminCreateController);
-const adminViewController = require("./controllers/views/admin/adminViewController");
-app.get("/admin-ecop/viewnews",isAuthenticated, adminViewController);
+const adminViewController = require("./controllers/views/admin/adminViewerController");
+app.get("/admin-ecop/viewer",isAuthenticated, adminViewController);
 const adminEditController = require("./controllers/views/admin/adminEditController");
 app.get("/admin-ecop/editnews/:id",isAuthenticated, adminEditController);
 

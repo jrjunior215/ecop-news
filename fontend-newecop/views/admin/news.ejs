@@ -1,6 +1,139 @@
 <script>
-    const baseURL = "<%= process.env.BACKEND_API %>";
-   const _0x5a4de7=_0x57b5;function _0x57b5(_0x3a50e8,_0x39c474){const _0x42170f=_0x4217();return _0x57b5=function(_0x57b552,_0x18e934){_0x57b552=_0x57b552-0x18f;let _0x2e6e1e=_0x42170f[_0x57b552];return _0x2e6e1e;},_0x57b5(_0x3a50e8,_0x39c474);}(function(_0x3098d7,_0x40e3cb){const _0x4d5e42=_0x57b5,_0x31ca58=_0x3098d7();while(!![]){try{const _0x593be0=-parseInt(_0x4d5e42(0x1b2))/0x1*(-parseInt(_0x4d5e42(0x1b9))/0x2)+parseInt(_0x4d5e42(0x1ba))/0x3+-parseInt(_0x4d5e42(0x1a1))/0x4*(parseInt(_0x4d5e42(0x1c2))/0x5)+-parseInt(_0x4d5e42(0x1c3))/0x6+parseInt(_0x4d5e42(0x1ae))/0x7*(-parseInt(_0x4d5e42(0x1b4))/0x8)+-parseInt(_0x4d5e42(0x1cb))/0x9+parseInt(_0x4d5e42(0x1cd))/0xa;if(_0x593be0===_0x40e3cb)break;else _0x31ca58['push'](_0x31ca58['shift']());}catch(_0x4f4df2){_0x31ca58['push'](_0x31ca58['shift']());}}}(_0x4217,0x3fc17),document[_0x5a4de7(0x1a2)](_0x5a4de7(0x19b),function(){fetchNews(0x1);}));let currentPage=0x1;function fetchNews(_0x55907c){const _0x543e6c=_0x5a4de7,_0x244f61=baseURL+_0x543e6c(0x1bb)+_0x55907c;fetch(_0x244f61)[_0x543e6c(0x1bf)](_0x56e6d1=>_0x56e6d1[_0x543e6c(0x1ac)]())[_0x543e6c(0x1bf)](_0x49611f=>{const _0x241b24=_0x543e6c;displayNews(_0x49611f['news']),displayPagination(_0x49611f[_0x241b24(0x195)]);})[_0x543e6c(0x1c9)](_0x285f67=>console[_0x543e6c(0x1b3)]('Error\x20fetching\x20news:',_0x285f67));}function displayNews(_0x120a51){const _0x1385d6=_0x5a4de7,_0x17416c=document[_0x1385d6(0x1af)]('newsTableBody');_0x17416c[_0x1385d6(0x198)]='',_0x120a51[_0x1385d6(0x1c1)]((_0x300a84,_0x1bdf1a)=>{const _0x7b12ef=_0x1385d6,_0x5aa2b5=new Date(_0x300a84[_0x7b12ef(0x196)])[_0x7b12ef(0x1be)]('en-US',{'year':'numeric','month':_0x7b12ef(0x192),'day':'numeric'}),_0xe7a05=_0x300a84['contentTh']['length']>0x64?_0x300a84['contentTh'][_0x7b12ef(0x1c6)](0x0,0x32)+_0x7b12ef(0x19f):_0x300a84[_0x7b12ef(0x1c4)],_0x57fa63=_0x300a84['contentEn'][_0x7b12ef(0x1a5)]>0x64?_0x300a84[_0x7b12ef(0x199)]['substring'](0x0,0x32)+'...':_0x300a84[_0x7b12ef(0x199)],_0x318768=_0x300a84[_0x7b12ef(0x1aa)]['length']>0x64?_0x300a84[_0x7b12ef(0x1aa)][_0x7b12ef(0x1c6)](0x0,0x32)+_0x7b12ef(0x19f):_0x300a84[_0x7b12ef(0x1aa)],_0x3d9968=_0x7b12ef(0x190)+_0x300a84['id']+_0x7b12ef(0x197)+_0x300a84[_0x7b12ef(0x1b0)]+_0x7b12ef(0x197)+_0xe7a05+_0x7b12ef(0x197)+_0x300a84[_0x7b12ef(0x1c7)]+'</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td>'+_0x57fa63+'</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td>'+_0x318768+_0x7b12ef(0x197)+_0x5aa2b5+_0x7b12ef(0x1b5)+_0x300a84['id']+_0x7b12ef(0x1a0)+_0x300a84['id']+_0x7b12ef(0x1cc)+_0x300a84['id']+_0x7b12ef(0x1ab);_0x17416c[_0x7b12ef(0x198)]+=_0x3d9968;});}function _0x4217(){const _0x1f1b17=['titleTh',')\x22\x20aria-label=\x22Previous\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20aria-hidden=\x22true\x22>&laquo;</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22visually-hidden\x22>Previous</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','1469lFNDFp','error','219216JiYEqK','</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22d-flex\x20flex-row\x20justify-content-end\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20href=\x22/admin-ecop/editnews/','Failed\x20to\x20delete\x20news','currentPage','DELETE','32yhUZpw','416499ThRRIh','/api/news/?page=','fire','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22page-item\x20','toLocaleDateString','then','Are\x20you\x20sure?','forEach','182435EBZpbA','524952DSngfz','contentTh',')\x22\x20aria-label=\x22Next\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20aria-hidden=\x22true\x22>&raquo;</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22visually-hidden\x22>Next</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','substring','title','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22page-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20class=\x22page-link\x22\x20href=\x22#\x22\x20onclick=\x22fetchNews(','catch','\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20class=\x22page-link\x22\x20href=\x22#\x22\x20onclick=\x22fetchNews(','1235340IfYmmO','\x22\x20type=\x22button\x22\x20class=\x22btn\x20btn-warning\x20me-2\x22>edit</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<button\x20type=\x22button\x22\x20class=\x22btn\x20btn-danger\x22\x20onclick=\x22deleteNews(','4696530Wyauvs','include','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<tr\x20class=\x22align-middle\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td>','</a>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</li>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','long','#3085d6',')\x22>','pagination','date','</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td>','innerHTML','contentEn','Deleted!','DOMContentLoaded','Your\x20file\x20has\x20been\x20deleted.','/api/news/','success','...','?id=','4CwYPkb','addEventListener','#d33','You\x20won\x27t\x20be\x20able\x20to\x20revert\x20this!','length','active','min','Yes,\x20delete\x20it!','totalPages','imgLinks',')\x22>delete</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</tr>\x0a\x20\x20\x20\x20\x20\x20\x20\x20','json','Error\x20deleting\x20news:','28AnvCxZ','getElementById'];_0x4217=function(){return _0x1f1b17;};return _0x4217();}function displayPagination(_0x3674d5){const _0x4e75fe=_0x5a4de7,_0x1db1f3=document[_0x4e75fe(0x1af)](_0x4e75fe(0x195));_0x1db1f3[_0x4e75fe(0x198)]='';const _0x5f462e=_0x3674d5[_0x4e75fe(0x1a9)],_0x337191=0x5;currentPage=_0x3674d5[_0x4e75fe(0x1b7)];if(currentPage>0x1){const _0x23c932=_0x4e75fe(0x1c8)+(currentPage-0x1)+_0x4e75fe(0x1b1);_0x1db1f3[_0x4e75fe(0x198)]+=_0x23c932;}for(let _0x97d95c=currentPage;_0x97d95c<=Math[_0x4e75fe(0x1a7)](currentPage+_0x337191-0x1,_0x5f462e);_0x97d95c++){const _0x14b1ff=_0x4e75fe(0x1bd)+(currentPage===_0x97d95c?_0x4e75fe(0x1a6):'')+_0x4e75fe(0x1ca)+_0x97d95c+_0x4e75fe(0x194)+_0x97d95c+_0x4e75fe(0x191);_0x1db1f3[_0x4e75fe(0x198)]+=_0x14b1ff;}if(currentPage<_0x5f462e){const _0x211c25='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<li\x20class=\x22page-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<a\x20class=\x22page-link\x22\x20href=\x22#\x22\x20onclick=\x22fetchNews('+(currentPage+0x1)+_0x4e75fe(0x1c5);_0x1db1f3[_0x4e75fe(0x198)]+=_0x211c25;}}function deleteNews(_0x1c624e){const _0x5c27b1=_0x5a4de7;Swal[_0x5c27b1(0x1bc)]({'title':_0x5c27b1(0x1c0),'text':_0x5c27b1(0x1a4),'icon':'warning','showCancelButton':!![],'confirmButtonColor':_0x5c27b1(0x193),'cancelButtonColor':_0x5c27b1(0x1a3),'confirmButtonText':_0x5c27b1(0x1a8)})['then'](_0x26164d=>{const _0x485e69=_0x5c27b1;if(_0x26164d['isConfirmed']){const _0x4f0062=baseURL+_0x485e69(0x19d)+_0x1c624e;fetch(_0x4f0062,{'method':_0x485e69(0x1b8),'credentials':_0x485e69(0x18f)})['then'](_0x145545=>{const _0x38f45a=_0x485e69;if(_0x145545['ok'])Swal[_0x38f45a(0x1bc)]({'title':_0x38f45a(0x19a),'text':_0x38f45a(0x19c),'icon':_0x38f45a(0x19e)})['then'](()=>{fetchNews(0x1);});else throw new Error(_0x38f45a(0x1b6));})[_0x485e69(0x1c9)](_0x517884=>console['error'](_0x485e69(0x1ad),_0x517884));}});}
+    // const baseURL = "<%= process.env.BACKEND_API %>";
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchNews(1); // Fetch news for the first page when the page loads
+    });
+
+    let currentPage = 1; // Initialize currentPage variable outside functions
+
+    function fetchNews(page) {
+        const apiUrl = `${baseURL}/api/news/?page=${page}`; // Construct API URL with pagination parameter
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                displayNews(data.news); // Display news data
+                displayPagination(data.pagination); // Display pagination
+            })
+            .catch(error => console.error('Error fetching news:', error));
+    }
+
+    function displayNews(news) {
+    const newsTableBody = document.getElementById('newsTableBody');
+    newsTableBody.innerHTML = ''; // Clear existing table rows
+    news.forEach((item, index) => {
+        const formattedDate = new Date(item.date).toLocaleDateString(
+            "en-US",
+            { year: "numeric", month: "long", day: "numeric" }
+        );
+
+        // Limit contentTh to 100 characters and add an ellipsis if it exceeds the limit
+        const truncatedContentTH = item.contentTh.length > 100 ? item.contentTh.substring(0, 50) + '...' : item.contentTh;
+        const truncatedContentEN = item.contentEn.length > 100 ? item.contentEn.substring(0, 50) + '...' : item.contentEn;
+        const truncatedImgName = item.imgLinks.length > 100 ? item.imgLinks.substring(0, 50) + '...' : item.imgLinks;
+
+        const row = `
+            <tr class="align-middle">
+                <td>${item.id}</td>
+                <td>${item.titleTh}</td>
+                <td>${truncatedContentTH}</td>
+                <td>${item.title}</td>
+                <td>${truncatedContentEN}</td>
+                <td>${truncatedImgName}</td>
+                <td>${formattedDate}</td>
+                <td>
+                    <div class="d-flex flex-row justify-content-end">
+                        <a href="/admin-ecop/editnews/${item.id}?id=${item.id}" type="button" class="btn btn-warning me-2">edit</a>
+                        <button type="button" class="btn btn-danger" onclick="deleteNews(${item.id})">delete</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        newsTableBody.innerHTML += row;
+    });
+}
+
+
+    function displayPagination(pagination) {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = ''; // Clear existing pagination buttons
+        const totalPages = pagination.totalPages;
+        const visiblePages = 5; // Number of pagination buttons you want to display
+
+        // Update currentPage
+        currentPage = pagination.currentPage;
+
+        // Previous button
+        if (currentPage > 1) {
+            const prevButton = `
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="fetchNews(${currentPage - 1})" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                </li>
+            `;
+            paginationContainer.innerHTML += prevButton;
+        }
+
+        // Pagination buttons
+        for (let i = currentPage; i <= Math.min(currentPage + visiblePages - 1, totalPages); i++) {
+            const button = `
+                <li class="page-item ${currentPage === i ? 'active' : ''}">
+                    <a class="page-link" href="#" onclick="fetchNews(${i})">${i}</a>
+                </li>
+            `;
+            paginationContainer.innerHTML += button;
+        }
+
+        // Next button
+        if (currentPage < totalPages) {
+            const nextButton = `
+                <li class="page-item">
+                    <a class="page-link" href="#" onclick="fetchNews(${currentPage + 1})" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </li>
+            `;
+            paginationContainer.innerHTML += nextButton;
+        }
+    }
+
+    function deleteNews(newsId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const apiUrl = `${baseURL}/api/news/${newsId}`;
+            fetch(apiUrl, {
+                method: 'DELETE',
+                credentials: 'include' // Set the credentials option to 'include'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // If deletion is successful, you may want to show a success message
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    }).then(() => {
+                        // After showing success message, you may want to refresh the news list
+                        fetchNews(1); // Fetch news for the first page after deletion
+                    });
+                } else {
+                    throw new Error('Failed to delete news');
+                }
+            })
+            .catch(error => console.error('Error deleting news:', error));
+        }
+    });
+}
 
 </script>
 
