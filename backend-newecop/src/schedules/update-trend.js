@@ -6,7 +6,7 @@ import { PrismaClient } from "@prisma/client";
 const url = "https://thehackernews.com/";
 const prisma = new PrismaClient();
 
-const SCRAPER_API_KEY = "c60f6edc3bd87093b9099fbc146ef612";
+const SCRAPER_API_KEY = "8fc2dd040ee2320156f8ab676fb8636a";
 const SCRAPER_API_URL = `https://api.scraperapi.com/?api_key=${SCRAPER_API_KEY}&url=`;
 
 async function fetchData(url) {
