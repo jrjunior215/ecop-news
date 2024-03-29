@@ -273,7 +273,7 @@ export async function scrapeDarkReading() {
 cron.schedule("0 */5 * * *", async () => {
   try {
     await scrapeDarkReading();
-    console.log("cybersecurityNews has started.");
+    console.log("scrapeDarkReading has started.");
   } catch (error) {
     console.error("Error occurred in cybersecurityNews:", error);
   }
